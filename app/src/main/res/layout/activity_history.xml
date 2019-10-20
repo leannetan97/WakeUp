@@ -11,5 +11,14 @@
         android:id="@+id/tv_howLong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_weight="5"
+        android:text="How long did it take to wake you up?"
+        android:textSize="@dimen/activity_title_text_size" />
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/historyChart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="20"
+        android:layout_below="@id/tv_howLong" />
 </LinearLayout>
