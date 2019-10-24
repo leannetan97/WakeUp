@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:weightSum="10"
     android:orientation="vertical"
     tools:context=".History">
 
@@ -11,7 +12,7 @@
         android:id="@+id/tv_howLong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="5"
+        android:layout_weight="1"
         android:text="How long did it take to wake you up?"
         android:textSize="@dimen/activity_title_text_size" />
 
@@ -19,6 +20,6 @@
         android:id="@+id/historyChart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="20"
+        android:layout_weight="4"
         android:layout_below="@id/tv_howLong" />
 </LinearLayout>
