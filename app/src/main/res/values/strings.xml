@@ -6,4 +6,9 @@
 <!--    History-->
     <string name="history_title">How long did it take to wake you up?</string>
 
+    <string name="new_group_text">New Group</string>
+    <string name="friends_list">Friends List</string>
+    <string name="title_activity_single_group">SingleGroupActivity</string>
+    <string name="settings">Settings</string>
+    <string name="ok_uppercase">OK</string>
 </resources>
