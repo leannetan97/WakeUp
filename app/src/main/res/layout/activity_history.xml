@@ -9,17 +9,49 @@
     tools:context=".History">
 
     <TextView
-        android:id="@+id/tv_howLong"
+        android:id="@+id/tv_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="How long did it take to wake you up?"
+        android:text="@string/history_title"
         android:textSize="@dimen/activity_title_text_size" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/historyChart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:layout_below="@id/tv_howLong" />
+        android:layout_weight="4"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tv_historyViewList1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dip"
+            android:text="History"
+            android:textStyle="bold">
+        </TextView>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tv_historyViewList2"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:padding="10dip"
+            android:text="Delay"
+            android:textStyle="bold">
+        </TextView>
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/historyList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4" />
 </LinearLayout>

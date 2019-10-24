@@ -2,4 +2,8 @@
     <string name="app_name">WakeUp</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+
+<!--    History-->
+    <string name="history_title">How long did it take to wake you up?</string>
+
 </resources>
