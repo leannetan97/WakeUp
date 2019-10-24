@@ -46,5 +46,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(I);
             }
         });
+
+        // NewGroup
+        Button btnNewGroup = (Button)findViewById(R.id.btn_newGroup);
+        btnNewGroup.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                Intent I = new Intent(MainActivity.this, NewGroupActivity.class);
+                startActivity(I);
+            }
+        });
     }
 }
