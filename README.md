@@ -2,10 +2,9 @@
 
 ## [Important] Some constraints and naming conventions to follow
 1. Under res/ directory, if an image is needed to be used, name it as either:
-`logo/logo_{your_image_name.xxx}`, 
-`background/background_{your_image_name.xxx}` 
-or in general 
-`{functional}/{functional}_{your_image_name.xxx}`
+   * `logo/logo_{your_image_name.xxx}`, 
+   * `background/background_{your_image_name.xxx}` or in general 
+   * `{functional}/{functional}_{your_image_name.xxx}`
 
 2. For any layout/activity/fragment created, follow **PascalCase** convention when naming it at the prompt up window. Naming activity/fragment/layout will go with ActivityDescription followed by Element.
 E.g. **MainActivity**, **TextFragment**, **RegisterPageActivity**.
