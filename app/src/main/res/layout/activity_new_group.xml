@@ -71,6 +71,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="Invite"
+            android:backgroundTint="@color/colorAccent"
+            android:background="@drawable/rounded_corners"
             app:layout_constraintBottom_toTopOf="@+id/tv_orNewGroup"
             app:layout_constraintEnd_toEndOf="@+id/et_enterEmail"
             app:layout_constraintStart_toStartOf="@+id/et_enterEmail" />
@@ -115,15 +117,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="Friend List"
+                android:text="Friends List"
                 android:textSize="18sp" />
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text=">"
-                android:textSize="18sp" />
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                 />
         </RelativeLayout>
 
         <View
@@ -166,13 +168,12 @@
                     android:text="friend1"
                     android:textSize="18sp" />
 
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="X"
-                    android:textSize="18sp" />
+                    android:src="@drawable/ic_clear_black_24dp"
+                    />
             </RelativeLayout>
 
             <RelativeLayout
@@ -191,13 +192,12 @@
                     android:text="friend2"
                     android:textSize="18sp" />
 
-                <TextView
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="X"
-                    android:textSize="18sp" />
+                    android:src="@drawable/ic_clear_black_24dp"
+                    />
             </RelativeLayout>
 
 

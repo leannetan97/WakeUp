@@ -10,11 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".LeaderboardActivity"></activity>
+        <activity android:name=".GroupSettingsFriendsActivity"
+            android:parentActivityName=".SingleGroupActivity"
+            ></activity>
+        <activity android:name=".AwakeStatusListActivity" />
         <activity
             android:name=".SingleGroupActivity"
             android:label="@string/title_activity_single_group"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.wakeup.wakeup.MainActivity" />
@@ -25,7 +29,6 @@
         <activity
             android:name=".NewGroupActivity"
             android:parentActivityName=".SingleGroupActivity" />
-        <activity android:name=".BarChartActivity" />
         <activity android:name=".HistoryActivity" />
         <activity
             android:name=".MainActivity"
