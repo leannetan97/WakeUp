@@ -2,6 +2,10 @@
     <string name="app_name">WakeUp</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+
+<!--    History-->
+    <string name="history_title">How long did it take to wake you up?</string>
+
     <string name="new_group_text">New Group</string>
     <string name="friends_list">Friends List</string>
     <string name="title_activity_single_group">SingleGroupActivity</string>
