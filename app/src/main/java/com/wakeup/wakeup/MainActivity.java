@@ -10,8 +10,6 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -38,11 +36,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // History
+        // HistoryActivity
         Button btnHistory = (Button)findViewById(R.id.btn_history);
         btnHistory.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
-                Intent I = new Intent(MainActivity.this, History.class);
+                Intent I = new Intent(MainActivity.this, HistoryActivity.class);
                 startActivity(I);
             }
         });
@@ -55,5 +53,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(I);
             }
         });
+
+        // LeaderBoardActivity
+        Button btnLeaderboard = (Button)findViewById(R.id.btn_leaderboard);
+        btnLeaderboard.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                Intent I = new Intent(MainActivity.this, LeaderboardActivity.class);
+                startActivity(I);
+            }
+        });
+
     }
 }

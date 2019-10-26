@@ -25,7 +25,7 @@ import java.util.Date;
 
 //https://openclassrooms.com/en/courses/5086986-create-a-scalable-and-powerful-backend-for-android-using-firebase-in-java/5769271-integrate-firebase-into-an-android-app
 
-public class History extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     // format
     private DecimalFormat mFormat;
@@ -85,16 +85,7 @@ public class History extends AppCompatActivity {
         barChart.setData(barData);
 
 
-//        stringArray =  new String[] {"Android","IPhone","WindowsMobile","Blackberry", "WebOS","Ubuntu","Windows7","Max OS X"};
-//
-////        ArrayList<String> list = new ArrayList<>();
-////        for (int i=0; i<stringArray.length; ++i) {
-////            list.add(stringArray[i]);
-////        }
-//
-//
-//        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_historyview, stringArray);
-
+        // List
         ListView listView = (ListView)findViewById(R.id.historyList);
 
         try {

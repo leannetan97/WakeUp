@@ -10,20 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
-
+public class LeaderboardAdapter extends ArrayAdapter<LeaderboardModel> {
     private int resourceLayout;
     private Context mContext;
-    private ArrayList<HistoryModel> historyModelArrayList;
-    private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE   MMM dd   hh:mm a");
+    private ArrayList<LeaderboardModel> leaderboardModelArrayList;
 
-    public HistoryAdapter(@NonNull Context context, int resource, @NonNull List<HistoryModel> objects) {
+    public LeaderboardAdapter(@NonNull Context context, int resource, @NonNull List<LeaderboardModel> objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
         this.mContext = context;
@@ -41,19 +36,17 @@ public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
             v = vi.inflate(resourceLayout, null);
         }
 
-        HistoryModel p = getItem(position);
+        LeaderboardModel p = getItem(position);
 
         if (p != null) {
-            TextView tv1 = (TextView) v.findViewById(R.id.tv_historyViewList1);
-            TextView tv2 = (TextView) v.findViewById(R.id.tv_historyViewList2);
+            TextView tv1 = (TextView) v.findViewById(R.id.tv_leaderboardViewList1);
+            TextView tv2 = (TextView) v.findViewById(R.id.tv_leaderboardViewList2);
 
             if (tv1 != null) {
-                Date date = p.getDate();
-                String dateStr = dateFormatter.format(date);
-                tv1.setText(dateStr);
+                tv1.setText(p.getName());
             }
             if (tv2 != null) {
-                tv2.setText(Integer.toString(p.getDelay()));
+                tv2.setText(Integer.toString(p.getScore()));
             }
         }
 
