@@ -15,6 +15,6 @@ public class ListFriendsActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
 //        assert ab != null;
 //        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setTitle(R.string.friends_list);
+        ab.setTitle("Friends List (4)");
     }
 }
