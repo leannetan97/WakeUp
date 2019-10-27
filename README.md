@@ -1,6 +1,6 @@
 # WakeUp
 
-## [Important] Some constraints and naming conventions to follow
+## Important: Some constraints and naming conventions to follow
 1. Under res/ directory, if an image is needed to be used, name it as either:
    * `logo/logo_{your_image_name.xxx}`, 
    * `background/background_{your_image_name.xxx}` or in general 
@@ -17,12 +17,12 @@ E.g. **MainActivity**, **TextFragment**, **RegisterPageActivity**.
     * ... and many other cases, we'll discuss later if conflict encountered.
 
 4. The **Primary** and **Secondary** color for this project will be:
-     * PrimaryColor - #8e24aa
-     * PrimaryLight - #c158dc
-     * PrimaryDark - #5c007a
-     * SecondaryColor - #ffc107
-     * SecondaryLight - #fff350
-     * SecondaryDark - #c79100
+     * PrimaryColor - `#8e24aa`
+     * PrimaryLight - `#c158dc`
+     * PrimaryDark - `#5c007a`
+     * SecondaryColor - `#ffc107`
+     * SecondaryLight - `#fff350`
+     * SecondaryDark - `#c79100`
 
 5. Date format using java.util.Date:
 
