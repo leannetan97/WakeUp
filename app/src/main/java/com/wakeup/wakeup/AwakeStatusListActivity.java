@@ -10,16 +10,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -80,7 +75,7 @@ public class AwakeStatusListActivity extends AppCompatActivity {
 //        String descriptions[];
 
         CustomAdapter(Context c, ArrayList<String> names, ArrayList<Boolean> awakeStatus, ArrayList<String> emails) {
-            super(c, R.layout.layout_row_awake_status_list, R.id.tv_friendName, names);
+            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, names);
             this.context = c;
             this.names = names;
             this.awakeStatus = awakeStatus;
@@ -93,7 +88,7 @@ public class AwakeStatusListActivity extends AppCompatActivity {
         public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater =
                     (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.layout_row_awake_status_list, parent, false);
+            View row = layoutInflater.inflate(R.layout.res_layout_row_awake_status_list, parent, false);
 
             TextView tvFriendName = row.findViewById(R.id.tv_friendName);
             tvFriendName.setText(names.get(position));

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="game_options">
+        <item>NONE</item>
+        <item>TIC TAC TOE</item>
+        <item>MATH</item>
+        <item>SHAKER</item>
+    </string-array>
+</resources>

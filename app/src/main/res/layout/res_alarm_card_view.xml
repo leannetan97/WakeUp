@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:clipToPadding="false"
     android:orientation="vertical"
     android:paddingTop="@dimen/cardview_default_elevation"
     android:paddingBottom="@dimen/cardview_default_elevation">
 
     <androidx.cardview.widget.CardView
-        android:background="@drawable/rounded_corners"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginRight="32dp"
-        android:layout_marginBottom="24dp">
+        android:layout_marginBottom="24dp"
+        android:padding="16dp">
 
 
         <RelativeLayout
-
+            android:id="@+id/view_alarm_card"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/button_rounded_corners">
 
             <TextView
                 android:id="@+id/tv_time_display"
@@ -28,12 +29,24 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:paddingStart="24dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="16dp"
-                android:text="@string/_06_00"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/display_alarm_time"
                 android:textSize="36sp" />
-
+            <ImageView
+                android:id="@+id/iv_alarm_category"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_group_black_24dp"
+                android:layout_alignBottom="@id/tv_time_display"
+                android:layout_alignTop="@id/tv_time_display"
+                android:layout_toRightOf="@id/tv_time_display"
+                android:layout_toEndOf="@id/tv_time_display"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@string/alarm_category"
+                />
             <TextView
                 android:id="@+id/tv_alarm_name"
                 android:layout_width="wrap_content"
@@ -41,10 +54,10 @@
                 android:layout_below="@id/tv_time_display"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:paddingStart="24dp"
-                android:paddingLeft="24dp"
-                android:paddingBottom="16dp"
-                android:text="@string/alarm"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/default_alarm_name"
                 android:textSize="24sp" />
 
             <Switch
@@ -56,9 +69,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:onClick="onToggleClicked"
-                android:paddingVertical="16dp"
-                android:paddingEnd="24dp"
-                android:paddingRight="24dp" />
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp" />
 
         </RelativeLayout>
         <!--<! — Your item contents →>-->

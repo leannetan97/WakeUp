@@ -1,7 +1,28 @@
 <resources>
     <string name="app_name">WakeUp</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="change_name">Change Name</string>
+    <string name="change_password">Change Password</string>
+    <string name="title_tab_one">Home</string>
+    <string name="title_tab_two">Alarm</string>
+    <string name="title_tab_three">Group</string>
+    <string name="title_tab_four">History</string>
+    <string name="add_alarm">Add alarm</string>
+    <string name="select_time">Select Time</string>
+    <string name="display_alarm_time">06:00</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_alarm_name">Alarm</string>
+    <string name="alarm_name_label">Alarm Name</string>
+    <string name="awake_status_label">Awake Status</string>
+    <string name="arrow_description">arrow</string>
+    <string name="game_option_label">Game Option:</string>
+    <string name="create_alarm">Create Alarm</string>
+    <string name="new_profile_name">New Profile Name</string>
+    <string name="alarm_category">Alarm Category</string>
+    <string name="delete_alarm">Delete Alarm</string>
+    <string name="show_leader_board">Show leader board</string>
+
 
     <!--    HistoryActivity-->
     <string name="history_title">How long did it take to wake you up?</string>
@@ -16,4 +37,8 @@
     <string name="alarm">Alarm</string>
     <string name="_06_00">06:00</string>
     <string name="group_settings">Group Settings</string>
+    <string name="title_activity_create_edit_alarm">CreateEditAlarm</string>
+    <string name="history">History</string>
+    <string name="delay">Delay</string>
+
 </resources>

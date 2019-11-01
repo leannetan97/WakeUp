@@ -1,11 +1,14 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.ui.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -16,6 +19,9 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
+import com.wakeup.wakeup.HistoryAdapter;
+import com.wakeup.wakeup.HistoryModel;
+import com.wakeup.wakeup.R;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -25,8 +31,10 @@ import java.util.Date;
 
 //https://openclassrooms.com/en/courses/5086986-create-a-scalable-and-powerful-backend-for-android-using-firebase-in-java/5769271-integrate-firebase-into-an-android-app
 
-public class HistoryActivity extends AppCompatActivity {
-
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class HistoryFragment extends Fragment {
     // format
     private DecimalFormat mFormat;
 
@@ -41,12 +49,18 @@ public class HistoryActivity extends AppCompatActivity {
     ArrayList histEntries;
     private SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
 
-        barChart = findViewById(R.id.historyChart);
+    public HistoryFragment() {
+        // Required empty public constructor
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_history, container, false);
+        barChart = view.findViewById(R.id.historyChart);
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
         barChart.getDescription().setEnabled(false);
@@ -73,8 +87,8 @@ public class HistoryActivity extends AppCompatActivity {
         barDataSet = new BarDataSet(barEntries, "Minute");
 
         // set chart gradient color
-        int startColor = ContextCompat.getColor(this, android.R.color.holo_blue_light);
-        int endColor = ContextCompat.getColor(this, android.R.color.holo_purple);
+        int startColor = ContextCompat.getColor(getContext(), android.R.color.holo_blue_light);
+        int endColor = ContextCompat.getColor(getContext(), android.R.color.holo_purple);
         barDataSet.setGradientColor(startColor, endColor);
         barDataSet.setValueFormatter(new DefaultValueFormatter(0));
         barDataSet.setValueTextSize(10);
@@ -86,7 +100,7 @@ public class HistoryActivity extends AppCompatActivity {
 
 
         // List
-        ListView listView = (ListView)findViewById(R.id.historyList);
+        ListView listView = (ListView) view.findViewById(R.id.historyList);
 
         try {
             getHistList();
@@ -94,10 +108,12 @@ public class HistoryActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        HistoryAdapter historyAdapter = new HistoryAdapter(this, R.layout.activity_historyview, histEntries);
+        HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_historyview, histEntries);
 
         listView.setAdapter(historyAdapter);
+        return view;
     }
+
 
     private void getEntries() {
         barEntries = new ArrayList<>();

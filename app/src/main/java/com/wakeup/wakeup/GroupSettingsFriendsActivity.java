@@ -73,7 +73,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 
         CustomAdapter(Context c, ArrayList<String> names, ArrayList<Boolean> isAdmin,
                       ArrayList<String> emails, boolean amIadmin) {
-            super(c, R.layout.layout_row_awake_status_list, R.id.tv_friendName, names);
+            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, names);
             this.context = c;
             this.names = names;
             this.isAdmin = isAdmin;
@@ -88,7 +88,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                             @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater =
                     (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.layout_row_group_member_list, parent, false);
+            View row = layoutInflater.inflate(R.layout.res_layout_row_group_member_list, parent, false);
 
             TextView tvFriendName = row.findViewById(R.id.tv_friendName);
             TextView tvFriendEmail = row.findViewById(R.id.tv_friendEmail);

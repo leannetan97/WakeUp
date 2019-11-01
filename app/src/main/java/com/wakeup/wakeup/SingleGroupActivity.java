@@ -106,7 +106,7 @@ public class SingleGroupActivity extends AppCompatActivity {
 
 
         CustomAdapter(Context c, ArrayList<String> alarmTimes, ArrayList<String> alarmNames) {
-            super(c, R.layout.layout_card_group_alarm, R.id.tv_time_display, alarmTimes);
+            super(c, R.layout.res_alarm_card_view, R.id.tv_time_display, alarmTimes);
             this.context = c;
             this.alarmTimes = alarmTimes;
             this.alarmNames = alarmNames;
@@ -118,7 +118,7 @@ public class SingleGroupActivity extends AppCompatActivity {
                             @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater =
                     (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.layout_card_group_alarm, parent, false);
+            View row = layoutInflater.inflate(R.layout.res_alarm_card_view, parent, false);
 
             TextView tvTimeDisplay = row.findViewById(R.id.tv_time_display);
             TextView tvAlarmName = row.findViewById(R.id.tv_alarm_name);
