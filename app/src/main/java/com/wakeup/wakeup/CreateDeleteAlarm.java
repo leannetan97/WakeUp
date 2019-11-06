@@ -32,7 +32,6 @@ public class CreateDeleteAlarm extends AppCompatActivity {
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
         updateViewDetails();
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Fragment fragment = null;
 //        if(isGroup()){
@@ -74,12 +73,16 @@ public class CreateDeleteAlarm extends AppCompatActivity {
         if (item.getItemId() == R.menu.alarm_edit_menu) {
             //perform delete alarm
         }
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
         return true;
     }
 
     private void updateViewDetails() {
 //        viewTitle = "Edit Alarm";
         getSupportActionBar().setTitle(viewTitle);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        buttonName = "Update Alarm";
         ((Button) findViewById(R.id.btn_create_save_alarm)).setText(buttonName);
     }
