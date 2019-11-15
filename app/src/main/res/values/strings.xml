@@ -41,4 +41,10 @@
     <string name="history">History</string>
     <string name="delay">Delay</string>
 
+    <!-- Login -->
+    <string name="register"><u>Register here</u></string>
+    <string name="forgot_password">Forgot your password? Click <u>here</u></string>
+    <string name="reset">We just need your registered email address \nto send your password reset</string>
+    <string name="no_account"><u>Doesn\'t have an account?</u></string>
+
 </resources>

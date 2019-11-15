@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.widget.Toolbar;
@@ -14,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.wakeup.wakeup.ui.main.AlarmFragment;
@@ -23,7 +21,7 @@ import com.wakeup.wakeup.ui.main.HistoryFragment;
 import com.wakeup.wakeup.ui.main.HomeFragment;
 import com.wakeup.wakeup.ui.main.ViewPagerAdapter;
 
-public class MainActivity extends AppCompatActivity implements DialogWithTitle.dialogListener {
+public class Home extends AppCompatActivity implements DialogWithTitle.dialogListener {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements DialogWithTitle.d
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
         //Without using default appbar
 //        toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -111,40 +109,6 @@ public class MainActivity extends AppCompatActivity implements DialogWithTitle.d
             }
         });
     }
-
-    // History
-//    Button btnHistory = (Button) findViewById(R.id.btn_history);
-//        btnHistory.setOnClickListener(new View.OnClickListener()
-//
-//    {
-//        public void onClick (View view){
-//        Intent I = new Intent(MainActivity.this, HistoryActivity.class);
-//        startActivity(I);
-//    }
-//    });
-
-    // NewGroup
-//        Button btnNewGroup = (Button) findViewById(R.id.btn_newGroup);
-//        btnNewGroup.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View view) {
-////                openDialog();
-//                Intent I = new Intent(MainActivity.this, SingleGroupActivity.class);
-//                startActivity(I);
-//            }
-//        });
-
-    // LeaderBoardActivity
-//    Button btnLeaderboard = (Button) findViewById(R.id.btn_leaderboard);
-//        btnLeaderboard.setOnClickListener(new View.OnClickListener()
-//
-//    {
-//        public void onClick (View view){
-//        Intent I = new Intent(MainActivity.this, LeaderboardActivity.class);
-//        startActivity(I);
-//    }
-//    });
-//
-//
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -238,13 +202,13 @@ public class MainActivity extends AppCompatActivity implements DialogWithTitle.d
 
     // NewGroup
     private void navigateToCreateGroup(View view) {
-        Intent createGroupView = new Intent(MainActivity.this, NewGroupActivity.class);
+        Intent createGroupView = new Intent(Home.this, NewGroupActivity.class);
         startActivity(createGroupView);
     }
 
     // Leaderboard
     private void navigateToLeaderBoard(View view) {
-        Intent leaderBoard = new Intent(MainActivity.this, LeaderboardActivity.class);
+        Intent leaderBoard = new Intent(Home.this, LeaderboardActivity.class);
         startActivity(leaderBoard);
     }
 }
