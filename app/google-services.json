@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "39027180700",
+    "firebase_url": "https://wakeup-wakey.firebaseio.com",
+    "project_id": "wakeup-wakey",
+    "storage_bucket": "wakeup-wakey.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39027180700:android:938e74de19e923f2a41959",
+        "android_client_info": {
+          "package_name": "com.wakeup.wakeup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39027180700-jol2ge21vnd1e9rp5h7i5guqg7riobdp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv4XBFaO1re2bihGnFeqYlg2t_vUVvUCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39027180700-jol2ge21vnd1e9rp5h7i5guqg7riobdp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

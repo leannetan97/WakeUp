@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
-import com.github.mikephil.charting.data.BarEntry;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class LeaderboardActivity extends AppCompatActivity {
@@ -24,7 +21,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         getLeadList();
 
-        LeaderboardAdapter leaderboardAdapter = new LeaderboardAdapter(this, R.layout.activity_leaderboardview, leaderEntries);
+        LeaderboardAdapter leaderboardAdapter = new LeaderboardAdapter(this, R.layout.activity_leaderboard_view, leaderEntries);
 
         listView.setAdapter(leaderboardAdapter);
     }

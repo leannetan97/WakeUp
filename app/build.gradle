@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.wakeup.wakeup"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -37,4 +37,9 @@ dependencies {
     //MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     implementation 'androidx.cardview:cardview:1.0.0'
+    // Firebase
+    implementation 'com.google.firebase:firebase-analytics:17.2.0'
 }
+
+// Firebase
+apply plugin: 'com.google.gms.google-services'

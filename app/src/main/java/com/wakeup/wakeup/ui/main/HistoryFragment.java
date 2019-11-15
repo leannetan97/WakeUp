@@ -108,7 +108,7 @@ public class HistoryFragment extends Fragment {
             e.printStackTrace();
         }
 
-        HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_historyview, histEntries);
+        HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histEntries);
 
         listView.setAdapter(historyAdapter);
         return view;
