@@ -31,7 +31,7 @@ public class Login extends AppCompatActivity {
 
     public void forgot(View v)
     {
-//        Intent GoToForgotPage = new Intent(this, Forgot_Password.class);
-//        startActivity(GoToForgotPage);
+        Intent GoToForgotPage = new Intent(this, ForgotPassword.class);
+        startActivity(GoToForgotPage);
     }
 }

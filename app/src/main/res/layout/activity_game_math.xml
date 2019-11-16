@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_1"
+    tools:context=".GameMath">
+
+    <TextView
+        android:id="@+id/test1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="2/4 Solved"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <ProgressBar
+        android:id="@+id/pBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/test1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:max="100"
+        android:progress="50"
+        android:scrollbarSize="20px" />
+
+    <TextView
+        android:id="@+id/test2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:text="(120-100) x 5 - 20 = ?"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/test3"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/test2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="Type your answer here"
+        android:textColorHint="@color/lightGrey"
+        android:backgroundTint="@color/lightGrey"
+        android:inputType="number"></EditText>
+
+    <Button
+        android:id="@+id/btn_Submit"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/test3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_rounded_corners"
+        android:backgroundTint="@color/colorAccent"
+        android:text="Submit"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>
