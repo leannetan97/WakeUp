@@ -25,8 +25,8 @@ public class Login extends AppCompatActivity {
 
     public void alarm(View v)
     {
-//        Intent GoToAlarmPage = new Intent(this, Alarm_Popup.class);
-//        startActivity(GoToAlarmPage);
+        Intent GoToAlarmPage = new Intent(this, AlarmPopUp.class);
+        startActivity(GoToAlarmPage);
     }
 
     public void forgot(View v)
