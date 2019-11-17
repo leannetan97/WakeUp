@@ -80,13 +80,14 @@
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_below="@id/editPassword"
-        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/colorAccent"
+        android:layout_marginTop="15dp"
         android:background="@drawable/button_rounded_corners"
+        android:backgroundTint="@color/colorAccent"
         android:clickable="true"
-        android:textSize="20sp"
-        android:text="Login"/>
+        android:onClick="click"
+        android:text="Login"
+        android:textSize="20sp" />
 
 
     <TextView

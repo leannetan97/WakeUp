@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "39027180700-4qps3nv9s30cp8ef5jgdq2m7ofou0r85.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wakeup.wakeup",
+            "certificate_hash": "e812687f70b9695a999243aa09975ada8a0b511d"
+          }
+        },
+        {
           "client_id": "39027180700-jol2ge21vnd1e9rp5h7i5guqg7riobdp.apps.googleusercontent.com",
           "client_type": 3
         }
