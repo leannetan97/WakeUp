@@ -13,5 +13,9 @@ public class User {
         this.email = email;
     }
 
+    public void addUser() {
+
+    }
+
     // check email exists -->signup, checkpw
 }

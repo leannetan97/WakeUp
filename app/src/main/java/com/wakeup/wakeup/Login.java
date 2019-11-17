@@ -23,9 +23,6 @@ public class Login extends AppCompatActivity {
 
     User user = new User("mnamepri", "mpw");
 
-//    private DatabaseReference mDatabase;
-//    mDatabase = FirebaseDatabase.getInstance().getReference();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -33,8 +30,6 @@ public class Login extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
 
 //        mconditionRef.addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -53,7 +48,7 @@ public class Login extends AppCompatActivity {
     {
 //        // Write a message to the database
 
-        myRef = myRef.child("user2"); //.child("mname");
+        myRef = myRef.child("user2");
         myRef.setValue(user);
 
 //        Intent GoToRegPage = new Intent(this, SignUp.class);
