@@ -15,13 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
-//    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-//    DatabaseReference mconditionRef = mRootRef.child("condition");
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference myRef = database.getReference("users");
-
-    User user = new User("mnamepri", "mpw");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +25,13 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        mconditionRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                String text = dataSnapshot.getValue(String.class);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        })
     }
 
     public void click(View v)
     {
-//        // Write a message to the database
 
-        myRef = myRef.child("user2");
-        myRef.setValue(user);
-
-//        Intent GoToRegPage = new Intent(this, SignUp.class);
-//        startActivity(GoToRegPage);
+        Intent GoToRegPage = new Intent(this, SignUp.class);
+        startActivity(GoToRegPage);
     }
 
     public void alarm(View v)

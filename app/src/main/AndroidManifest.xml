@@ -9,20 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GameTicTacToe"></activity>
-        <activity android:name=".GameShake" />
-        <activity android:name=".GameMath" />
-        <activity android:name=".ForgotPassword" />
-        <activity android:name=".ChangePassword" />
-        <activity android:name=".AlarmPopUp" />
-        <activity android:name=".SignUp" />
-        <activity android:name=".Login">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GameTicTacToe" />
+        <activity android:name=".GameShake" />
+        <activity android:name=".GameMath" />
+        <activity android:name=".ForgotPassword" />
+        <activity android:name=".ChangePassword" />
+        <activity android:name=".AlarmPopUp" />
+        <activity android:name=".SignUp" />
+        <activity android:name=".Login" />
         <activity
             android:name=".CreateDeleteAlarm"
             android:parentActivityName=".Home" />
