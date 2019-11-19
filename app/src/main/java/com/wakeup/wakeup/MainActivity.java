@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.ErrorCodes;
@@ -14,20 +16,68 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.util.ExtraConstants;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.Nullable;
 import com.firebase.ui.auth.AuthUI;
 
+import java.util.Arrays;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "WakeUp";
 
     private static final int RC_SIGN_IN = 100;
 
-    @BindView(R.id.root) View mRootView;
+    @Nullable
+    @BindView(android.R.id.content) View mRootView;
+
+    List<AuthUI.IdpConfig> providers;
+//    = Arrays.asList(
+//            new AuthUI.IdpConfig.EmailBuilder().build()
+////                new AuthUI.IdpConfig.PhoneBuilder().build(),
+////                new AuthUI.IdpConfig.FacebookBuilder().build(),
+////                new AuthUI.IdpConfig.GoogleBuilder().build(),
+////                new AuthUI.IdpConfig.TwitterBuilder().build()
+//    );
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        signIn();
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build()
+        );
+
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        if (auth.getCurrentUser() != null) {
+            // already signed in
+            startSignedInActivity(null);
+        } else {
+            // not signed in
+            showSignInOptions();
+        }
+//        signIn();
+    }
+
+    private void showSignInOptions() {
+        startActivityForResult(
+                AuthUI.getInstance().createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .build(), RC_SIGN_IN
+        );
+    }
+
+    public void signIn(View view) {
+        signIn();
     }
 
     public void signIn() {
@@ -36,13 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     public Intent buildSignInIntent(@Nullable String link) {
-        AuthUI.SignInIntentBuilder builder = AuthUI.getInstance().createSignInIntentBuilder();
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        if (auth.getCurrentUser() != null && auth.getCurrentUser().isAnonymous()) {
-            builder.enableAnonymousUsersAutoUpgrade();
-        }
+        AuthUI.SignInIntentBuilder builder = AuthUI.getInstance().createSignInIntentBuilder()
+                .setAvailableProviders(providers);
 
         return builder.build();
     }
@@ -74,12 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            if (response.getError().getErrorCode() == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
-                Intent intent = new Intent(this, AnonymousUpgradeActivity.class).putExtra
-                        (ExtraConstants.IDP_RESPONSE, response);
-                startActivity(intent);
-            }
-
             if (response.getError().getErrorCode() == ErrorCodes.ERROR_USER_DISABLED) {
                 showSnackbar(R.string.account_disabled);
                 return;
@@ -95,9 +134,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startSignedInActivity(@Nullable IdpResponse response) {
-//        startActivity(SignedInActivity.createIntent(this, response));
         Intent home = new Intent(this, Home.class);
         startActivity(home);
-//        Toast.makeText(this, "SignedIn", Toast.LENGTH_LONG).show();
     }
 }
