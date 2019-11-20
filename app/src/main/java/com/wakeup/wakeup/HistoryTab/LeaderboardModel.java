@@ -1,4 +1,4 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.HistoryTab;
 
 public class LeaderboardModel {
     private String name;

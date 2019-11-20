@@ -1,4 +1,4 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.HistoryTab;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,18 +10,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+
+import com.wakeup.wakeup.R;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class LeaderboardAdapter extends ArrayAdapter<LeaderboardModel> {
+public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
+
     private int resourceLayout;
     private Context mContext;
-    private ArrayList<LeaderboardModel> leaderboardModelArrayList;
+    private ArrayList<HistoryModel> historyModelArrayList;
 
-    public LeaderboardAdapter(@NonNull Context context, int resource, @NonNull List<LeaderboardModel> objects) {
+    private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE   MMM dd   hh:mm a");
+
+    public HistoryAdapter(@NonNull Context context, int resource, @NonNull List<HistoryModel> objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
         this.mContext = context;
+        this.historyModelArrayList = (ArrayList<HistoryModel>) objects;
     }
 
     @NonNull
@@ -36,17 +45,19 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardModel> {
             v = vi.inflate(resourceLayout, null);
         }
 
-        LeaderboardModel p = getItem(position);
+        HistoryModel p = getItem(position);
 
         if (p != null) {
-            TextView tv1 = (TextView) v.findViewById(R.id.tv_leaderboardViewList1);
-            TextView tv2 = (TextView) v.findViewById(R.id.tv_leaderboardViewList2);
+            TextView tv1 = (TextView) v.findViewById(R.id.tv_historyViewList1);
+            TextView tv2 = (TextView) v.findViewById(R.id.tv_historyViewList2);
 
             if (tv1 != null) {
-                tv1.setText(p.getName());
+                Date date = p.getDate();
+                String dateStr = dateFormatter.format(date);
+                tv1.setText(dateStr);
             }
             if (tv2 != null) {
-                tv2.setText(Integer.toString(p.getScore()));
+                tv2.setText(Integer.toString(p.getDelay()));
             }
         }
 

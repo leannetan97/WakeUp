@@ -1,4 +1,4 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.ObjectClass;
 
 public class User {
 

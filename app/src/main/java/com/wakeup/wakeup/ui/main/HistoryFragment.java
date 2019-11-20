@@ -19,8 +19,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
-import com.wakeup.wakeup.HistoryAdapter;
-import com.wakeup.wakeup.HistoryModel;
+import com.wakeup.wakeup.HistoryTab.HistoryAdapter;
+import com.wakeup.wakeup.HistoryTab.HistoryModel;
 import com.wakeup.wakeup.R;
 
 import java.text.DecimalFormat;

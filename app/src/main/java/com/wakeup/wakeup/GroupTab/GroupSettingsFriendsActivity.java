@@ -1,4 +1,4 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.GroupTab;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
 

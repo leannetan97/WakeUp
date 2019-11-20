@@ -1,8 +1,10 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.UserLogin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.wakeup.wakeup.R;
 
 public class ChangePassword extends AppCompatActivity {
 

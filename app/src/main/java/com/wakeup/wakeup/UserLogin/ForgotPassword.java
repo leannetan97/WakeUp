@@ -1,10 +1,13 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.UserLogin;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.wakeup.wakeup.R;
+import com.wakeup.wakeup.UserLogin.SignUp;
 
 public class ForgotPassword extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.ObjectClass;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

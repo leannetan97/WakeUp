@@ -1,14 +1,16 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.Games;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class GameTicTacToe extends AppCompatActivity {
+import com.wakeup.wakeup.R;
+
+public class GameShake extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_tic_tac_toe);
+        setContentView(R.layout.activity_game_shake);
     }
 }

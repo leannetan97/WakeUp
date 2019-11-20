@@ -1,9 +1,11 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.HistoryTab;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ListView;
+
+import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
 
