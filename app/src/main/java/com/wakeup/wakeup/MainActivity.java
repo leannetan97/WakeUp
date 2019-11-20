@@ -32,17 +32,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
 
-    @Nullable
     @BindView(android.R.id.content) View mRootView;
 
     List<AuthUI.IdpConfig> providers;
-//    = Arrays.asList(
-//            new AuthUI.IdpConfig.EmailBuilder().build()
-////                new AuthUI.IdpConfig.PhoneBuilder().build(),
-////                new AuthUI.IdpConfig.FacebookBuilder().build(),
-////                new AuthUI.IdpConfig.GoogleBuilder().build(),
-////                new AuthUI.IdpConfig.TwitterBuilder().build()
-//    );
 
 
     @Override
@@ -64,18 +56,10 @@ public class MainActivity extends AppCompatActivity {
             startSignedInActivity(null);
         } else {
             // not signed in
-            showSignInOptions();
+            signIn();
         }
-//        signIn();
     }
 
-    private void showSignInOptions() {
-        startActivityForResult(
-                AuthUI.getInstance().createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(), RC_SIGN_IN
-        );
-    }
 
     public void signIn(View view) {
         signIn();

@@ -21,12 +21,14 @@ public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
     private int resourceLayout;
     private Context mContext;
     private ArrayList<HistoryModel> historyModelArrayList;
+
     private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE   MMM dd   hh:mm a");
 
     public HistoryAdapter(@NonNull Context context, int resource, @NonNull List<HistoryModel> objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
         this.mContext = context;
+        this.historyModelArrayList = (ArrayList<HistoryModel>) objects;
     }
 
     @NonNull

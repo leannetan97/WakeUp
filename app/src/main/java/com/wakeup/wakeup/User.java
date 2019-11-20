@@ -2,19 +2,17 @@ package com.wakeup.wakeup;
 
 public class User {
 
-    public String username;
-    public String email;
+    private String email;
 
     public User() {
     }
 
-    public User(String username, String email) {
-        this.username = username;
+    public User(String email) {
         this.email = email;
     }
 
-    public void addUser() {
-
+    public String getEmail() {
+        return email;
     }
 
     // check email exists -->signup, checkpw

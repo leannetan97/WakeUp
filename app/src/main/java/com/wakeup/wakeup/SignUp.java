@@ -52,8 +52,6 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void selectImage(View view) {
-
-
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);

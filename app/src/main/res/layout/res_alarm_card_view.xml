@@ -20,8 +20,7 @@
         <RelativeLayout
             android:id="@+id/view_alarm_card"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/button_rounded_corners">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tv_time_display"

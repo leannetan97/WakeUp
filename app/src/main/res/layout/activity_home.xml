@@ -27,6 +27,12 @@
             app:tabGravity="fill"
             app:tabMode="fixed" />
 
+        <Button
+            android:id="@+id/button_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

@@ -13,8 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
 import com.wakeup.wakeup.ui.main.GroupFragment;
 import com.wakeup.wakeup.ui.main.HistoryFragment;
@@ -22,6 +27,13 @@ import com.wakeup.wakeup.ui.main.HomeFragment;
 import com.wakeup.wakeup.ui.main.ViewPagerAdapter;
 
 public class Home extends AppCompatActivity implements DialogWithTitle.dialogListener {
+    String username;
+    String email;
+
+    DatabaseReference dbUsers;
+    DatabaseReference dbAlarms;
+    DatabaseReference dbGroups;
+
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -38,16 +50,38 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //Without using default appbar
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-        // Using default actionBar
+
+        // set action bar
         getSupportActionBar();
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
+
+        // temp, for testing
+        dbUsers = FirebaseDatabase.getInstance().getReference("users");
+        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
+        dbGroups = FirebaseDatabase.getInstance().getReference("groups");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            username = user.getDisplayName();
+            email = user.getEmail();
+
+            String display = username + "/" + email;
+
+            Button temp = (Button) findViewById(R.id.button_temp);
+            temp.setText(display);
+        }
+
+        Button button = (Button)findViewById(R.id.button_temp);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addUser();
+            }
+        });
+        //////
 
         fabAddAlarm = (FloatingActionButton) findViewById(R.id.btn_floating_add_alarm);
         fabAddGroup = (FloatingActionButton) findViewById(R.id.btn_floating_add_group);
@@ -130,6 +164,27 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
+    // add node
+    private void addUser() {
+        String hashed = String.valueOf(email.hashCode());
+
+        User user = new User(email);
+        dbUsers.child(hashed).setValue(user);
+    }
+
+    private void addAlarm() {
+        String id = dbAlarms.push().getKey();
+
+        Alarm alarm = new Alarm("2019-12-30 23:37:51", "AlarmSatu", true,  1);
+        dbAlarms.child(id).setValue(alarm);
+    }
+
+
+
+
 
     private void navigateToChangePassword() {
 //        Intent intent = new Intent(this,ChangePassword);
