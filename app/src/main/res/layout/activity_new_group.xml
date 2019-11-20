@@ -72,7 +72,7 @@
             android:layout_marginBottom="8dp"
             android:text="Invite"
             android:backgroundTint="@color/colorAccent"
-            android:background="@drawable/button_round"
+            android:background="@drawable/button_rounded_corners"
             app:layout_constraintBottom_toTopOf="@+id/tv_orNewGroup"
             app:layout_constraintEnd_toEndOf="@+id/et_enterEmail"
             app:layout_constraintStart_toStartOf="@+id/et_enterEmail" />

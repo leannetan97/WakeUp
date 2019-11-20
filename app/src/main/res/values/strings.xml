@@ -62,7 +62,6 @@
     <string name="idp_token">IDP Token</string>
     <string name="idp_secret">IDP Secret</string>
 
-
     <string name="sign_in_cancelled">Sign in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="account_disabled">Account is disabled by the administrator</string>
