@@ -1,4 +1,4 @@
-package com.wakeup.wakeup;
+package com.wakeup.wakeup.PersonalAlarmTab;
 
 
 import android.os.Bundle;
@@ -9,15 +9,19 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.wakeup.wakeup.DialogWithTitle;
+import com.wakeup.wakeup.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class PersonalAlarmDetailsFragment extends Fragment {
-
-    public PersonalAlarmDetailsFragment() {
-        // Required empty public constructor
+    private String alarmName;
+    public PersonalAlarmDetailsFragment(String alarmName) {
+        this.alarmName = alarmName;
     }
 
     @Override
@@ -31,6 +35,7 @@ public class PersonalAlarmDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_personal_alarm_details, container, false);
         View location = (View) view.findViewById(R.id.layout_row_alarm_name);
+        ((TextView) view.findViewById(R.id.tv_alarm_name)).setText(alarmName);
         location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

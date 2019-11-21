@@ -16,15 +16,19 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
+import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
+import com.wakeup.wakeup.ObjectClass.Alarm;
 
 import java.util.Calendar;
 
 public class CreateDeleteAlarm extends AppCompatActivity {
 
     private String viewTitle, buttonName;
+    private Alarm alarmData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +40,21 @@ public class CreateDeleteAlarm extends AppCompatActivity {
         updateViewDetails();
 
         Fragment fragment = null;
-//        if(isGroup()){
-        fragment = new GroupAlarmDetailsFragment();
-//        }else{
-        //isPersonal
-//            fragment = new PersonalAlarmDetails();
-//        }
+        if (viewTitle.contains("Edit")) {
+            alarmData = getIntent().getExtras().getParcelable("AlarmData");
+            if (alarmData.isGroup()) {
+                // isGroup
+                System.out.println("[DEBUG] Group Details Fragment");
+                fragment = new GroupAlarmDetailsFragment(alarmData.getAlarmName());
+            } else {
+                System.out.println("[DEBUG] Personal Details Fragment");
+                //isPersonal
+                fragment = new PersonalAlarmDetailsFragment(alarmData.getAlarmName());
+            }
+            ((TextView) findViewById(R.id.tv_time_display)).setText(alarmData.getTime());
+            //TODO: Update Spinner value
+//        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
+        }
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_alarm_details, fragment);
@@ -73,24 +86,30 @@ public class CreateDeleteAlarm extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.menu.alarm_edit_menu) {
-            //perform delete alarm
+            deleteAlarm();
         }
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
     }
 
     private void updateViewDetails() {
-//        viewTitle = "Edit Alarm";
         getSupportActionBar().setTitle(viewTitle);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        buttonName = "Update Alarm";
         ((Button) findViewById(R.id.btn_create_save_alarm)).setText(buttonName);
+    }
+
+    public void deleteAlarm(){
+        //TODO: perform delete alarm
     }
 
     public void submitButtonOnClick(View view) {
         //TODO: Save details in database
+        if(viewTitle.contains("Edit")){
+            //update existing alarm details
+        }else{
+            //create new alarm
+        }
         finish();
     }
 

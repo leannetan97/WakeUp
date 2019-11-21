@@ -11,15 +11,16 @@
     <!--android:layout_height="match_parent"-->
     <!--android:text="@string/hello_blank_fragment" />-->
 
-    <ListView
-        android:id="@+id/lv_home"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@android:color/transparent"/>
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/rv_home"-->
+<!--    <ListView-->
+<!--        android:id="@+id/lv_home"-->
 <!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:divider="@android:color/transparent"/>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_home"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

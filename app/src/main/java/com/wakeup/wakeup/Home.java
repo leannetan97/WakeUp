@@ -182,7 +182,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
     private void addAlarm() {
         String id = dbAlarms.push().getKey();
 
-        Alarm alarm = new Alarm("2019-12-30 23:37:51", "AlarmSatu", true,  1);
+        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
         dbAlarms.child(id).setValue(alarm);
     }
 

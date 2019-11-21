@@ -44,13 +44,15 @@
             android:id="@+id/tv_alarm_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/default_alarm_name"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/iv_right_1"
-            app:layout_constraintTop_toBottomOf="@+id/view_top_border_alarm_name"/>
+            app:layout_constraintTop_toTopOf="@+id/iv_right_1"
+            app:layout_constraintBottom_toBottomOf="@id/iv_right_1"/>
 
         <ImageView
             android:id="@+id/iv_right_1"
