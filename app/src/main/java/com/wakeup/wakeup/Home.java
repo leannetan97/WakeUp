@@ -24,13 +24,14 @@ import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.User;
+import com.wakeup.wakeup.UserLogin.ChangePassword;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
 import com.wakeup.wakeup.ui.main.GroupFragment;
 import com.wakeup.wakeup.ui.main.HistoryFragment;
 import com.wakeup.wakeup.ui.main.HomeFragment;
 import com.wakeup.wakeup.ui.main.ViewPagerAdapter;
 
-public class Home extends AppCompatActivity implements DialogWithTitle.dialogListener {
+public class Home extends AppCompatActivity implements DialogWithTitle.DialogListener {
     String username;
     String email;
 
@@ -169,8 +170,6 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
         }
     }
 
-
-
     // add node
     private void addUser() {
         String hashed = String.valueOf(email.hashCode());
@@ -187,11 +186,9 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
     }
 
 
-
-
-
     private void navigateToChangePassword() {
-//        Intent intent = new Intent(this,ChangePassword);
+        Intent intent = new Intent(this, ChangePassword.class);
+        startActivity(intent);
     }
 
     // Change ProfileName
@@ -200,6 +197,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
 
         Bundle args = new Bundle();
         args.putString("DialogTitle", "Change Profile Name");
+        args.putString("Hint","Change Profile Name");
         args.putString("ValidButton", "SAVE");
         args.putString("InvalidButton", "DISCARD");
         changeNameDialog.setArguments(args);
@@ -208,7 +206,11 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
 
     @Override
     public void applyTexts(String profileName) {
-        Toast.makeText(this, "Profile name changed to " + profileName, Toast.LENGTH_SHORT).show();
+        if(profileName.length() == 0){
+            Toast.makeText(this,"Name cannot be empty. Please try again.",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this, "Profile name changed to " + profileName, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -253,8 +255,8 @@ public class Home extends AppCompatActivity implements DialogWithTitle.dialogLis
     }
     // New Alarm
     private void navigateToCreateAlarm(View view) {
-        Intent alarmView = new Intent(getApplicationContext(), CreateDeleteAlarm.class);
-        alarmView.putExtra("ViewTitle", "New Alarm");
+        Intent alarmView = new Intent(Home.this, CreateDeleteAlarm.class);
+        alarmView.putExtra("ViewTitle", "New Personal Alarm");
         alarmView.putExtra("ButtonName", "Create Alarm");
         startActivity(alarmView);
     }

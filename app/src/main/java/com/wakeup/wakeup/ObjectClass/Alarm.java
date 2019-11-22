@@ -44,6 +44,26 @@ public class Alarm  implements Parcelable {
         isGroup = parcel.readByte() != 0;
         game = parcel.readInt();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        //The sequence is really important (Need to match back Alarm(Parcel parcel) sequence
+        parcel.writeString(time);
+        parcel.writeString(alarmName);
+        parcel.writeByte((byte) (isOn ? 1 : 0));
+        parcel.writeByte((byte) (isGroup ? 1 : 0));
+        parcel.writeInt(game);
+    }
+
+    public static Creator<Alarm> getCREATOR() {
+        return CREATOR;
+    }
+
     public String getTime() {
         return time;
     }
@@ -73,24 +93,4 @@ public class Alarm  implements Parcelable {
     public boolean isOn() {
         return isOn;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        //The sequence is really important (Need to match back Alarm(Parcel parcel) sequence
-        parcel.writeString(time);
-        parcel.writeString(alarmName);
-        parcel.writeByte((byte) (isOn ? 1 : 0));
-        parcel.writeByte((byte) (isGroup ? 1 : 0));
-        parcel.writeInt(game);
-    }
-
-    public static Creator<Alarm> getCREATOR() {
-        return CREATOR;
-    }
-
 }

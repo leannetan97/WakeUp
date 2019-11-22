@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wakeup.wakeup.DialogWithTitle;
 import com.wakeup.wakeup.R;
@@ -18,8 +19,9 @@ import com.wakeup.wakeup.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PersonalAlarmDetailsFragment extends Fragment {
+public class PersonalAlarmDetailsFragment extends Fragment implements DialogWithTitle.DialogListener {
     private String alarmName;
+    private TextView tvAlarmName;
     public PersonalAlarmDetailsFragment(String alarmName) {
         this.alarmName = alarmName;
     }
@@ -34,27 +36,37 @@ public class PersonalAlarmDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_personal_alarm_details, container, false);
-        View location = (View) view.findViewById(R.id.layout_row_alarm_name);
-        ((TextView) view.findViewById(R.id.tv_alarm_name)).setText(alarmName);
+        View location = view.findViewById(R.id.layout_row_alarm_name);
+        tvAlarmName = view.findViewById(R.id.tv_alarm_name);
+        tvAlarmName.setText(alarmName);
         location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("S");
                 openChangePersonalAlarmNameDialog(v);
             }
         });
         return view;
     }
 
-    public void openChangePersonalAlarmNameDialog(View view) {
+    private void openChangePersonalAlarmNameDialog(View view) {
         DialogWithTitle changeAlarmNameDialog = new DialogWithTitle();
         Bundle args = new Bundle();
         args.putString("DialogTitle", "Alarm Name");
-        args.putString("ValidButton", "SAVE");
-        args.putString("InvalidButton", "DISCARD");
+        args.putString("Hint","Alarm Name");
+        args.putString("ValidButton", "OK");
+        args.putString("InvalidButton", "CANCEL");
+        changeAlarmNameDialog.setTargetFragment(PersonalAlarmDetailsFragment.this, 1);
         changeAlarmNameDialog.setArguments(args);
-        changeAlarmNameDialog.show(getActivity().getSupportFragmentManager(), "change alarm name dialog");
+        changeAlarmNameDialog.show(getFragmentManager(), getString(R.string.change_alarm_name_dialog));
     }
 
-
+    @Override
+    public void applyTexts(String newName) {
+        if(newName.length() == 0){
+            Toast.makeText(getActivity(),"Name cannot be empty. Please try again.",Toast.LENGTH_SHORT).show();
+        }else{
+            alarmName = newName;
+            tvAlarmName.setText(alarmName);
+        }
+    }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".GroupTab.GroupAlarmDetailsFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -24,47 +24,55 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_alarm_label"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/alarm_name_label"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/view_top_border_awake_status"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_top_border_alarm_name"/>
-
-        <TextView
-            android:id="@+id/tv_alarm_name"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_row_alarm_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/default_alarm_name"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/iv_right_1"
-            app:layout_constraintTop_toTopOf="@+id/iv_right_1"
-            app:layout_constraintBottom_toBottomOf="@id/iv_right_1"/>
+            app:layout_constraintBottom_toTopOf="@+id/view_top_border_awake_status"
+            app:layout_constraintTop_toBottomOf="@id/view_top_border_alarm_name">
 
-        <ImageView
-            android:id="@+id/iv_right_1"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
-            android:contentDescription="@string/arrow_description"
-            android:src="@drawable/ic_chevron_right_black_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view_top_border_alarm_name"/>
+            <TextView
+                android:id="@+id/tv_alarm_label"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/alarm_name_label"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_alarm_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/default_alarm_name"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@id/iv_right_1"
+                app:layout_constraintEnd_toStartOf="@+id/iv_right_1"
+                app:layout_constraintTop_toTopOf="@+id/iv_right_1" />
+
+            <ImageView
+                android:id="@+id/iv_right_1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:contentDescription="@string/arrow_description"
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/view_top_border_awake_status"
@@ -80,33 +88,42 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_right_1"/>
+            app:layout_constraintTop_toBottomOf="@id/layout_row_alarm_name" />
 
-        <TextView
-            android:id="@+id/tv_awake_status_label"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@string/awake_status_label"
-            android:textSize="18sp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_row_awake_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@+id/view_bottom_border_awake_status"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_top_border_awake_status"/>
+            app:layout_constraintTop_toBottomOf="@+id/view_top_border_awake_status">
 
-        <ImageView
-            android:id="@+id/iv_right_2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
-            android:contentDescription="@string/arrow_description"
-            android:src="@drawable/ic_chevron_right_black_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_top_border_awake_status"/>
+            <TextView
+                android:id="@+id/tv_awake_status_label"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/awake_status_label"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_right_2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:contentDescription="@string/arrow_description"
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/view_bottom_border_awake_status"
@@ -123,7 +140,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_right_2"/>
+            app:layout_constraintTop_toBottomOf="@id/layout_row_awake_status" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

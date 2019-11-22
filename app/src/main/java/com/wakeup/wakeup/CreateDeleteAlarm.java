@@ -1,34 +1,41 @@
 package com.wakeup.wakeup;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 
-public class CreateDeleteAlarm extends AppCompatActivity {
+public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, AdapterView.OnItemSelectedListener {
 
     private String viewTitle, buttonName;
     private Alarm alarmData;
+
+    private DecimalFormat digitFormatter = new DecimalFormat("00");
+    private TextView tvAlarmName;
+    private TextView tvTimeDisplay;
+    private Spinner spinnerGameOption;
+    private int gameOption = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,30 +61,26 @@ public class CreateDeleteAlarm extends AppCompatActivity {
             ((TextView) findViewById(R.id.tv_time_display)).setText(alarmData.getTime());
             //TODO: Update Spinner value
 //        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
+        } else {
+            fragment = new PersonalAlarmDetailsFragment("Alarm");
         }
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.fragment_alarm_details, fragment);
         transaction.commit();
 
+        setViewToInstanceVar();
 
-        Spinner spinner = (Spinner) findViewById(R.id.input_spinner);
-//        spinner.setOnItemSelectedListener(this);
-//                .setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//            }
-//        });
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.game_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spinnerGameOption.setAdapter(adapter);
+        spinnerGameOption.setOnItemSelectedListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!viewTitle.equals("New Alarm")) {
+        if (!viewTitle.contains("New")) {
             getMenuInflater().inflate(R.menu.alarm_edit_menu, menu);
         }
         return true;
@@ -99,40 +102,55 @@ public class CreateDeleteAlarm extends AppCompatActivity {
         ((Button) findViewById(R.id.btn_create_save_alarm)).setText(buttonName);
     }
 
-    public void deleteAlarm(){
+    private void setViewToInstanceVar() {
+        tvTimeDisplay = findViewById(R.id.tv_time_display);
+        tvAlarmName = findViewById(R.id.tv_alarm_name);
+        spinnerGameOption = findViewById(R.id.input_spinner);
+    }
+
+    public void deleteAlarm() {
         //TODO: perform delete alarm
     }
 
     public void submitButtonOnClick(View view) {
-        //TODO: Save details in database
-        if(viewTitle.contains("Edit")){
+        //TODO: Save details in local database
+        if (viewTitle.contains("Edit")) {
             //update existing alarm details
-        }else{
-            //create new alarm
+        } else if (viewTitle.contains("Personal")) {
+            Alarm newAlarm = new Alarm((String) tvTimeDisplay.getText(),
+                    (String) tvAlarmName.getText(), true, false, gameOption);
+        } else {
+            Alarm newAlarm = new Alarm((String) tvTimeDisplay.getText(),
+                    (String) tvAlarmName.getText(), true, true, gameOption);
         }
         finish();
     }
 
     public void showTimePickerDialog(View v) {
-        DialogFragment newFragment = new TimePickerFragment();
-        newFragment.show(getSupportFragmentManager(), "timePicker");
+        final Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, this, hour, minute,
+                DateFormat.is24HourFormat(this));
+        timePickerDialog.show();
     }
 
-    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) { // Use the current time as the
-            // default values for the picker
-            final Calendar c = Calendar.getInstance();
-            int hour = c.get(Calendar.HOUR_OF_DAY);
-            int minute = c.get(Calendar.MINUTE);
-            // Create a new instance of TimePickerDialog and return it
-            return new TimePickerDialog(getActivity(), this, hour, minute,
-                    DateFormat.is24HourFormat(getActivity()));
-        }
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
+        String time = digitFormatter.format(hourOfDay) + ":" + digitFormatter.format(minutes);
+        tvTimeDisplay.setText(time);
+    }
 
-        @Override
-        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        // assume gameOption = [NONE, TICTACTOE, MATH, SHAKER]
+        gameOption = position;
+        //TODO: For testing purpose only
+        Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+    }
 
-        }
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        //do nothing
     }
 }

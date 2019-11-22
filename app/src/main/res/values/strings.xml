@@ -67,4 +67,7 @@
     <string name="account_disabled">Account is disabled by the administrator</string>
     <string name="unknown_error">An unknown error occurred</string>
 
+    <!--Dialog-->
+    <string name="change_alarm_name_dialog">Change Alarm Name Dialog</string>
+
 </resources>

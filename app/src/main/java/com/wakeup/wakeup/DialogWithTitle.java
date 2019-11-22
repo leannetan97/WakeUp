@@ -6,30 +6,36 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.DialogFragment;
 
-public class DialogWithTitle extends AppCompatDialogFragment {
+public class DialogWithTitle extends AppCompatDialogFragment  {
     private EditText etAlarmOrProfileName;
-    private dialogListener listener;
-    private String title;
-    private String validBtnName;
-    private String invalidBtnName;
+    private DialogListener listener;
+    private String title, hint, validBtnName, invalidBtnName;
 
-
+    public interface DialogListener {
+        void applyTexts(String newName);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             title = getArguments().getString("DialogTitle");
+            hint = getArguments().getString("Hint");
             validBtnName = getArguments().getString("ValidButton");
             invalidBtnName = getArguments().getString("InvalidButton");
         } else {
-            title = "New Alarm Name";
+            title = "Alarm Name";
             validBtnName = "OK";
             invalidBtnName = "CANCEL";
         }
@@ -52,20 +58,13 @@ public class DialogWithTitle extends AppCompatDialogFragment {
                 .setPositiveButton(validBtnName, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (title.equalsIgnoreCase("AlarmName")) {
-                            //TODO: Update alarm name in database
-
-                        } else {
-                            //TODO: Update profile name in database
-                            String profileName = etAlarmOrProfileName.getText().toString();
-                            listener.applyTexts(profileName);
-                        }
-                        String profileName = etAlarmOrProfileName.getText().toString();
-                        listener.applyTexts(profileName);
+                        String name = etAlarmOrProfileName.getText().toString().trim();
+                        listener.applyTexts(name);
                     }
                 });
 
         etAlarmOrProfileName = view.findViewById(R.id.et_profileOrAlarmName);
+        etAlarmOrProfileName.setHint(hint);
         return builder.create();
     }
 
@@ -73,13 +72,14 @@ public class DialogWithTitle extends AppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            listener = (dialogListener) context;
+            if(getTargetRequestCode() == 1 || getTargetRequestCode() == 2){
+                listener = (DialogListener) getTargetFragment();
+            }else {
+                listener = (DialogListener) context;
+            }
         } catch (Exception e) {
-            throw new ClassCastException(context.toString() + "must implement DialogListener.");
+            throw new ClassCastException(e + "must implement DialogListener.");
         }
     }
 
-    interface dialogListener {
-        void applyTexts(String profileName);
-    }
 }
