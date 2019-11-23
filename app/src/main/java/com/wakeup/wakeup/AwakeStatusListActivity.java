@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,11 +17,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wakeup.wakeup.ObjectClass.Friend;
+
 import java.util.ArrayList;
 
 public class AwakeStatusListActivity extends AppCompatActivity {
 
-
+    private ArrayList<Friend> friends;
     private ListView lv;
 
     @Override
@@ -33,24 +36,28 @@ public class AwakeStatusListActivity extends AppCompatActivity {
 
         lv = (ListView) findViewById(R.id.lv_awakeStatusList);
 
-        ArrayList<String> alName = new ArrayList<>();
-        alName.add("friend1");
-        alName.add("friend2");
-        alName.add("friend3");
 
-        ArrayList<Boolean> alStatus = new ArrayList<>();
+        friends = new ArrayList<>();
+        createDummyData();
 
-        alStatus.add(false);
-        alStatus.add(true);
-        alStatus.add(true);
+//        ArrayList<String> alName = new ArrayList<>();
+//        alName.add("friend1");
+//        alName.add("friend2");
+//        alName.add("friend3");
+//
+//        ArrayList<Boolean> alStatus = new ArrayList<>();
+//
+//        alStatus.add(false);
+//        alStatus.add(true);
+//        alStatus.add(true);
+//
+//        ArrayList<String> alEmail= new ArrayList<>();
+//
+//        alEmail.add("abc@bmail.com");
+//        alEmail.add("def@email.fom");
+//        alEmail.add("ghi@hmail.iom");
 
-        ArrayList<String> alEmail= new ArrayList<>();
-
-        alEmail.add("abc@bmail.com");
-        alEmail.add("def@email.fom");
-        alEmail.add("ghi@hmail.iom");
-
-        CustomAdapter customAdapter = new CustomAdapter(this, alName, alStatus, alEmail);
+        CustomAdapter customAdapter = new CustomAdapter(this, friends);
 
         lv.setAdapter(customAdapter);
 
@@ -66,52 +73,83 @@ public class AwakeStatusListActivity extends AppCompatActivity {
 //        });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-    class CustomAdapter extends ArrayAdapter<String> {
+    private void createDummyData() {
+        friends.add(new Friend("100"));
+        friends.add(new Friend("101"));
+        friends.add(new Friend("102"));
+        friends.add(new Friend("103"));
+        friends.add(new Friend("104"));
+        friends.add(new Friend("105"));
+        friends.add(new Friend("106"));
+        friends.add(new Friend("107"));
+        friends.add(new Friend("108"));
+        friends.add(new Friend("109"));
+        friends.add(new Friend("110"));
+        friends.add(new Friend("111"));
+        friends.add(new Friend("112"));
+    }
+
+
+    class CustomAdapter extends ArrayAdapter<Friend> {
         Context context;
-        ArrayList<String> names;
-        ArrayList<String> emails;
-        ArrayList<Boolean> awakeStatus;
+
+        ArrayList<Friend> friends;
+//        ArrayList<String> names;
+//        ArrayList<String> emails;
+//        ArrayList<Boolean> awakeStatus;
 //        String descriptions[];
 
-        CustomAdapter(Context c, ArrayList<String> names, ArrayList<Boolean> awakeStatus, ArrayList<String> emails) {
-            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, names);
+        CustomAdapter(Context c, ArrayList<Friend> friends) {
+            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, friends);
             this.context = c;
-            this.names = names;
-            this.awakeStatus = awakeStatus;
-            this.emails = emails;
+            this.friends = friends;
+//            this.names = names;
+//            this.awakeStatus = awakeStatus;
+//            this.emails = emails;
 //            this.descriptions = descriptions;
         }
 
         @NonNull
         @Override
-        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, @Nullable View convertView,
+                            @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater =
                     (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.res_layout_row_awake_status_list, parent, false);
+            View row = layoutInflater.inflate(R.layout.res_layout_row_awake_status_list, parent,
+                    false);
 
             TextView tvFriendName = row.findViewById(R.id.tv_friendName);
-            tvFriendName.setText(names.get(position));
+            tvFriendName.setText(friends.get(position).getUserName());
 
             TextView tvFriendEmail = row.findViewById(R.id.tv_friendEmail);
-            tvFriendEmail.setText(emails.get(position));
+            tvFriendEmail.setText(friends.get(position).getEmail());
 
             ImageView ivAwakeStatus = row.findViewById(R.id.iv_awakeStatus);
             ImageView btnCall = row.findViewById(R.id.btn_call);
-            if(awakeStatus.get(position)) {
+            if (friends.get(position).getIsAwake()) {
                 ivAwakeStatus.setImageResource(R.drawable.ic_awake_green);
-            }else{
+            } else {
                 ivAwakeStatus.setImageResource(R.drawable.ic_sleep_red);
             }
-//            btnCall.setBackgroundTintList(context.getResources().getColorStateList(R.color.colorAccent));
+//            btnCall.setBackgroundTintList(context.getResources().getColorStateList(R.color
+//            .colorAccent));
             btnCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "call " + names.get(position), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "call " + friends.get(position).getUserName(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 //            System.out.println(titles.get(position));
-
 
 
             return row;

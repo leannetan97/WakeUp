@@ -89,6 +89,9 @@ public class SingleGroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(SingleGroupActivity.this, GroupSettingsFriendsActivity.class);
                 startActivity(intent);
                 return true;
+            case android.R.id.home:
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 

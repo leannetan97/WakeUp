@@ -37,7 +37,9 @@
         <activity
             android:name=".GroupTab.GroupSettingsFriendsActivity"
             android:parentActivityName=".GroupTab.SingleGroupActivity" />
-        <activity android:name=".AwakeStatusListActivity" />
+        <activity
+            android:name=".AwakeStatusListActivity"
+            />
         <activity
             android:name=".GroupTab.SingleGroupActivity"
             android:label="@string/title_activity_single_group"
@@ -51,7 +53,7 @@
             android:parentActivityName=".GroupTab.NewGroupActivity" />
         <activity
             android:name=".GroupTab.NewGroupActivity"
-            android:parentActivityName=".Home" />
+             />
 
     </application>
 
