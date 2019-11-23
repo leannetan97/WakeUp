@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.User;
 import com.wakeup.wakeup.UserLogin.ChangePassword;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
@@ -32,12 +33,9 @@ import com.wakeup.wakeup.ui.main.HomeFragment;
 import com.wakeup.wakeup.ui.main.ViewPagerAdapter;
 
 public class Home extends AppCompatActivity implements DialogWithTitle.DialogListener {
-    String username;
-    String email;
-
-    DatabaseReference dbUsers;
-    DatabaseReference dbAlarms;
-    DatabaseReference dbGroups;
+    // temp
+    private FirebaseHelper firebaseHelper;
+    //////////////////
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -65,28 +63,15 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         setupTabIcons();
 
         // temp, for testing
-        dbUsers = FirebaseDatabase.getInstance().getReference("users");
-        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
-        dbGroups = FirebaseDatabase.getInstance().getReference("groups");
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            username = user.getDisplayName();
-            email = user.getEmail();
-
-            String display = username + "/" + email;
-
-            Button temp = (Button) findViewById(R.id.button_temp);
-            temp.setText(display);
-        }
+        firebaseHelper = new FirebaseHelper();
 
         Button button = (Button)findViewById(R.id.button_temp);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addUser();
+                firebaseHelper.addUser();
             }
         });
-        //////
+        ///////////
 
         fabAddAlarm = (FloatingActionButton) findViewById(R.id.btn_floating_add_alarm);
         fabAddGroup = (FloatingActionButton) findViewById(R.id.btn_floating_add_group);
@@ -168,21 +153,6 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    // add node
-    private void addUser() {
-        String hashed = String.valueOf(email.hashCode());
-
-        User user = new User(email);
-        dbUsers.child(hashed).setValue(user);
-    }
-
-    private void addAlarm() {
-        String id = dbAlarms.push().getKey();
-
-        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
-        dbAlarms.child(id).setValue(alarm);
     }
 
 

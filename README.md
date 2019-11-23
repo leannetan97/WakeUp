@@ -35,6 +35,3 @@ Date date = dateFormatter.parse("2019-12-30 23:37:50");
 private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE, MMM dd hh:mm:ss a");
 String dateStr = dateFormatter.format(date);
 ```
-
-
-- [Alarm icon used](https://icons8.com/icon/43972/gradient-line)
