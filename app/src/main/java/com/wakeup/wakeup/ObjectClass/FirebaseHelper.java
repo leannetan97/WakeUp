@@ -10,9 +10,9 @@ import com.wakeup.wakeup.R;
 
 public class FirebaseHelper {
     // link to firebase
-    DatabaseReference dbUsers;
-    DatabaseReference dbAlarms;
-    DatabaseReference dbGroups;
+    private DatabaseReference dbUsers;
+    private DatabaseReference dbAlarms;
+    private DatabaseReference dbGroups;
 
     // get current user and email
     String username;
@@ -29,6 +29,8 @@ public class FirebaseHelper {
             email = user.getEmail();
         }
     }
+
+
 
     // add node
     public void addUser() {
@@ -47,4 +49,25 @@ public class FirebaseHelper {
 
 
 
+    // getter
+    public DatabaseReference getDbUsers() {
+        return dbUsers;
+    }
+
+    public DatabaseReference getDbAlarms() {
+        return dbAlarms;
+    }
+
+    public DatabaseReference getDbGroups() {
+        return dbGroups;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    ////
 }

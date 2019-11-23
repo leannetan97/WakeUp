@@ -2,6 +2,7 @@ package com.wakeup.wakeup.ui.main;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
@@ -28,17 +33,22 @@ import java.util.ListIterator;
  * A simple {@link Fragment} subclass.
  */
 public class HomeFragment extends Fragment {
+    // firebase
+    FirebaseHelper firebaseHelper;
     DatabaseReference dbAlarms;
+    private List<Alarm> alarms;
+
     private RecyclerView.Adapter homeAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rvAlarm;
 
-    private List<Alarm> alarms;
-
-
     public HomeFragment() {
         // Required empty public constructor
         alarms = new ArrayList<>();
+
+        // firebase
+        firebaseHelper = new FirebaseHelper();
+        dbAlarms = firebaseHelper.getDbAlarms(); //.child("-Lu8H4wMhgSW-bsz9enT")
         createDummyData();
     }
 
@@ -54,10 +64,38 @@ public class HomeFragment extends Fragment {
         homeAdapter = new HomeFragmentAdapter(alarms);
         rvAlarm.setAdapter(homeAdapter);
 
-//        alarms.add(new Alarm("2019-12-30 23:37:50", "aname", true, 2));
-//        PersonalAlarmAdapter personalAlarmAdapter = new PersonalAlarmAdapter(getContext(), R.layout.res_alarm_card_view, alarms);
-//        lvAlarm.setAdapter(personalAlarmAdapter);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        dbAlarms.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.e("Count " ,""+dataSnapshot.getChildrenCount());
+
+                // clear previous list
+                alarms.clear();
+
+                // iterating through all the nodes
+//                Log.e("Get Data", dataSnapshot.getChildren());
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Alarm alarm = postSnapshot.getValue(Alarm.class);
+                    Log.e("Get Data", alarm.toString());
+
+                    alarms.add(alarm);
+                }
+
+                // create adapter
+                homeAdapter = new HomeFragmentAdapter(alarms);
+                rvAlarm.setAdapter(homeAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     private void createDummyData() {

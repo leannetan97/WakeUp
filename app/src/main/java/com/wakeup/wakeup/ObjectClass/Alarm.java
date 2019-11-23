@@ -17,6 +17,9 @@ public class Alarm  implements Parcelable {
     private int game;
     private String user;
 
+    public Alarm() {
+    }
+
     public static final Creator<Alarm> CREATOR = new Creator<Alarm>() {
         @Override
         public Alarm createFromParcel(Parcel in) {
