@@ -11,6 +11,7 @@ import com.wakeup.wakeup.R;
 public class FirebaseHelper {
     // link to firebase
     private DatabaseReference dbUsers;
+    private DatabaseReference currentUser;
     private DatabaseReference dbAlarms;
     private DatabaseReference dbGroups;
 
@@ -31,6 +32,7 @@ public class FirebaseHelper {
             email = user.getEmail();
             hashedUser = String.valueOf(email.hashCode());
             dbAlarms = dbUsers.child(hashedUser).child("alarms");
+            currentUser = dbUsers.child(hashedUser);
         }
     }
 
@@ -39,7 +41,7 @@ public class FirebaseHelper {
     // add node
     public void addUser() {
         User user = new User(email);
-        dbUsers.child(hashedUser).setValue(user);
+        currentUser.setValue(user);
     }
 
     public void addAlarm(Alarm newAlarm) {
@@ -48,9 +50,11 @@ public class FirebaseHelper {
     }
 
     public void addGroup() {
+//    public void addGroup(Group group) {
+        // add to group
         String id = dbGroups.push().getKey();
 
-        // dummy data, to be replaced
+        //dummy data, to be replaced
         Group group = new Group("Newly grouped");
         User testUser = new User("yee@gmail.com");
         group.addUser(testUser);
@@ -58,6 +62,10 @@ public class FirebaseHelper {
         for (User user : group.getUsersInGroup()) {
             dbGroups.child(id).child("users").child(user.getEmailHashed()).setValue(true);
         }
+
+        // add to user
+        currentUser.child("groups").child(id).setValue(true);
+
     }
 
 
