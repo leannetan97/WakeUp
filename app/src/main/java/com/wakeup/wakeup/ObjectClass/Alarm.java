@@ -71,19 +71,23 @@ public class Alarm  implements Parcelable {
         return CREATOR;
     }
 
-    public String getTime() throws ParseException {
+    public String getTime() { //whole date in String format
+        return time;
+    }
+
+    public Date getTimeDate() throws ParseException { //whole date in date format
+        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = dateFormatter.parse(time);
+        return date;
+    }
+
+    public String getTimeDisplay() throws ParseException {
         SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat stringFormatter =new SimpleDateFormat("hh:mm");
 
         Date date = dateFormatter.parse(time);
         String strTime = stringFormatter.format(date);
         return strTime;
-    }
-
-    public Date getTimeinDate() throws ParseException {
-        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = dateFormatter.parse(time);
-        return date;
     }
 
     public String getAlarmName() {

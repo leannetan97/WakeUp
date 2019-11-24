@@ -38,7 +38,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
     public void onBindViewHolder(@NonNull HomeFragmentViewHolder holder, int position) {
         Alarm alarmItem = alarms.get(position);
         try {
-            holder.tvTimeDisplay.setText(alarmItem.getTime());
+            holder.tvTimeDisplay.setText(alarmItem.getTimeDisplay());
         } catch (ParseException e) {
             e.printStackTrace();
         }

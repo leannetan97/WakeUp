@@ -36,13 +36,9 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AlarmFragmentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AlarmFragmentViewHolder holder, int position){
         Alarm alarmItem = alarms.get(position);
-        try {
-            holder.tvTimeDisplay.setText(alarmItem.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        holder.tvTimeDisplay.setText(alarmItem.getTime());
         holder.tvAlarmName.setText(alarmItem.getAlarmName());
         holder.ivIcon.setVisibility(View.INVISIBLE);
         if(alarmItem.isOn()){
@@ -130,7 +126,7 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
 //            if (timeDisplay != null) {
 //                Date date = null;
 //                String dateStr = p.getTime();
-////                    date = p.getTimeinDate();
+////                    date = p.getTimeDate();
 ////                    String dateStr = dateFormatter.format(date);
 //                timeDisplay.setText(dateStr);
 //            }

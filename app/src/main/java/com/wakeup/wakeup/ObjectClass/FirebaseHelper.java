@@ -40,10 +40,10 @@ public class FirebaseHelper {
         dbUsers.child(hashed).setValue(user);
     }
 
-    public void addAlarm() {
+    public void addAlarm(Alarm newAlarm) {
         String id = dbAlarms.push().getKey();
 
-        Alarm newAlarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
+//        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
         dbAlarms.child(id).setValue(newAlarm);
     }
 
