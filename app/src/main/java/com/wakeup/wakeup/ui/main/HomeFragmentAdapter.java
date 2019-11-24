@@ -17,6 +17,7 @@ import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.R;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapter.HomeFragmentViewHolder> {
@@ -36,7 +37,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
     @Override
     public void onBindViewHolder(@NonNull HomeFragmentViewHolder holder, int position) {
         Alarm alarmItem = alarms.get(position);
-        holder.tvTimeDisplay.setText(alarmItem.getTime());
+        try {
+            holder.tvTimeDisplay.setText(alarmItem.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         holder.tvAlarmName.setText(alarmItem.getAlarmName());
         if(alarmItem.isGroup()) {
             holder.ivIcon.setImageResource(R.drawable.ic_group_black_24dp);
@@ -49,6 +54,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
         }else {
             holder.tBtnAlarm.setChecked(false);
         }
+
         holder.rowParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

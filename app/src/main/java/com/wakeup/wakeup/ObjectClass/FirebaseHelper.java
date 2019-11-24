@@ -43,8 +43,17 @@ public class FirebaseHelper {
     public void addAlarm() {
         String id = dbAlarms.push().getKey();
 
-        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
-        dbAlarms.child(id).setValue(alarm);
+        Alarm newAlarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
+        dbAlarms.child(id).setValue(newAlarm);
+    }
+
+
+    // update
+    public void updateAlarm(Alarm alarm, String alarmKey) {
+//        String id = dbAlarms.push().getKey();
+
+//        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
+        dbAlarms.child(alarmKey).setValue(alarm);
     }
 
 

@@ -19,17 +19,27 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.Calendar;
 
 public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, AdapterView.OnItemSelectedListener {
 
     private String viewTitle, buttonName;
-    private Alarm alarmData;
+
+    // data
+//    private DatabaseReference dbAlarms;
+    private Alarm prevAlarm;
+    private Alarm newAlarm;
+    private String alarmKey;
+    private FirebaseHelper firebaseHelper;
 
     private DecimalFormat digitFormatter = new DecimalFormat("00");
     private TextView tvAlarmName;
@@ -42,23 +52,33 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
 
+        firebaseHelper = new FirebaseHelper();
+//        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
+
+
+
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
         updateViewDetails();
 
         Fragment fragment = null;
         if (viewTitle.contains("Edit")) {
-            alarmData = getIntent().getExtras().getParcelable("AlarmData");
-            if (alarmData.isGroup()) {
-                // isGroup
+            prevAlarm = getIntent().getExtras().getParcelable("AlarmData");
+            alarmKey = prevAlarm.getAlarmKey();
+
+            //set up view with previous data
+            if (prevAlarm.isGroup()) { //isGroup
                 System.out.println("[DEBUG] Group Details Fragment");
-                fragment = new GroupAlarmDetailsFragment(alarmData.getAlarmName());
-            } else {
+                fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName());
+            } else { //isPersonal
                 System.out.println("[DEBUG] Personal Details Fragment");
-                //isPersonal
-                fragment = new PersonalAlarmDetailsFragment(alarmData.getAlarmName());
+                fragment = new PersonalAlarmDetailsFragment(prevAlarm.getAlarmName());
             }
-            ((TextView) findViewById(R.id.tv_time_display)).setText(alarmData.getTime());
+            try {
+                ((TextView) findViewById(R.id.tv_time_display)).setText(prevAlarm.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             //TODO: Update Spinner value
 //        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
         } else {
@@ -112,17 +132,36 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         //TODO: perform delete alarm
     }
 
+    public void updateAlarm() {
+        //update alarm with existing key
+//        firebaseHelper.updateAlarm(newAlarm, alarmKey);
+    }
+
+    public void addAlarm() {
+//        String id = dbAlarms.push().getKey();
+
+//        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
+//        Alarm newAlarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
+//        dbAlarms.child(id).setValue(newAlarm);
+        firebaseHelper.addAlarm();
+    }
+
     public void submitButtonOnClick(View view) {
         //TODO: Save details in local database
+        String time = (String) tvTimeDisplay.getText();
+        String alarmName = (String) tvAlarmName.getText();
+
         if (viewTitle.contains("Edit")) {
-            //update existing alarm details
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGame());
+            updateAlarm();
         } else if (viewTitle.contains("Personal")) {
-            Alarm newAlarm = new Alarm((String) tvTimeDisplay.getText(),
-                    (String) tvAlarmName.getText(), true, false, gameOption);
+            newAlarm = new Alarm(time, alarmName, true, false, gameOption);
+            addAlarm();
         } else {
-            Alarm newAlarm = new Alarm((String) tvTimeDisplay.getText(),
-                    (String) tvAlarmName.getText(), true, true, gameOption);
+            newAlarm = new Alarm(time, alarmName, true, true, gameOption);
+            addAlarm();
         }
+
         finish();
     }
 

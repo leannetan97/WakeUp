@@ -48,8 +48,8 @@ public class HomeFragment extends Fragment {
 
         // firebase
         firebaseHelper = new FirebaseHelper();
-        dbAlarms = firebaseHelper.getDbAlarms(); //.child("-Lu8H4wMhgSW-bsz9enT")
-        createDummyData();
+        dbAlarms = firebaseHelper.getDbAlarms();
+//        createDummyData();
     }
 
     @Override
@@ -73,16 +73,14 @@ public class HomeFragment extends Fragment {
         dbAlarms.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.e("Count " ,""+dataSnapshot.getChildrenCount());
-
                 // clear previous list
                 alarms.clear();
 
                 // iterating through all the nodes
-//                Log.e("Get Data", dataSnapshot.getChildren());
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Alarm alarm = postSnapshot.getValue(Alarm.class);
-                    Log.e("Get Data", alarm.toString());
+                    String alarmKey = postSnapshot.getKey(); //alarm i
+                    alarm.setAlarmKey(alarmKey);
 
                     alarms.add(alarm);
                 }
@@ -98,6 +96,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
     private void createDummyData() {
         alarms.add(new Alarm("02:00","Alarm Name 1", true, false,2));
         alarms.add(new Alarm("03:00","Alarm Name 2", false, true,2));
@@ -107,37 +106,5 @@ public class HomeFragment extends Fragment {
         alarms.add(new Alarm("07:00","Alarm Name 6", false, true,2));
         alarms.add(new Alarm("08:00","Alarm Name 7", true, false,2));
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//
-//        dbAlarms.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                // clear previous list
-//                alarms.clear();
-//
-//                //iterate through all nodes
-//                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                    // get alarms
-//                    Alarm alarm = postSnapshot.getValue(Alarm.class);
-//                    // add to list
-//                    alarms.add(alarm);
-//                }
-//
-//                // create adapter
-//                PersonalAlarmAdapter personalAlarmAdapter = new PersonalAlarmAdapter(getContext(), R.layout.res_alarm_card_view, alarms);
-//                lvAlarm.setAdapter(personalAlarmAdapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
-
 }
 

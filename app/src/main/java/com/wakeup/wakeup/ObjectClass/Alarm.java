@@ -1,8 +1,9 @@
 package com.wakeup.wakeup.ObjectClass;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.firebase.database.PropertyName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +17,7 @@ public class Alarm  implements Parcelable {
     private boolean isOn;
     private int game;
     private String user;
+    private String alarmKey;
 
     public Alarm() {
     }
@@ -46,6 +48,7 @@ public class Alarm  implements Parcelable {
         isOn = parcel.readByte() != 0;
         isGroup = parcel.readByte() != 0;
         game = parcel.readInt();
+        alarmKey = parcel.readString();
     }
 
     @Override
@@ -61,14 +64,20 @@ public class Alarm  implements Parcelable {
         parcel.writeByte((byte) (isOn ? 1 : 0));
         parcel.writeByte((byte) (isGroup ? 1 : 0));
         parcel.writeInt(game);
+        parcel.writeString(alarmKey);
     }
 
     public static Creator<Alarm> getCREATOR() {
         return CREATOR;
     }
 
-    public String getTime() {
-        return time;
+    public String getTime() throws ParseException {
+        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat stringFormatter =new SimpleDateFormat("hh:mm");
+
+        Date date = dateFormatter.parse(time);
+        String strTime = stringFormatter.format(date);
+        return strTime;
     }
 
     public Date getTimeinDate() throws ParseException {
@@ -81,8 +90,14 @@ public class Alarm  implements Parcelable {
         return alarmName;
     }
 
+    @PropertyName("isGroup")
     public boolean isGroup() {
         return isGroup;
+    }
+
+    @PropertyName("isOn")
+    public boolean isOn() {
+        return isOn;
     }
 
     public int getGame() {
@@ -93,7 +108,11 @@ public class Alarm  implements Parcelable {
         return user;
     }
 
-    public boolean isOn() {
-        return isOn;
+    public String getAlarmKey() {
+        return alarmKey;
+    }
+
+    public void setAlarmKey(String alarmKey) {
+        this.alarmKey = alarmKey;
     }
 }
