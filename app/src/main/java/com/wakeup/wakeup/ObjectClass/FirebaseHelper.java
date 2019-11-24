@@ -17,10 +17,11 @@ public class FirebaseHelper {
     // get current user and email
     String username;
     String email;
+    String hashedUser;
+
 
     public FirebaseHelper() {
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
-        dbAlarms = dbUsers.child("alarms");
 //        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
 
@@ -28,6 +29,8 @@ public class FirebaseHelper {
         if (user != null) {
             username = user.getDisplayName();
             email = user.getEmail();
+            hashedUser = String.valueOf(email.hashCode());
+            dbAlarms = dbUsers.child(hashedUser).child("alarms");
         }
     }
 
@@ -35,22 +38,26 @@ public class FirebaseHelper {
 
     // add node
     public void addUser() {
-        String hashed = String.valueOf(email.hashCode());
-
         User user = new User(email);
-        dbUsers.child(hashed).setValue(user);
+        dbUsers.child(hashedUser).setValue(user);
     }
 
     public void addAlarm(Alarm newAlarm) {
         String id = dbAlarms.push().getKey();
-
         dbAlarms.child(id).setValue(newAlarm);
     }
 
     public void addGroup() {
         String id = dbGroups.push().getKey();
 
-        dbGroups.child(id).setValue();
+        // dummy data, to be replaced
+        Group group = new Group("Newly grouped");
+        User testUser = new User("yee@gmail.com");
+        group.addUser(testUser);
+
+        for (User user : group.getUsersInGroup()) {
+            dbGroups.child(id).child("users").child(user.getEmailHashed()).setValue(true);
+        }
     }
 
 

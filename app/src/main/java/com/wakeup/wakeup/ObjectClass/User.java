@@ -11,9 +11,18 @@ public class User {
         this.email = email;
     }
 
+    // Get
     public String getEmail() {
         return email;
     }
 
-    // check email exists -->signup, checkpw
+    public String getEmailHashed() {
+        return String.valueOf(email.hashCode());
+    }
+
+    // Set
+    public void setEmail(String email) {
+        this.email = email;
+    }
+// check email exists -->signup, checkpw
 }
