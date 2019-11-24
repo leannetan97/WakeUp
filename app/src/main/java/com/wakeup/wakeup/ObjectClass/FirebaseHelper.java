@@ -20,7 +20,8 @@ public class FirebaseHelper {
 
     public FirebaseHelper() {
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
-        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
+        dbAlarms = dbUsers.child("alarms");
+//        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -43,8 +44,13 @@ public class FirebaseHelper {
     public void addAlarm(Alarm newAlarm) {
         String id = dbAlarms.push().getKey();
 
-//        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
         dbAlarms.child(id).setValue(newAlarm);
+    }
+
+    public void addGroup() {
+        String id = dbGroups.push().getKey();
+
+        dbGroups.child(id).setValue();
     }
 
 

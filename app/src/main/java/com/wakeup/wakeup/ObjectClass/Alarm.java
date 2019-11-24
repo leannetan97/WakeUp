@@ -11,15 +11,38 @@ import java.util.Date;
 
 public class Alarm  implements Parcelable {
 
+    private String alarmKey;
     private String time;
     private String alarmName;
     private boolean isGroup;
     private boolean isOn;
     private int game;
     private String user;
-    private String alarmKey;
 
+    // Constructor
     public Alarm() {
+    }
+
+    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int game) {
+        this.time = time;
+        this.alarmName = alarmName;
+        this.isOn = isOn;
+        this.isGroup = isGroup;
+        this.game = game;
+    }
+
+    // Parcel
+    public Alarm(Parcel parcel) {
+        time = parcel.readString();
+        alarmName = parcel.readString();
+        isOn = parcel.readByte() != 0;
+        isGroup = parcel.readByte() != 0;
+        game = parcel.readInt();
+        alarmKey = parcel.readString();
+    }
+
+    public static Creator<Alarm> getCREATOR() {
+        return CREATOR;
     }
 
     public static final Creator<Alarm> CREATOR = new Creator<Alarm>() {
@@ -33,23 +56,6 @@ public class Alarm  implements Parcelable {
             return new Alarm[size];
         }
     };
-
-    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int game) {
-        this.time = time;
-        this.alarmName = alarmName;
-        this.isOn = isOn;
-        this.isGroup = isGroup;
-        this.game = game;
-    }
-
-    public Alarm(Parcel parcel) {
-        time = parcel.readString();
-        alarmName = parcel.readString();
-        isOn = parcel.readByte() != 0;
-        isGroup = parcel.readByte() != 0;
-        game = parcel.readInt();
-        alarmKey = parcel.readString();
-    }
 
     @Override
     public int describeContents() {
@@ -67,27 +73,10 @@ public class Alarm  implements Parcelable {
         parcel.writeString(alarmKey);
     }
 
-    public static Creator<Alarm> getCREATOR() {
-        return CREATOR;
-    }
 
-    public String getTime() { //whole date in String format
-        return time;
-    }
-
-    public Date getTimeDate() throws ParseException { //whole date in date format
-        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = dateFormatter.parse(time);
-        return date;
-    }
-
-    public String getTimeDisplay() throws ParseException {
-        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat stringFormatter =new SimpleDateFormat("hh:mm");
-
-        Date date = dateFormatter.parse(time);
-        String strTime = stringFormatter.format(date);
-        return strTime;
+    // Get
+    public String getAlarmKey() {
+        return alarmKey;
     }
 
     public String getAlarmName() {
@@ -112,10 +101,26 @@ public class Alarm  implements Parcelable {
         return user;
     }
 
-    public String getAlarmKey() {
-        return alarmKey;
+    public String getTime() { //whole date in String format
+        return time;
     }
 
+    public Date getTimeDate() throws ParseException { //whole date in date format
+        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = dateFormatter.parse(time);
+        return date;
+    }
+
+    public String getTimeDisplay() throws ParseException { // short date for display
+        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat stringFormatter =new SimpleDateFormat("hh:mm");
+
+        Date date = dateFormatter.parse(time);
+        String strTime = stringFormatter.format(date);
+        return strTime;
+    }
+
+    // Set
     public void setAlarmKey(String alarmKey) {
         this.alarmKey = alarmKey;
     }

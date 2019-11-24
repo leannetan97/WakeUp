@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
                 // iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Alarm alarm = postSnapshot.getValue(Alarm.class);
-                    String alarmKey = postSnapshot.getKey(); //alarm i
+                    String alarmKey = postSnapshot.getKey(); //alarm key
                     alarm.setAlarmKey(alarmKey);
 
                     alarms.add(alarm);
