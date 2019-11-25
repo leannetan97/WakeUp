@@ -2,13 +2,11 @@ package com.wakeup.wakeup.ui.main;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +21,7 @@ import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 
 /**
@@ -48,7 +43,7 @@ public class HomeFragment extends Fragment {
 
         // firebase
         firebaseHelper = new FirebaseHelper();
-        dbAlarms = firebaseHelper.getDbAlarms();
+        dbAlarms = firebaseHelper.getDbUserAlarms();
 //        createDummyData();
     }
 

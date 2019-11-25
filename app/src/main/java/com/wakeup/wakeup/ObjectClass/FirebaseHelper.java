@@ -6,15 +6,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FirebaseHelper {
     // link to firebase
     private DatabaseReference dbFirebase;
     private DatabaseReference dbUsers;
-    private DatabaseReference currentUser;
-    private DatabaseReference dbAlarms;
+    private DatabaseReference dbCurrentUser;
+    private DatabaseReference dbUserAlarms;
     private DatabaseReference dbGroups;
 
     // get current user and email
@@ -33,117 +32,74 @@ public class FirebaseHelper {
             username = user.getDisplayName();
             email = user.getEmail();
             emailHashed = String.valueOf(email.hashCode());
-            dbAlarms = dbUsers.child(emailHashed).child("alarms");
-            currentUser = dbUsers.child(emailHashed);
+            dbUserAlarms = dbUsers.child(emailHashed).child("alarms");
+            dbCurrentUser = dbUsers.child(emailHashed);
         }
     }
 
 
 
-    // add node
-//    public void addUser() {
-//        User user = new User(email);
-//        currentUser.setValue(user);
-//    }
+    // Alarm
 
-    public void addAlarm(Alarm newAlarm) {
-        String id = dbAlarms.push().getKey();
-        dbAlarms.child(id).setValue(newAlarm);
+    public void addAlarm(Alarm alarm) {
+        String id = dbUserAlarms.push().getKey();
+        updateAlarm(alarm, id);
     }
+
+    public void updateAlarm(Alarm alarm, String alarmKey) {
+        dbUserAlarms.child(alarmKey).setValue(alarm);
+    }
+
+    public void deleteAlarm(String alarmKey) {
+        dbUserAlarms.child(alarmKey).removeValue();
+    }
+
+
+
+    // Group
 
     public void addGroup(Group group) {
-        // add to group
         String id = dbGroups.push().getKey();
-
-        //dummy data, to be replaced
-//        Group group = new Group("Newly grouped");
-//        User testUser = new User("yee@gmail.com");
-//        group.addUser(testUser);
-
-
-        for (User user : group.getUsersInGroup()) {
-            addUserGroup(user.getEmailHashed(), id);
-        }
-
-//        // add to current user
-        addUserGroup(emailHashed, id);
+        updateGroup(group, id);
     }
 
-    public void addUserGroup(String emailKeyHashed, String groupKey) {
+    public void updateGroup(Group group, String groupKey) {
+        handleGroup(group, groupKey, true);
+    }
+
+    public void deleteGroup(Group group, String groupKey) {
+        handleGroup(group, groupKey, null);
+    }
+
+
+    public void handleGroup(Group group, String groupKey, Object value) {
+        // add to current user
+        addUserGroup(emailHashed, groupKey, value);
+
+        // add other users
+        for (User user : group.getUsersInGroup()) {
+            addUserGroup(user.getEmailHashed(), groupKey, value);
+        }
+    }
+
+    // relationship between users and groups
+    public void addUserGroup(String emailKeyHashed, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/users/" + emailKeyHashed + "/groups", true);
-        childUpdates.put("/groups/" + groupKey + "/users", true);
+        childUpdates.put("/users/" + emailKeyHashed + "/groups", value);
+        childUpdates.put("/groups/" + groupKey + "/users", value);
 
         dbFirebase.updateChildren(childUpdates);
     }
 
-    
-
-    // toMap
-    public Map<String, Boolean> UsersToMap(List<User> usersList) {
-        HashMap<String, Boolean> result = new HashMap<>();
-
-        for (User user : usersList) {
-            result.put(String.valueOf(user.getEmail().hashCode()), true);
-        }
-        return result;
-    }
 
 
-
-
-    // update
-    public void updateAlarm(Alarm alarm, String alarmKey) {
-        dbAlarms.child(alarmKey).setValue(alarm);
-    }
-
-    public void updateGroup() {
-//    public void updateGroup(Group group, String groupKey) {
-        // add to group
-        String id = dbGroups.push().getKey();
-
-        //dummy data, to be replaced
-        Group group = new Group("Newly grouped");
-        User testUser = new User("yee@gmail.com");
-        group.addUser(testUser);
-
-        for (User user : group.getUsersInGroup()) {
-            dbGroups.child(id).child("users").child(user.getEmailHashed()).setValue(true);
-        }
-
-        // add to user
-        currentUser.child("groups").child(id).setValue(true);
-
-//        //update children
-//        Map<String, Object> childUpdates = new HashMap<>();
-//        childUpdates.put("users");
-    }
-
-
-
-    // delete
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // getter
+    // Get
     public DatabaseReference getDbUsers() {
         return dbUsers;
     }
 
-    public DatabaseReference getDbAlarms() {
-        return dbAlarms;
+    public DatabaseReference getDbUserAlarms() {
+        return dbUserAlarms;
     }
 
     public DatabaseReference getDbGroups() {
@@ -157,5 +113,4 @@ public class FirebaseHelper {
     public String getEmail() {
         return email;
     }
-    ////
 }
