@@ -4,6 +4,7 @@ public class User {
 
     private String email;
 
+    // Constructor
     public User() {
     }
 

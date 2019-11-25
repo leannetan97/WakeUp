@@ -7,6 +7,7 @@
     <color name="colorAccentLight">#fff350</color>
     <color name="colorAccentDark">#c79100</color>
     <color name="colorBackground">#e1bee7</color>
+    <color name="colorBackgroundTrans">#50e1bee7</color>
 
     <color name="white">#ffffff</color>
     <color name="lightGrey">#c1d5e0</color>

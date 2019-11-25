@@ -28,7 +28,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:background="@drawable/button_round"
-        android:textColor="#000000"
+        android:textColor="@color/colorAccent"
         android:text="Hit to Snooze"
         android:textSize="14sp"
         android:textStyle="bold"/>

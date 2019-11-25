@@ -93,6 +93,14 @@ public class FirebaseHelper {
 
 
 
+    // History
+
+
+
+
+
+
+
     // Get
     public DatabaseReference getDbUsers() {
         return dbUsers;

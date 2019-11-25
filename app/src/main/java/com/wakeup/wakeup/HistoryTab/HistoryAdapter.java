@@ -24,7 +24,7 @@ public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
     private Context mContext;
     private ArrayList<HistoryModel> historyModelArrayList;
 
-    private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE   MMM dd   hh:mm a");
+    private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE   MMM dd   HH:mm");
 
     public HistoryAdapter(@NonNull Context context, int resource, @NonNull List<HistoryModel> objects) {
         super(context, resource, objects);
