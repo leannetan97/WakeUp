@@ -3,11 +3,14 @@ package com.wakeup.wakeup.ObjectClass;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.PropertyName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Alarm  implements Parcelable {
 
@@ -105,12 +108,14 @@ public class Alarm  implements Parcelable {
         return time;
     }
 
+    @Exclude
     public Date getTimeDate() throws ParseException { //whole date in date format
         SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = dateFormatter.parse(time);
         return date;
     }
 
+    @Exclude
     public String getTimeDisplay() throws ParseException { // short date for display
         SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat stringFormatter =new SimpleDateFormat("hh:mm");
@@ -123,5 +128,19 @@ public class Alarm  implements Parcelable {
     // Set
     public void setAlarmKey(String alarmKey) {
         this.alarmKey = alarmKey;
+    }
+
+    // Firebase
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("alarmKey", alarmKey);
+        result.put("time", time);
+        result.put("alarmName", alarmName);
+        result.put("isGroup", isGroup);
+        result.put("isOn", isOn);
+        result.put("game", game);
+
+        return result;
     }
 }
