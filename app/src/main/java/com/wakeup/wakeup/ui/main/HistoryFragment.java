@@ -136,6 +136,18 @@ public class HistoryFragment extends Fragment {
         histEntries.add(new HistoryModel(date1, 6));
         histEntries.add(new HistoryModel(date2, 4));
         histEntries.add(new HistoryModel(date3, 5));
+        histEntries.add(new HistoryModel(date1, 6));
+        histEntries.add(new HistoryModel(date2, 4));
+        histEntries.add(new HistoryModel(date3, 5));
+        histEntries.add(new HistoryModel(date1, 6));
+        histEntries.add(new HistoryModel(date2, 4));
+        histEntries.add(new HistoryModel(date3, 5));
+        histEntries.add(new HistoryModel(date1, 6));
+        histEntries.add(new HistoryModel(date2, 4));
+        histEntries.add(new HistoryModel(date3, 5));
+        histEntries.add(new HistoryModel(date1, 6));
+        histEntries.add(new HistoryModel(date2, 4));
+        histEntries.add(new HistoryModel(date3, 5));
     }
 
 }
