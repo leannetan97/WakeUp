@@ -69,5 +69,6 @@
 
     <!--Dialog-->
     <string name="change_alarm_name_dialog">Change Alarm Name Dialog</string>
+    <string name="refresh">refresh</string>
 
 </resources>
