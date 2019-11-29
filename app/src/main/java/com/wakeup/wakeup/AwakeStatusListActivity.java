@@ -4,8 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -147,12 +154,39 @@ public class AwakeStatusListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Toast.makeText(context, "call " + friends.get(position).getUserName(),
                             Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:0125389672"));
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        checkUserPhonePermission();
+//                    }
+
+                    startActivity(intent);
+
+
                 }
             });
 //            System.out.println(titles.get(position));
 
 
             return row;
+        }
+    }
+
+    public boolean checkUserPhonePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CALL_PHONE)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        99);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        99);
+            }
+            return false;
+        } else {
+            return true;
         }
     }
 }
