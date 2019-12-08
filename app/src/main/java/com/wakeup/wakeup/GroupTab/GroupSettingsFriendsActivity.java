@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,12 +18,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
 
 public class GroupSettingsFriendsActivity extends AppCompatActivity {
     private ListView lv;
+    private ArrayList<GroupMember> members;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,28 +37,15 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 
         lv = (ListView) findViewById(R.id.lv_GroupFriends);
 
-        ArrayList<String> alName = new ArrayList<>();
-        alName.add("me");
-        alName.add("friend1");
-        alName.add("friend2");
-        alName.add("friend3");
+        members = new ArrayList<>();
 
-        ArrayList<Boolean> alAdmin = new ArrayList<>();
-        alAdmin.add(false);
-        alAdmin.add(true);
-        alAdmin.add(false);
-        alAdmin.add(false);
+        createDummyData();
 
-        ArrayList<String> alEmail = new ArrayList<>();
-        alEmail.add("me@bmail.com");
-        alEmail.add("abc@bmail.com");
-        alEmail.add("def@email.fom");
-        alEmail.add("ghi@hmail.iom");
 
-        tb.setTitle("Friends List (" + (alName.size() - 1) + ")");
-        boolean amIAdmin = false;
+        tb.setTitle("Friends List (" + (members.size() - 1) + ")");
+        boolean amIAdmin = true;
 
-        CustomAdapter customAdapter = new CustomAdapter(this, alName, alAdmin, alEmail, amIAdmin);
+        CustomAdapter customAdapter = new CustomAdapter(this, members, amIAdmin);
 
         lv.setAdapter(customAdapter);
         Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
@@ -65,23 +55,32 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 
     }
 
-    class CustomAdapter extends ArrayAdapter<String> {
-        Context context;
-        ArrayList<String> names;
-        ArrayList<String> emails;
-        ArrayList<Boolean> isAdmin;
-        boolean amIAdmin;
-//        String descriptions[];
+    private void createDummyData(){
+        members.add(new GroupMember("me", true, "me@bmail.com", "012"));
+        members.add(new GroupMember("A", false, "A@bmail.com", "013"));
+        members.add(new GroupMember("B", false, "B@bmail.com", "014"));
+        members.add(new GroupMember("C", false, "C@bmail.com", "015"));
+    }
 
-        CustomAdapter(Context c, ArrayList<String> names, ArrayList<Boolean> isAdmin,
-                      ArrayList<String> emails, boolean amIadmin) {
-            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, names);
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    class CustomAdapter extends ArrayAdapter<GroupMember> {
+        Context context;
+        ArrayList<GroupMember> members;
+        boolean amIAdmin;
+
+        CustomAdapter(Context c, ArrayList<GroupMember> members, boolean amIAdmin) {
+            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, members);
             this.context = c;
-            this.names = names;
-            this.isAdmin = isAdmin;
-            this.emails = emails;
-            this.amIAdmin = amIadmin;
-//            this.descriptions = descriptions;
+            this.amIAdmin = amIAdmin;
+            this.members = members;
         }
 
         @NonNull
@@ -90,7 +89,8 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                             @NonNull ViewGroup parent) {
             LayoutInflater layoutInflater =
                     (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.res_layout_row_group_member_list, parent, false);
+            View row = layoutInflater.inflate(R.layout.res_layout_row_group_member_list, parent,
+                    false);
 
             TextView tvFriendName = row.findViewById(R.id.tv_friendName);
             TextView tvFriendEmail = row.findViewById(R.id.tv_friendEmail);
@@ -98,19 +98,25 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             ImageView ivRemove = row.findViewById(R.id.iv_removeMember);
             ImageView ivBtnCall = row.findViewById(R.id.btn_call);
 
+            String name = members.get(position).getUserName();
+            String email = members.get(position).getEmail();
+            boolean isAdmin = members.get(position).isAdmin();
 
-            tvFriendName.setText(names.get(position));
-            tvFriendEmail.setText(emails.get(position));
 
-            if (names.get(position).equals("me")) {
+            tvFriendName.setText(name);
+            tvFriendEmail.setText(email);
+
+
+
+            if (name.equals("me")) {
                 ivBtnCall.setVisibility(View.GONE);
                 ivRemove.setVisibility(View.GONE);
-                if (amIAdmin) {
+                if (isAdmin) {
                     tvAdmin.setText(R.string.admin);
                     tvAdmin.setBackgroundResource(R.drawable.design_text_view_border_green);
                 }
             } else {
-                if (isAdmin.get(position)) {
+                if (isAdmin) {
                     tvAdmin.setText(R.string.admin);
                     ivRemove.setVisibility(View.GONE);
                     tvAdmin.setBackgroundResource(R.drawable.design_text_view_border_green);
@@ -126,9 +132,9 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             }
 
 
-            if (amIAdmin) {
+//            if (amIAdmin) {
 //                btnLeaveDeleteGtoup.setText(R.string.delete_group);
-            }
+//            }
 //            else {
 //                tvAdmin.setText(" ");
 //                ivRemove.setImageResource(0);
@@ -137,7 +143,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             ivBtnCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "call " + names.get(position), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "call " + members.get(position).getUserName(), Toast.LENGTH_SHORT).show();
                 }
             });
 
