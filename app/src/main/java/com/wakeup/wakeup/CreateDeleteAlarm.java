@@ -19,15 +19,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 
 public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, AdapterView.OnItemSelectedListener {
@@ -142,7 +139,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         String alarmName = (String) tvAlarmName.getText();
 
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGame());
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption());
             updateAlarm();
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);

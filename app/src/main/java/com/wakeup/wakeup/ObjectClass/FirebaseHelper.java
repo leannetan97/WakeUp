@@ -15,6 +15,7 @@ public class FirebaseHelper {
     private DatabaseReference dbCurrentUser;
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbGroups;
+    private DatabaseReference dbGames;
 
     // get current user and email
     String username;
@@ -26,6 +27,7 @@ public class FirebaseHelper {
         dbFirebase = FirebaseDatabase.getInstance().getReference();
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
+        dbGames = FirebaseDatabase.getInstance().getReference("games");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -91,6 +93,13 @@ public class FirebaseHelper {
         dbFirebase.updateChildren(childUpdates);
     }
 
+
+    // Games
+
+    public void addScore(Game game) {
+        String id = dbGames.push().getKey();
+        dbUserAlarms.child(id).setValue(game);
+    }
 
 
     // History

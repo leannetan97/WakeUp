@@ -19,19 +19,19 @@ public class Alarm  implements Parcelable {
     private String alarmName;
     private boolean isGroup;
     private boolean isOn;
-    private int game;
+    private int gameOption;
     private String user;
 
     // Constructor
     public Alarm() {
     }
 
-    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int game) {
+    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int gameOption) {
         this.time = time;
         this.alarmName = alarmName;
         this.isOn = isOn;
         this.isGroup = isGroup;
-        this.game = game;
+        this.gameOption = gameOption;
     }
 
     // Parcel
@@ -40,7 +40,7 @@ public class Alarm  implements Parcelable {
         alarmName = parcel.readString();
         isOn = parcel.readByte() != 0;
         isGroup = parcel.readByte() != 0;
-        game = parcel.readInt();
+        gameOption = parcel.readInt();
         alarmKey = parcel.readString();
     }
 
@@ -72,7 +72,7 @@ public class Alarm  implements Parcelable {
         parcel.writeString(alarmName);
         parcel.writeByte((byte) (isOn ? 1 : 0));
         parcel.writeByte((byte) (isGroup ? 1 : 0));
-        parcel.writeInt(game);
+        parcel.writeInt(gameOption);
         parcel.writeString(alarmKey);
     }
 
@@ -96,8 +96,8 @@ public class Alarm  implements Parcelable {
         return isOn;
     }
 
-    public int getGame() {
-        return game;
+    public int getGameOption() {
+        return gameOption;
     }
 
     public String getUser() {
@@ -139,7 +139,7 @@ public class Alarm  implements Parcelable {
         result.put("alarmName", alarmName);
         result.put("isGroup", isGroup);
         result.put("isOn", isOn);
-        result.put("game", game);
+        result.put("gameOption", gameOption);
 
         return result;
     }
