@@ -4,18 +4,25 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FirebaseHelper {
     // link to firebase
     private DatabaseReference dbFirebase;
-    private DatabaseReference dbUsers;
-    private DatabaseReference dbCurrentUser;
-    private DatabaseReference dbUserAlarms;
     private DatabaseReference dbGroups;
-    private DatabaseReference dbGames;
+    private DatabaseReference dbScores;
+
+    private DatabaseReference dbUsers;
+    private DatabaseReference dbUserAlarms;
+    private DatabaseReference dbUserHistory;
+    //    private DatabaseReference dbCurrentUser;
+
 
     // get current user and email
     String username;
@@ -27,15 +34,18 @@ public class FirebaseHelper {
         dbFirebase = FirebaseDatabase.getInstance().getReference();
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
-        dbGames = FirebaseDatabase.getInstance().getReference("games");
+        dbScores = FirebaseDatabase.getInstance().getReference("scores");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             username = user.getDisplayName();
             email = user.getEmail();
             emailHashed = String.valueOf(email.hashCode());
+
+            // all nodes under current user
+//            dbCurrentUser = dbUsers.child(emailHashed);
             dbUserAlarms = dbUsers.child(emailHashed).child("alarms");
-            dbCurrentUser = dbUsers.child(emailHashed);
+            dbUserHistory = dbUsers.child(emailHashed).child("history");
         }
     }
 
@@ -97,12 +107,19 @@ public class FirebaseHelper {
     // Games
 
     public void addScore(Game game) {
-        String id = dbGames.push().getKey();
+        String id = dbScores.push().getKey();
         dbUserAlarms.child(id).setValue(game);
     }
 
 
     // History
+
+    public void addHistory(int delay) {
+        History history = new History(delay, ServerValue.TIMESTAMP);
+
+        String id = dbScores.push().getKey();
+        dbUserHistory.child(id).setValue(history);
+    }
 
 
 
