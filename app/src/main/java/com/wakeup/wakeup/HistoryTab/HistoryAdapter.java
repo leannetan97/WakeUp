@@ -54,14 +54,15 @@ public class HistoryAdapter extends ArrayAdapter<History> {
             TextView tv2 = (TextView) v.findViewById(R.id.tv_historyViewList2);
 
             if (tv1 != null) {
-                Map<String, String> timestamp = history.getTimestamp();
-                String date = timestamp.get("timestamp");
+//                Map<String, String> timestamp = history.getTimestamp();
+//                String date = timestamp.get("timestamp");
+//
+//                // string to date
+//                String dateStr = dateFormatter.format(date);
 
-                // string to date
 
 
-                String dateStr = dateFormatter.format(date);
-                tv1.setText(dateStr);
+                tv1.setText(history.getDate().toString());
             }
             if (tv2 != null) {
                 tv2.setText(Integer.toString(history.getDelay()));

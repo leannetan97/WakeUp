@@ -129,9 +129,9 @@ public class HistoryFragment extends Fragment {
 //            e.printStackTrace();
 //        }
 
-        historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
-
-        lvHistory.setAdapter(historyAdapter);
+//        historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
+//
+//        lvHistory.setAdapter(historyAdapter);
         return view;
     }
 
@@ -147,8 +147,9 @@ public class HistoryFragment extends Fragment {
                 // iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     int delay = postSnapshot.child("delay").getValue(Integer.class);
+                    Long date = (Long) postSnapshot.child("timestamp").getValue();
 
-//                    histories.add(history);
+                    histories.add(new History(delay, date));
                 }
 
                 // create adapter
