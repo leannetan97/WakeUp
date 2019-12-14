@@ -29,29 +29,29 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment {
     // firebase
-    FirebaseHelper firebaseHelper;
     DatabaseReference dbAlarms;
     private List<Alarm> alarms;
 
+    // adapter
     private RecyclerView.Adapter homeAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rvAlarm;
+
 
     public HomeFragment() {
         // Required empty public constructor
         alarms = new ArrayList<>();
 
         // firebase
-        firebaseHelper = new FirebaseHelper();
-        dbAlarms = firebaseHelper.getDbUserAlarms();
-//        createDummyData();
+        dbAlarms = new FirebaseHelper().getDbUserAlarms();
+        // createDummyData();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
+//        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
 
         rvAlarm= view.findViewById(R.id.rv_home);
         layoutManager = new LinearLayoutManager(getContext());

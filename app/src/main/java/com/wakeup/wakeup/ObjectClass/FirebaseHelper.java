@@ -6,9 +6,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +18,7 @@ public class FirebaseHelper {
     private DatabaseReference dbUsers;
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbUserHistory;
-    //    private DatabaseReference dbCurrentUser;
+    // private DatabaseReference dbCurrentUser;
 
 
     // get current user and email
@@ -50,9 +47,7 @@ public class FirebaseHelper {
     }
 
 
-
     // Alarm
-
     public void addAlarm(Alarm alarm) {
         String id = dbUserAlarms.push().getKey();
         updateAlarm(alarm, id);
@@ -67,9 +62,7 @@ public class FirebaseHelper {
     }
 
 
-
     // Group
-
     public void addGroup(Group group) {
         String id = dbGroups.push().getKey();
         updateGroup(group, id);
@@ -83,7 +76,6 @@ public class FirebaseHelper {
         handleGroup(group, groupKey, null);
     }
 
-
     public void handleGroup(Group group, String groupKey, Object value) {
         // add to current user
         addUserGroup(emailHashed, groupKey, value);
@@ -93,6 +85,7 @@ public class FirebaseHelper {
             addUserGroup(user.getEmailHashed(), groupKey, value);
         }
     }
+
 
     // relationship between users and groups
     public void addUserGroup(String emailKeyHashed, String groupKey, Object value) {
@@ -105,15 +98,13 @@ public class FirebaseHelper {
 
 
     // Games
-
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
         dbUserAlarms.child(id).setValue(game);
     }
 
 
-    // History
-
+    // History2
     public void addHistory(int delay) {
         History history = new History(delay, ServerValue.TIMESTAMP);
 
@@ -146,5 +137,17 @@ public class FirebaseHelper {
 
     public String getEmail() {
         return email;
+    }
+
+    public DatabaseReference getDbFirebase() {
+        return dbFirebase;
+    }
+
+    public DatabaseReference getDbScores() {
+        return dbScores;
+    }
+
+    public DatabaseReference getDbUserHistory() {
+        return dbUserHistory;
     }
 }

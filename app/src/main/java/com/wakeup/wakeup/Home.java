@@ -68,7 +68,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         Button button = (Button)findViewById(R.id.button_temp);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                firebaseHelper.addGroup();
+                firebaseHelper.addHistory(6);
             }
         });
         ///////////

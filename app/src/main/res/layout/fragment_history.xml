@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="10dip"
-                android:text="@string/history"
+                android:text="@string/history2"
                 android:textStyle="bold" />
 
             <TextView

@@ -11,26 +11,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
+import com.wakeup.wakeup.ObjectClass.History;
 import com.wakeup.wakeup.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
+public class HistoryAdapter extends ArrayAdapter<History> {
 
     private int resourceLayout;
     private Context mContext;
-    private ArrayList<HistoryModel> historyModelArrayList;
+    private ArrayList<History> historyArrayList;
 
     private SimpleDateFormat dateFormatter =new SimpleDateFormat("EEEE   MMM dd   HH:mm");
 
-    public HistoryAdapter(@NonNull Context context, int resource, @NonNull List<HistoryModel> objects) {
+    public HistoryAdapter(@NonNull Context context, int resource, @NonNull List<History> objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
         this.mContext = context;
-        this.historyModelArrayList = (ArrayList<HistoryModel>) objects;
+        this.historyArrayList = (ArrayList<History>) objects;
     }
 
     @NonNull
@@ -45,19 +47,24 @@ public class HistoryAdapter extends ArrayAdapter<HistoryModel> {
             v = vi.inflate(resourceLayout, null);
         }
 
-        HistoryModel p = getItem(position);
+        History history = getItem(position);
 
-        if (p != null) {
+        if (history != null) {
             TextView tv1 = (TextView) v.findViewById(R.id.tv_historyViewList1);
             TextView tv2 = (TextView) v.findViewById(R.id.tv_historyViewList2);
 
             if (tv1 != null) {
-                Date date = p.getDate();
+                Map<String, String> timestamp = history.getTimestamp();
+                String date = timestamp.get("timestamp");
+
+                // string to date
+
+
                 String dateStr = dateFormatter.format(date);
                 tv1.setText(dateStr);
             }
             if (tv2 != null) {
-                tv2.setText(Integer.toString(p.getDelay()));
+                tv2.setText(Integer.toString(history.getDelay()));
             }
         }
 
