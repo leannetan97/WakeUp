@@ -3,6 +3,8 @@ package com.wakeup.wakeup.ObjectClass;
 
 import com.google.firebase.database.Exclude;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class History {
@@ -40,8 +42,13 @@ public class History {
     }
 
     @Exclude
-    public Long getDate() {
-        return date;
+    public String getDate() {
+        try{
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM   HH:mm");
+            return dateFormat.format(date);
+        } catch(Exception e) {
+            return "date";
+        }
     }
 
     public void setDate(Long date) {

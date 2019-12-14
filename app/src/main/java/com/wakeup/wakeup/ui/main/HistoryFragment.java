@@ -53,13 +53,6 @@ public class HistoryFragment extends Fragment {
 
 
 
-    // history list
-    private SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    // format
-    private DecimalFormat mFormat;
-
-
     // bar chart
     BarChart barChart;
     BarData barData;
@@ -123,15 +116,6 @@ public class HistoryFragment extends Fragment {
         // List
         lvHistory = (ListView) view.findViewById(R.id.historyList);
 
-//        try {
-//            getHistList();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
-//        historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
-//
-//        lvHistory.setAdapter(historyAdapter);
         return view;
     }
 
@@ -179,33 +163,6 @@ public class HistoryFragment extends Fragment {
         barEntries.add(new BarEntry(7, 6));
     }
 
-//    private void getHistList() throws ParseException {
-//
-//        Date date1 = dateFormatter.parse("2019-12-30 23:37:50");
-//        Date date2 = dateFormatter.parse("2019-12-30 03:37:50");
-//        Date date3 = dateFormatter.parse("2019-12-30 13:37:50");
-//
-//        histories = new ArrayList<History>();
-//        HashMap hashMap = new HashMap<String, String>();
-//        hashMap.put("timestamp", "2019-12-30 23:37:50");
-//
-//        histories.add(new History(6, hashMap));
-//
-////        histories.add(new History(date2, 4));
-////        histories.add(new History(date3, 5));
-////        histories.add(new History(date1, 6));
-////        histories.add(new History(date2, 4));
-////        histories.add(new History(date3, 5));
-////        histories.add(new History(date1, 6));
-////        histories.add(new History(date2, 4));
-////        histories.add(new History(date3, 5));
-////        histories.add(new History(date1, 6));
-////        histories.add(new History(date2, 4));
-////        histories.add(new History(date3, 5));
-////        histories.add(new History(date1, 6));
-////        histories.add(new History(date2, 4));
-////        histories.add(new History(date3, 5));
-//    }
 
     public void initBarChart() {
         barChart.setDrawBarShadow(false);
