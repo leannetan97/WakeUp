@@ -1,10 +1,15 @@
 package com.wakeup.wakeup.ObjectClass;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,9 +91,9 @@ public class FirebaseHelper {
 
 
     // relationship between users and groups
-    public void addUserToGroup(String emailKeyHashed, String groupKey, Object value) {
+    public void addUserToGroup(String phoneNum, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/users/" + emailKeyHashed + "/groups", value);
+        childUpdates.put("/users/" + phoneNum + "/groups", value);
         childUpdates.put("/groups/" + groupKey + "/users", value);
 
         dbFirebase.updateChildren(childUpdates);
@@ -102,17 +107,24 @@ public class FirebaseHelper {
         dbGroups.child("admins").child(phone).setValue(true);
     }
 
+    // dummy method, put in related Java class instead of here
+    public void checkAdmin(String phoneNum, String groupKey) {
+        boolean isAdmin = false;
+        dbGroups.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(groupKey).child("admins").child(phoneNum).exists()) {
+                    //user exists, do something
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
 
-
-
-
-
-//    removeMember()
-//    callMember()
-//
-//    checkAdmin()
 
     // Games
     public void addScore(Game game) {
