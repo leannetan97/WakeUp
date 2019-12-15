@@ -23,8 +23,7 @@ public class FirebaseHelper {
 
     // get current user and email
     String username;
-    String email;
-    String emailHashed;
+    String phoneNum;
 
 
     public FirebaseHelper() {
@@ -36,13 +35,12 @@ public class FirebaseHelper {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             username = user.getDisplayName();
-            email = user.getEmail();
-            emailHashed = String.valueOf(email.hashCode());
+            phoneNum = user.getPhoneNumber();
 
             // all nodes under current user
 //            dbCurrentUser = dbUsers.child(emailHashed);
-            dbUserAlarms = dbUsers.child(emailHashed).child("alarms");
-            dbUserHistory = dbUsers.child(emailHashed).child("history");
+            dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
+            dbUserHistory = dbUsers.child(phoneNum).child("history");
         }
     }
 
@@ -69,26 +67,26 @@ public class FirebaseHelper {
     }
 
     public void updateGroup(Group group, String groupKey) {
-        handleGroup(group, groupKey, true);
+        modifyGroup(group, groupKey, true);
     }
 
     public void deleteGroup(Group group, String groupKey) {
-        handleGroup(group, groupKey, null);
+        modifyGroup(group, groupKey, null);
     }
 
-    public void handleGroup(Group group, String groupKey, Object value) {
+    public void modifyGroup(Group group, String groupKey, Object value) {
         // add to current user
-        addUserGroup(emailHashed, groupKey, value);
+        addUserToGroup(phoneNum, groupKey, value);
 
         // add other users
         for (User user : group.getUsersInGroup()) {
-            addUserGroup(user.getEmailHashed(), groupKey, value);
+            addUserToGroup(user.getPhoneNum(), groupKey, value);
         }
     }
 
 
     // relationship between users and groups
-    public void addUserGroup(String emailKeyHashed, String groupKey, Object value) {
+    public void addUserToGroup(String emailKeyHashed, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + emailKeyHashed + "/groups", value);
         childUpdates.put("/groups/" + groupKey + "/users", value);
@@ -96,6 +94,25 @@ public class FirebaseHelper {
         dbFirebase.updateChildren(childUpdates);
     }
 
+    public void removeUserFromGroup(String phone, String groupKey) {
+        addUserToGroup(phone, groupKey, null);
+    }
+
+    public void addAdminToGroup(String phone, String groupKey) {
+        dbGroups.child("admins").child(phone).setValue(true);
+    }
+
+
+
+
+
+
+
+
+//    removeMember()
+//    callMember()
+//
+//    checkAdmin()
 
     // Games
     public void addScore(Game game) {
@@ -104,7 +121,8 @@ public class FirebaseHelper {
     }
 
 
-    // History2
+
+    // History
     public void addHistory(int delay) {
         History history = new History(delay, ServerValue.TIMESTAMP);
 
@@ -136,7 +154,7 @@ public class FirebaseHelper {
     }
 
     public String getEmail() {
-        return email;
+        return phoneNum;
     }
 
     public DatabaseReference getDbFirebase() {

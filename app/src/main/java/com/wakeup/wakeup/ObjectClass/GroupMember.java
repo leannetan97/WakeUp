@@ -3,13 +3,11 @@ package com.wakeup.wakeup.ObjectClass;
 public class GroupMember extends User {
     private String userName;
     private boolean isAdmin;
-    private String email;
     private String phoneNum;
 
-    public GroupMember(String userName, boolean isAdmin, String email, String phoneNum) {
+    public GroupMember(String userName, boolean isAdmin, String phoneNum) {
         this.userName = userName;
         this.isAdmin = isAdmin;
-        this.email = email;
         this.phoneNum = phoneNum;
     }
 
@@ -27,16 +25,6 @@ public class GroupMember extends User {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
-    }
-
-    @Override
-    public String getEmail() {
-        return email;
-    }
-
-    @Override
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPhoneNum() {

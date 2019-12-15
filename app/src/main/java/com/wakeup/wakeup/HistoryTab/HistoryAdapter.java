@@ -54,7 +54,14 @@ public class HistoryAdapter extends ArrayAdapter<History> {
             TextView tv2 = (TextView) v.findViewById(R.id.tv_historyViewList2);
 
             if (tv1 != null) {
-                tv1.setText(history.getDate().toString());
+                Long date = history.getDate();
+                String dateStr = "";
+                try{
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM   HH:mm");
+                    dateStr = dateFormat.format(date);
+                } catch(Exception e) {
+                }
+                tv1.setText(dateStr);
             }
             if (tv2 != null) {
                 tv2.setText(Integer.toString(history.getDelay()));

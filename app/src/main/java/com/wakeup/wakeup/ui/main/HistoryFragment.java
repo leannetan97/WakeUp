@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +28,20 @@ import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.HistoryTab.HistoryAdapter;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.History;
-import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.R;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -46,6 +51,9 @@ public class HistoryFragment extends Fragment {
     // firebase
     DatabaseReference dbUserHistory;
     private List<History> histories;
+    private List delays;
+    private List<Integer> delayHisto;
+
 
     // adaptor
     private HistoryAdapter historyAdapter;
@@ -57,12 +65,13 @@ public class HistoryFragment extends Fragment {
     BarChart barChart;
     BarData barData;
     BarDataSet barDataSet;
-    ArrayList barEntries;
 
 
     public HistoryFragment() {
         // Required empty public constructor
         histories = new ArrayList<>();
+        delays = new ArrayList<>();
+
 
         //firebase
         dbUserHistory = new FirebaseHelper().getDbUserHistory();
@@ -95,9 +104,10 @@ public class HistoryFragment extends Fragment {
         l.setEnabled(false);
 
         // chart data
+
         getEntries();
 
-        barDataSet = new BarDataSet(barEntries, "Minute");
+        barDataSet = new BarDataSet(delays, "Minute");
 
 
         // set chart gradient color
@@ -139,6 +149,10 @@ public class HistoryFragment extends Fragment {
                 // create adapter
                 historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
                 lvHistory.setAdapter(historyAdapter);
+
+//                getEntries();
+//
+//                barDataSet = new BarDataSet(delays, "Minute");
             }
 
             @Override
@@ -153,37 +167,65 @@ public class HistoryFragment extends Fragment {
 
 
     private void getEntries() {
-        barEntries = new ArrayList<>();
-        barEntries.add(new BarEntry(1, 4));
-        barEntries.add(new BarEntry(2, 3));
-        barEntries.add(new BarEntry(3,8));
-        barEntries.add(new BarEntry(4, 6));
-        barEntries.add(new BarEntry(5, 9));
-        barEntries.add(new BarEntry(6, 10));
-        barEntries.add(new BarEntry(7, 6));
-    }
+        dbUserHistory.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // clear previous list
+                histories.clear();
+
+                // iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    int delay = postSnapshot.child("delay").getValue(Integer.class);
+                    Long date = (Long) postSnapshot.child("timestamp").getValue();
+
+                    histories.add(new History(delay, date));
+                }
+
+                // create adapter
+                historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
+                lvHistory.setAdapter(historyAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
 
-    public void initBarChart() {
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawValueAboveBar(true);
-        barChart.getDescription().setEnabled(false);
-        barChart.animateX(500);
+        delayHisto = new ArrayList<Integer>(Arrays.asList(0,0,0,0,0,0,0));
 
-        // define chart
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
 
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setAxisMinimum(0);
-        leftAxis.setDrawGridLines(false);
+        LocalDate curDate = LocalDate.now();
+//        Long dateLong = 1576338782888L;
+//        LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
+//        long diff = ChronoUnit.DAYS.between(date, curDate);
 
-        YAxis rightAxis = barChart.getAxisRight();
-        rightAxis.setEnabled(false);
+        for (History temp : histories) {
+            Long dateLong = temp.getDate();
+            LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
+            Long diff = ChronoUnit.DAYS.between(date, curDate);
+            int dayDiff = diff.intValue()-1;
+            Log.d("histo", String.valueOf(dayDiff));
 
-        Legend l = barChart.getLegend();
-        l.setEnabled(false);
+            if (dayDiff < delayHisto.size()) {
+                int prev = delayHisto.get(dayDiff);
+                delayHisto.set(dayDiff, (temp.getDelay()));
+            }
+            delayHisto.set(dayDiff, (temp.getDelay()));
+        }
+
+        delays.clear();
+        for (int i=0; i<delayHisto.size(); i++) {
+            delays.add(new BarEntry(i+1, delayHisto.get(i)));
+        }
+
+//        delays.add(new BarEntry(1, diff));
+//        delays.add(new BarEntry(2, 3));
+//        delays.add(new BarEntry(3,8));
+//        delays.add(new BarEntry(4, 6));
+//        delays.add(new BarEntry(5, 9));
+//        delays.add(new BarEntry(6, 10));
+        delays.add(new BarEntry(7, 6));
     }
 
 }

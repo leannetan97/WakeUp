@@ -56,10 +56,10 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
     }
 
     private void createDummyData(){
-        members.add(new GroupMember("me", true, "me@bmail.com", "012"));
-        members.add(new GroupMember("A", false, "A@bmail.com", "013"));
-        members.add(new GroupMember("B", false, "B@bmail.com", "014"));
-        members.add(new GroupMember("C", false, "C@bmail.com", "015"));
+        members.add(new GroupMember("me", true, "0123456987"));
+        members.add(new GroupMember("A", false, "0123456987"));
+        members.add(new GroupMember("B", false, "0123456987"));
+        members.add(new GroupMember("C", false, "0123456987"));
     }
 
     @Override
@@ -99,7 +99,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             ImageView ivBtnCall = row.findViewById(R.id.btn_call);
 
             String name = members.get(position).getUserName();
-            String email = members.get(position).getEmail();
+            String email = members.get(position).getPhoneNum();
             boolean isAdmin = members.get(position).isAdmin();
 
 

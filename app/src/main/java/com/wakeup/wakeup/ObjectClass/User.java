@@ -2,28 +2,23 @@ package com.wakeup.wakeup.ObjectClass;
 
 public class User {
 
-    private String email;
+    private String phoneNum;
 
     // Constructor
     public User() {
     }
 
-    public User(String email) {
-        this.email = email;
+    public User(String phone) {
+        this.phoneNum = phone;
     }
 
-    // Get
-    public String getEmail() {
-        return email;
+    public String getPhoneNum() {
+        return phoneNum;
     }
 
-    public String getEmailHashed() {
-        return String.valueOf(email.hashCode());
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 
-    // Set
-    public void setEmail(String email) {
-        this.email = email;
-    }
 // check email exists -->signup, checkpw
 }
