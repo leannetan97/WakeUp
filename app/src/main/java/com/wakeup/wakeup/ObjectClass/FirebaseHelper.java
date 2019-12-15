@@ -107,7 +107,7 @@ public class FirebaseHelper {
         dbGroups.child("admins").child(phone).setValue(true);
     }
 
-    // dummy method, put in related Java class instead of here
+    // dummy method, implement in related Java class instead of here
     public void checkAdmin(String phoneNum, String groupKey) {
         boolean isAdmin = false;
         dbGroups.addListenerForSingleValueEvent(new ValueEventListener() {

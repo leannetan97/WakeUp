@@ -54,12 +54,9 @@ public class HistoryFragment extends Fragment {
     private List delays;
     private List<Integer> delayHisto;
 
-
     // adaptor
     private HistoryAdapter historyAdapter;
     private ListView lvHistory;
-
-
 
     // bar chart
     BarChart barChart;
@@ -92,10 +89,12 @@ public class HistoryFragment extends Fragment {
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
+        xAxis.setEnabled(false);
 
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setAxisMinimum(0);
         leftAxis.setDrawGridLines(false);
+        leftAxis.setEnabled(false);
 
         YAxis rightAxis = barChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -103,31 +102,12 @@ public class HistoryFragment extends Fragment {
         Legend l = barChart.getLegend();
         l.setEnabled(false);
 
-        // chart data
-
-        getEntries();
-
-        barDataSet = new BarDataSet(delays, "Minute");
-
-
-        // set chart gradient color
-        int startColor = ContextCompat.getColor(getContext(), android.R.color.holo_blue_light);
-        int endColor = ContextCompat.getColor(getContext(), android.R.color.holo_purple);
-        barDataSet.setGradientColor(startColor, endColor);
-        barDataSet.setValueFormatter(new DefaultValueFormatter(0));
-        barDataSet.setValueTextSize(10);
-
-        barData = new BarData(barDataSet);
-        barData.setBarWidth(0.4f); // set bar width
-
-        barChart.setData(barData);
-
-
         // List
         lvHistory = (ListView) view.findViewById(R.id.historyList);
 
         return view;
     }
+
 
     @Override
     public void onStart() {
@@ -150,82 +130,57 @@ public class HistoryFragment extends Fragment {
                 historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
                 lvHistory.setAdapter(historyAdapter);
 
-//                getEntries();
-//
-//                barDataSet = new BarDataSet(delays, "Minute");
+                // chart data
+
+                getEntries();
+
+                barDataSet = new BarDataSet(delays, "Minute");
+
+
+                // set chart gradient color
+                int startColor = ContextCompat.getColor(getContext(), android.R.color.holo_blue_light);
+                int endColor = ContextCompat.getColor(getContext(), android.R.color.holo_purple);
+                barDataSet.setGradientColor(startColor, endColor);
+                barDataSet.setValueFormatter(new DefaultValueFormatter(0));
+                barDataSet.setValueTextSize(10);
+
+                barData = new BarData(barDataSet);
+                barData.setBarWidth(0.4f); // set bar width
+
+                barChart.setData(barData);
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
     }
 
 
-
-
-
-
     private void getEntries() {
-        dbUserHistory.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // clear previous list
-                histories.clear();
-
-                // iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    int delay = postSnapshot.child("delay").getValue(Integer.class);
-                    Long date = (Long) postSnapshot.child("timestamp").getValue();
-
-                    histories.add(new History(delay, date));
-                }
-
-                // create adapter
-                historyAdapter = new HistoryAdapter(getContext(), R.layout.activity_history_view, histories);
-                lvHistory.setAdapter(historyAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-
-
         delayHisto = new ArrayList<Integer>(Arrays.asList(0,0,0,0,0,0,0));
 
-
         LocalDate curDate = LocalDate.now();
-//        Long dateLong = 1576338782888L;
-//        LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
-//        long diff = ChronoUnit.DAYS.between(date, curDate);
 
         for (History temp : histories) {
             Long dateLong = temp.getDate();
             LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
             Long diff = ChronoUnit.DAYS.between(date, curDate);
-            int dayDiff = diff.intValue()-1;
+            int dayDiff = 6 - diff.intValue();
             Log.d("histo", String.valueOf(dayDiff));
 
             if (dayDiff < delayHisto.size()) {
                 int prev = delayHisto.get(dayDiff);
-                delayHisto.set(dayDiff, (temp.getDelay()));
+                delayHisto.set(dayDiff, (prev + temp.getDelay()));
             }
-            delayHisto.set(dayDiff, (temp.getDelay()));
         }
 
         delays.clear();
         for (int i=0; i<delayHisto.size(); i++) {
             delays.add(new BarEntry(i+1, delayHisto.get(i)));
         }
-
-//        delays.add(new BarEntry(1, diff));
-//        delays.add(new BarEntry(2, 3));
-//        delays.add(new BarEntry(3,8));
-//        delays.add(new BarEntry(4, 6));
-//        delays.add(new BarEntry(5, 9));
-//        delays.add(new BarEntry(6, 10));
-        delays.add(new BarEntry(7, 6));
     }
 
 }
