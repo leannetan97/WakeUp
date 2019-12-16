@@ -11,22 +11,23 @@ public class Friend extends User implements Comparable, Parcelable {
     private boolean isAwake;
     private String phoneNumber;
 
-    public Friend() {
-
+    public Friend(String userName) {
+        this.userName = userName;
     }
 
     public Friend(String userName, boolean isAwake) {
         this.userName = userName;
         this.isAwake = isAwake;
+        this.phoneNumber = "012345";
     }
 
     // Testing Purpose
-    public Friend(String userName) {
+    public Friend(String userName, String phoneNumber) {
         this.userName = userName;
         this.checked = false;
         this.isAwake = false;
         // Testing purpose
-        this.phoneNumber = this.userName + "@abc.com";
+        this.phoneNumber = phoneNumber;
     }
 
     protected Friend(Parcel in) {
@@ -56,11 +57,11 @@ public class Friend extends User implements Comparable, Parcelable {
         return userName;
     }
 
-    public void setEmail(String email) {
-        this.phoneNumber = email;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getEmail() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -88,7 +89,7 @@ public class Friend extends User implements Comparable, Parcelable {
 
     @Override
     public int compareTo(Object o) {
-        return  -Boolean.compare(((Friend) o).getIsAwake(), getIsAwake());
+        return -Boolean.compare(((Friend) o).getIsAwake(), getIsAwake());
     }
 
     @Override

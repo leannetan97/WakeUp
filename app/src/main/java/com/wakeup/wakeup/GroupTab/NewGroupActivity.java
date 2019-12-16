@@ -4,11 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,10 +42,12 @@ public class NewGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
-
+//        checkUserPhonePermission();
         // Friends Selected
         friends = new ArrayList<>();
 //        createDummyData();
+
+//        getContactList();
 
         ActionBar ab = getSupportActionBar();
 //        assert ab != null;
@@ -62,6 +71,7 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListFriendsActivity.class);
                 startActivityForResult(intent, 0);
+                Toast.makeText(getApplicationContext(), "Loading Contacts...", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -80,6 +90,8 @@ public class NewGroupActivity extends AppCompatActivity {
         NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
         recyclerView.setAdapter(adapter);
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,21 +118,6 @@ public class NewGroupActivity extends AppCompatActivity {
         }
     }
 
-    private void createDummyData() {
-        friends.add(new Friend("100"));
-        friends.add(new Friend("101"));
-        friends.add(new Friend("102"));
-        friends.add(new Friend("103"));
-        friends.add(new Friend("104"));
-        friends.add(new Friend("105"));
-        friends.add(new Friend("106"));
-        friends.add(new Friend("107"));
-        friends.add(new Friend("108"));
-        friends.add(new Friend("109"));
-        friends.add(new Friend("110"));
-        friends.add(new Friend("111"));
-        friends.add(new Friend("112"));
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -138,10 +135,4 @@ public class NewGroupActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public boolean onNavigateUp() {
-//        finish();
-//        return true;
-//
-//    }
 }
