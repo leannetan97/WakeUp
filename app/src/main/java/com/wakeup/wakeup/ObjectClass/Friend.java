@@ -1,12 +1,15 @@
 package com.wakeup.wakeup.ObjectClass;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
-public class Friend extends User implements Comparable{
+public class Friend extends User implements Comparable, Parcelable {
     private String userName;
     private boolean checked;
     private boolean isAwake;
-    private String email;
+    private String phoneNumber;
 
     public Friend() {
 
@@ -23,8 +26,27 @@ public class Friend extends User implements Comparable{
         this.checked = false;
         this.isAwake = false;
         // Testing purpose
-        this.email = this.userName + "@abc.com";
+        this.phoneNumber = this.userName + "@abc.com";
     }
+
+    protected Friend(Parcel in) {
+        userName = in.readString();
+        checked = in.readByte() != 0;
+        isAwake = in.readByte() != 0;
+        phoneNumber = in.readString();
+    }
+
+    public static final Creator<Friend> CREATOR = new Creator<Friend>() {
+        @Override
+        public Friend createFromParcel(Parcel in) {
+            return new Friend(in);
+        }
+
+        @Override
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 
     public void setUserName(String userName) {
         this.userName = userName;
@@ -35,11 +57,11 @@ public class Friend extends User implements Comparable{
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.phoneNumber = email;
     }
 
     public String getEmail() {
-        return email;
+        return phoneNumber;
     }
 
     public void setChecked(boolean checked) {
@@ -67,5 +89,18 @@ public class Friend extends User implements Comparable{
     @Override
     public int compareTo(Object o) {
         return  -Boolean.compare(((Friend) o).getIsAwake(), getIsAwake());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userName);
+        dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeByte((byte) (isAwake ? 1 : 0));
+        dest.writeString(phoneNumber);
     }
 }

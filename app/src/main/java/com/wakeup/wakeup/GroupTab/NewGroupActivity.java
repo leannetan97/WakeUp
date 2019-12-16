@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wakeup.wakeup.AwakeStatusListActivity;
@@ -28,14 +29,16 @@ import java.util.ArrayList;
 
 public class NewGroupActivity extends AppCompatActivity {
     ArrayList<Friend> friends;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
 
+        // Friends Selected
         friends = new ArrayList<>();
-        createDummyData();
+//        createDummyData();
 
         ActionBar ab = getSupportActionBar();
 //        assert ab != null;
@@ -46,8 +49,10 @@ public class NewGroupActivity extends AppCompatActivity {
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 // TODO: Implemenet invite add to list
-//                Intent I = new Intent(NewGroupActivity.this, AwakeStatusListActivity.class);
-//                startActivity(I);
+                TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
+                String phoneNumber = tvPhoneNumber.getText().toString();
+                // TODO: Check if phone number is in database
+                tvPhoneNumber.setText("");
             }
         });
 
@@ -69,7 +74,7 @@ public class NewGroupActivity extends AppCompatActivity {
 ////        assert ab != null;
 //        ab.setDisplayHomeAsUpEnabled(true);
 
-        RecyclerView recyclerView = findViewById(R.id.rv_new_group_friends_list);
+        recyclerView = findViewById(R.id.rv_new_group_friends_list);
 //        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
@@ -122,8 +127,13 @@ public class NewGroupActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String name = data.getStringExtra("Name");
-                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+//                String name = data.getStringExtra("Name");
+                ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
+//                System.out.println(friendsSelected.get(0));
+                friends.addAll(friendsSelected);
+                NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
+                recyclerView.setAdapter(adapter);
+//                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
             }
         }
     }

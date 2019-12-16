@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,10 +89,11 @@ public class ListFriendsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_friend_list_text_OK) {
             Intent intent = new Intent();
-            intent.putExtra("Name", "OK");
+//            intent.putExtra("Name", "OK");
+            intent.putParcelableArrayListExtra("friends", getSelectedFriends());
             setResult(RESULT_OK, intent);
-            System.out.println(getSelectedFriends().get(0));
-//                Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
+//            System.out.println(getSelectedFriends().get(0));
+//            Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
             finish();
             return true;
         }
