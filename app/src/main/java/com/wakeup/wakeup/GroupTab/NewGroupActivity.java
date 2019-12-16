@@ -39,6 +39,7 @@ import com.wakeup.wakeup.R;
 import com.wakeup.wakeup.ui.main.NewGroupFriendsListAdapter;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 public class NewGroupActivity extends AppCompatActivity {
@@ -63,13 +64,15 @@ public class NewGroupActivity extends AppCompatActivity {
         Button btnAddFromList = (Button) findViewById(R.id.btn_groupInvite);
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                // TODO: Implemenet invite add to list
+
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
                 System.out.println(phoneNumber);
-                // TODO: Check if phone number is in database
+
                 checkExistInDatabase(phoneNumber);
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                InputMethodManager imm =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 tvPhoneNumber.setText("");
             }
@@ -102,6 +105,20 @@ public class NewGroupActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private boolean checkIsInAddedList(String phoneNumber) {
+        int n;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            n = friends.stream().filter(o -> phoneNumber.equals(o.getPhoneNumber())).collect(Collectors.toList()).size();
+            return n > 0;
+        } else {
+            for (Friend f : friends) {
+                if (f.getPhoneNumber().equals(phoneNumber)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,7 +154,13 @@ public class NewGroupActivity extends AppCompatActivity {
 //                String name = data.getStringExtra("Name");
                 ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
 //                System.out.println(friendsSelected.get(0));
-                friends.addAll(friendsSelected);
+                for(Friend f: friendsSelected){
+                    System.out.println(f.getPhoneNumber());
+                    if(checkIsInAddedList(f.getPhoneNumber())){
+                        continue;
+                    }
+                    friends.add(f);
+                }
                 NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
                 recyclerView.setAdapter(adapter);
 //                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
@@ -154,7 +177,8 @@ public class NewGroupActivity extends AppCompatActivity {
                     //user exists, do something
                     System.out.println("heyhey");
                     friends.add(friend);
-                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    NewGroupFriendsListAdapter adapter =
+                            new NewGroupFriendsListAdapter(getApplicationContext(), friends);
                     recyclerView.setAdapter(adapter);
                 }
             }
@@ -172,8 +196,15 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(phoneNumber).exists()) {
                     //user exists, do something
+
+                    if (checkIsInAddedList(phoneNumber)) {
+                        Toast.makeText(getApplicationContext(), "Already Added.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     friends.add(new Friend(phoneNumber, phoneNumber));
-                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    NewGroupFriendsListAdapter adapter =
+                            new NewGroupFriendsListAdapter(getApplicationContext(), friends);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"
