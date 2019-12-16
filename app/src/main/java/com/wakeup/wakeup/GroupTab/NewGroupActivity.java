@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,17 +35,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.AwakeStatusListActivity;
 import com.wakeup.wakeup.ListFriendsActivity;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
+import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.User;
 import com.wakeup.wakeup.R;
 import com.wakeup.wakeup.ui.main.NewGroupFriendsListAdapter;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 
 public class NewGroupActivity extends AppCompatActivity {
     ArrayList<Friend> friends;
     RecyclerView recyclerView;
     private DatabaseReference dbUsers;
+    private DatabaseReference dbGroups;
     private boolean exist;
 
     @Override
@@ -63,13 +69,15 @@ public class NewGroupActivity extends AppCompatActivity {
         Button btnAddFromList = (Button) findViewById(R.id.btn_groupInvite);
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                // TODO: Implemenet invite add to list
+
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
                 System.out.println(phoneNumber);
-                // TODO: Check if phone number is in database
+
                 checkExistInDatabase(phoneNumber);
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                InputMethodManager imm =
+                        (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 tvPhoneNumber.setText("");
             }
@@ -102,6 +110,20 @@ public class NewGroupActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private boolean checkIsInAddedList(String phoneNumber) {
+        int n;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            n = friends.stream().filter(o -> phoneNumber.equals(o.getPhoneNumber())).collect(Collectors.toList()).size();
+            return n > 0;
+        } else {
+            for (Friend f : friends) {
+                if (f.getPhoneNumber().equals(phoneNumber)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,12 +132,26 @@ public class NewGroupActivity extends AppCompatActivity {
         return true;
     }
 
+    private Group makeGroupInstance(){
+        EditText etGroupName = findViewById(R.id.et_groupName);
+        String groupName = etGroupName.getText().toString();
+        Group group = new Group(groupName);
+        for(User f: friends){
+            group.addUser(f);
+        }
+        return group;
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_newGroupOK:
                 Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
+
+                Group group = makeGroupInstance();
+                FirebaseHelper firebaseHelper = new FirebaseHelper();
+                firebaseHelper.addGroup(group);
+
                 finish();
                 return true;
 
@@ -137,7 +173,13 @@ public class NewGroupActivity extends AppCompatActivity {
 //                String name = data.getStringExtra("Name");
                 ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
 //                System.out.println(friendsSelected.get(0));
-                friends.addAll(friendsSelected);
+                for(Friend f: friendsSelected){
+                    System.out.println(f.getPhoneNumber());
+                    if(checkIsInAddedList(f.getPhoneNumber())){
+                        continue;
+                    }
+                    friends.add(f);
+                }
                 NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
                 recyclerView.setAdapter(adapter);
 //                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
@@ -154,7 +196,8 @@ public class NewGroupActivity extends AppCompatActivity {
                     //user exists, do something
                     System.out.println("heyhey");
                     friends.add(friend);
-                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    NewGroupFriendsListAdapter adapter =
+                            new NewGroupFriendsListAdapter(getApplicationContext(), friends);
                     recyclerView.setAdapter(adapter);
                 }
             }
@@ -172,8 +215,15 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(phoneNumber).exists()) {
                     //user exists, do something
+
+                    if (checkIsInAddedList(phoneNumber)) {
+                        Toast.makeText(getApplicationContext(), "Already Added.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     friends.add(new Friend(phoneNumber, phoneNumber));
-                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    NewGroupFriendsListAdapter adapter =
+                            new NewGroupFriendsListAdapter(getApplicationContext(), friends);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"

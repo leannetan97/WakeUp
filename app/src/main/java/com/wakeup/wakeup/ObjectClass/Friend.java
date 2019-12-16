@@ -9,32 +9,32 @@ public class Friend extends User implements Comparable, Parcelable {
     private String userName;
     private boolean checked;
     private boolean isAwake;
-    private String phoneNumber;
+    private String phoneNum;
 
     public Friend(String userName) {
         this.userName = userName;
     }
 
+    // Testing Purpose
     public Friend(String userName, boolean isAwake) {
         this.userName = userName;
         this.isAwake = isAwake;
-        this.phoneNumber = "012345";
+//        this.phoneNum = "012345";
     }
 
-    // Testing Purpose
-    public Friend(String userName, String phoneNumber) {
+
+    public Friend(String userName, String phoneNum) {
         this.userName = userName;
-        this.checked = false;
-        this.isAwake = false;
-        // Testing purpose
-        this.phoneNumber = phoneNumber;
+        this.phoneNum = phoneNum;
+//        this.checked = false;
+//        this.isAwake = false;
     }
 
     protected Friend(Parcel in) {
         userName = in.readString();
         checked = in.readByte() != 0;
         isAwake = in.readByte() != 0;
-        phoneNumber = in.readString();
+        phoneNum = in.readString();
     }
 
     public static final Creator<Friend> CREATOR = new Creator<Friend>() {
@@ -57,13 +57,13 @@ public class Friend extends User implements Comparable, Parcelable {
         return userName;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+//    public void setPhoneNum(String phoneNumber) {
+//        this.phoneNum = phoneNumber;
+//    }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+//    public String getPhoneNum() {
+//        return phoneNum;
+//    }
 
     public void setChecked(boolean checked) {
         this.checked = checked;
@@ -102,6 +102,6 @@ public class Friend extends User implements Comparable, Parcelable {
         dest.writeString(userName);
         dest.writeByte((byte) (checked ? 1 : 0));
         dest.writeByte((byte) (isAwake ? 1 : 0));
-        dest.writeString(phoneNumber);
+        dest.writeString(phoneNum);
     }
 }

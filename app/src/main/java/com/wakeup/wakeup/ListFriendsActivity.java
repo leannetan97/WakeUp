@@ -43,6 +43,8 @@ public class ListFriendsActivity extends AppCompatActivity {
     ArrayList<Friend> friends = new ArrayList<>();
     ArrayList<Friend> allContacts = new ArrayList<>();
     private DatabaseReference dbUsers;
+    ListView listView;
+    ActionBar ab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,13 @@ public class ListFriendsActivity extends AppCompatActivity {
 //        createDummyData();
         checkUserPhonePermission();
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
+
+
+        listView = (ListView) findViewById(R.id.lv_list_friends);
+        ArrayAdapter<Friend> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, friends);
+        ab = getSupportActionBar();
+
         getContactList();
         for (Friend f : allContacts) {
             if (f.getPhoneNumber().contains(".") || f.getPhoneNumber().contains("#") || f.getPhoneNumber().contains("$") || f.getPhoneNumber().contains("[") || f.getPhoneNumber().contains("]")) {
@@ -59,17 +68,16 @@ public class ListFriendsActivity extends AppCompatActivity {
             checkExistInDatabase(f);
         }
 
-        ActionBar ab = getSupportActionBar();
+
         String title = String.format("Friends List (%d)", friends.size());
         ab.setTitle(title);
 
 //        assert ab != null;
 //        ab.setDisplayHomeAsUpEnabled(true);
 
-        ListView listView = (ListView) findViewById(R.id.lv_list_friends);
 
-        ArrayAdapter<Friend> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, friends);
+
+
 
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listView.setAdapter(adapter);
@@ -148,13 +156,16 @@ public class ListFriendsActivity extends AppCompatActivity {
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                        System.out.println(name);
+
                         if (names.contains(name)) {
                             continue;
                         }
-                        System.out.println(phoneNo);
+
+                        System.out.println(phoneNo.replaceAll("\\s+","").replaceAll("-+", ""));
+                        System.out.println(name);
+//                        System.out.println(phoneNo);
                         names.add(name);
-                        allContacts.add(new Friend(name, phoneNo));
+                        allContacts.add(new Friend(name, phoneNo.replaceAll("\\s+","").replaceAll("-+", "")));
                     }
                     pCur.close();
                 }
@@ -202,9 +213,15 @@ public class ListFriendsActivity extends AppCompatActivity {
         dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(friend.getPhoneNumber()).exists()) {
+                if (dataSnapshot.child(friend.getPhoneNumber().replaceAll("\\s+","").replaceAll("-", "")).exists()) {
                     //user exists, do something
+                    System.out.println("exist!");
                     friends.add(friend);
+                    ArrayAdapter<Friend> adapter = new ArrayAdapter<>(getApplicationContext(),
+                            android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, friends);
+                    listView.setAdapter(adapter);
+                    String title = String.format("Friends List (%d)", friends.size());
+                    ab.setTitle(title);
                 }
             }
 
