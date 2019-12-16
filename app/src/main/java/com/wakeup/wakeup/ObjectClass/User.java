@@ -2,7 +2,7 @@ package com.wakeup.wakeup.ObjectClass;
 
 public class User {
 
-    private String phoneNum;
+    String phoneNum;
 
     // Constructor
     public User() {

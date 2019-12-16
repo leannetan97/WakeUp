@@ -9,7 +9,7 @@ public class Friend extends User implements Comparable, Parcelable {
     private String userName;
     private boolean checked;
     private boolean isAwake;
-    private String phoneNum;
+//    private String phoneNum;
 
     public Friend(String userName) {
         this.userName = userName;

@@ -72,6 +72,12 @@ public class NewGroupActivity extends AppCompatActivity {
 
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
+
+                if(phoneNumber.equals("")){
+                    Toast.makeText(getApplicationContext(), "Please enter a phone number.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 System.out.println(phoneNumber);
 
                 checkExistInDatabase(phoneNumber);
@@ -113,11 +119,11 @@ public class NewGroupActivity extends AppCompatActivity {
     private boolean checkIsInAddedList(String phoneNumber) {
         int n;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            n = friends.stream().filter(o -> phoneNumber.equals(o.getPhoneNumber())).collect(Collectors.toList()).size();
+            n = friends.stream().filter(o -> phoneNumber.equals(o.getPhoneNum())).collect(Collectors.toList()).size();
             return n > 0;
         } else {
             for (Friend f : friends) {
-                if (f.getPhoneNumber().equals(phoneNumber)) {
+                if (f.getPhoneNum().equals(phoneNumber)) {
                     return true;
                 }
             }
@@ -146,6 +152,14 @@ public class NewGroupActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_newGroupOK:
+
+                EditText etGroupName = findViewById(R.id.et_groupName);
+                String groupName = etGroupName.getText().toString();
+                if(groupName.equals("")){
+                    Toast.makeText(this, "Group name cannot be empty.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
                 Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
 
                 Group group = makeGroupInstance();
@@ -174,8 +188,8 @@ public class NewGroupActivity extends AppCompatActivity {
                 ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
 //                System.out.println(friendsSelected.get(0));
                 for(Friend f: friendsSelected){
-                    System.out.println(f.getPhoneNumber());
-                    if(checkIsInAddedList(f.getPhoneNumber())){
+                    System.out.println(f.getPhoneNum());
+                    if(checkIsInAddedList(f.getPhoneNum())){
                         continue;
                     }
                     friends.add(f);
@@ -192,7 +206,7 @@ public class NewGroupActivity extends AppCompatActivity {
         dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(friend.getPhoneNumber()).exists()) {
+                if (dataSnapshot.child(friend.getPhoneNum()).exists()) {
                     //user exists, do something
                     System.out.println("heyhey");
                     friends.add(friend);

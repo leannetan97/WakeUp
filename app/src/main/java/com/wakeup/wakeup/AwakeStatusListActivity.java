@@ -159,8 +159,8 @@ public class AwakeStatusListActivity extends AppCompatActivity {
             tvFriendName.setText(friends.get(position).getUserName());
 
             TextView tvFriendPhone = row.findViewById(R.id.tv_friendPhoneNumber);
-            System.out.println(friends.get(position).getPhoneNumber());
-            tvFriendPhone.setText(friends.get(position).getPhoneNumber());
+            System.out.println(friends.get(position).getPhoneNum());
+            tvFriendPhone.setText(friends.get(position).getPhoneNum());
 
             ImageView ivAwakeStatus = row.findViewById(R.id.iv_awakeStatus);
             ImageView btnCall = row.findViewById(R.id.btn_call);

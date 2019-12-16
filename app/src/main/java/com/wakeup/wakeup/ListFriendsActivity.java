@@ -62,7 +62,7 @@ public class ListFriendsActivity extends AppCompatActivity {
 
         getContactList();
         for (Friend f : allContacts) {
-            if (f.getPhoneNumber().contains(".") || f.getPhoneNumber().contains("#") || f.getPhoneNumber().contains("$") || f.getPhoneNumber().contains("[") || f.getPhoneNumber().contains("]")) {
+            if (f.getPhoneNum().contains(".") || f.getPhoneNum().contains("#") || f.getPhoneNum().contains("$") || f.getPhoneNum().contains("[") || f.getPhoneNum().contains("]")) {
                 continue;
             }
             checkExistInDatabase(f);
@@ -213,7 +213,7 @@ public class ListFriendsActivity extends AppCompatActivity {
         dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(friend.getPhoneNumber().replaceAll("\\s+","").replaceAll("-", "")).exists()) {
+                if (dataSnapshot.child(friend.getPhoneNum().replaceAll("\\s+","").replaceAll("-", "")).exists()) {
                     //user exists, do something
                     System.out.println("exist!");
                     friends.add(friend);
