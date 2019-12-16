@@ -47,7 +47,6 @@ public class FirebaseHelper {
             Log.e("addCur", "current user: " + user);
 
             // all nodes under current user
-//            dbCurrentUser = dbUsers.child(emailHashed);
             dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
             dbUserHistory = dbUsers.child(phoneNum).child("history");
             dbUserGroups = dbUsers.child(phoneNum).child("groups");
@@ -74,6 +73,8 @@ public class FirebaseHelper {
     public void addGroup(Group group) {
         String id = dbGroups.push().getKey();
         updateGroup(group, id);
+
+        addAdminToGroup(phoneNum, id);
     }
 
     public void updateGroup(Group group, String groupKey) {
@@ -87,12 +88,12 @@ public class FirebaseHelper {
     public void modifyGroup(Group group, String groupKey, Object value) {
         // add to current user
         Log.d("add", "here " + this.phoneNum);
-        addUserToGroup(this.phoneNum, groupKey, value);
+        addUserToGroup(phoneNum, groupKey, value);
 
         // add other users
-//        for (User user : group.getUsersInGroup()) {
-//            addUserToGroup(user.getPhoneNum(), groupKey, value);
-//        }
+        for (User user : group.getUsersInGroup()) {
+            addUserToGroup(user.getPhoneNum(), groupKey, value);
+        }
     }
 
 
@@ -100,8 +101,8 @@ public class FirebaseHelper {
     public void addUserToGroup(String phoneNum, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
-        Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
         childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, value);
+        // Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
 
         dbFirebase.updateChildren(childUpdates);
     }
