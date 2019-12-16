@@ -67,8 +67,7 @@ public class ListFriendsActivity extends AppCompatActivity {
 //        ab.setDisplayHomeAsUpEnabled(true);
 
         ListView listView = (ListView) findViewById(R.id.lv_list_friends);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout
-//        .fragment_friend_lists_checkbox, R.id.tv_friend_name_list_view, friends);
+
         ArrayAdapter<Friend> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, friends);
 

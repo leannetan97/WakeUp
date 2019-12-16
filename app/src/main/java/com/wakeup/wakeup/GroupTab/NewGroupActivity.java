@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,13 +66,11 @@ public class NewGroupActivity extends AppCompatActivity {
                 // TODO: Implemenet invite add to list
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
+                System.out.println(phoneNumber);
                 // TODO: Check if phone number is in database
-                if (checkExistInDatabase(phoneNumber)) {
-                    friends.add(new Friend(phoneNumber, phoneNumber));
-                } else {
-                    Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"
-                            , Toast.LENGTH_SHORT).show();
-                }
+                checkExistInDatabase(phoneNumber);
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 tvPhoneNumber.setText("");
             }
         });
@@ -152,7 +152,10 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(friend.getPhoneNumber()).exists()) {
                     //user exists, do something
+                    System.out.println("heyhey");
                     friends.add(friend);
+                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    recyclerView.setAdapter(adapter);
                 }
             }
 
@@ -163,15 +166,18 @@ public class NewGroupActivity extends AppCompatActivity {
         });
     }
 
-    public boolean checkExistInDatabase(String phoneNumber) {
+    public void checkExistInDatabase(String phoneNumber) {
         dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(phoneNumber).exists()) {
                     //user exists, do something
-                    exist = true;
+                    friends.add(new Friend(phoneNumber, phoneNumber));
+                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    recyclerView.setAdapter(adapter);
                 } else {
-                    exist = false;
+                    Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"
+                            , Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -180,8 +186,6 @@ public class NewGroupActivity extends AppCompatActivity {
 
             }
         });
-
-        return exist;
     }
 
 
