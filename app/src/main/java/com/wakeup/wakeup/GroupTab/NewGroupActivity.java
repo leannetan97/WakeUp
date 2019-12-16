@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.AwakeStatusListActivity;
 import com.wakeup.wakeup.ListFriendsActivity;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
+import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.User;
 import com.wakeup.wakeup.R;
 import com.wakeup.wakeup.ui.main.NewGroupFriendsListAdapter;
 
@@ -46,6 +50,7 @@ public class NewGroupActivity extends AppCompatActivity {
     ArrayList<Friend> friends;
     RecyclerView recyclerView;
     private DatabaseReference dbUsers;
+    private DatabaseReference dbGroups;
     private boolean exist;
 
     @Override
@@ -127,12 +132,26 @@ public class NewGroupActivity extends AppCompatActivity {
         return true;
     }
 
+    private Group makeGroupInstance(){
+        EditText etGroupName = findViewById(R.id.et_groupName);
+        String groupName = etGroupName.getText().toString();
+        Group group = new Group(groupName);
+        for(User f: friends){
+            group.addUser(f);
+        }
+        return group;
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_newGroupOK:
                 Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
+
+                Group group = makeGroupInstance();
+                FirebaseHelper firebaseHelper = new FirebaseHelper();
+                firebaseHelper.addGroup(group);
+
                 finish();
                 return true;
 
