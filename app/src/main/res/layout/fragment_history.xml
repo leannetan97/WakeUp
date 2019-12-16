@@ -8,34 +8,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="10"
         android:orientation="vertical"
-        tools:context=".HistoryActivity">
+        android:gravity="center_horizontal"
+        android:padding="15dp">
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/historyChart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"/>
+            android:layout_width="300dp"
+            android:layout_height="150dp" />
 
         <LinearLayout
+            android:id="@+id/layout_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_history1"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
+                android:gravity="center_horizontal"
                 android:padding="10dip"
-                android:text="@string/history"
+                android:text="@string/history2"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_history2"
-                android:layout_width="fill_parent"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:gravity="end"
+                android:gravity="center_horizontal"
                 android:padding="10dip"
                 android:text="@string/delay"
                 android:textStyle="bold" />
@@ -44,8 +46,7 @@
         <ListView
             android:id="@+id/historyList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="4" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </FrameLayout>

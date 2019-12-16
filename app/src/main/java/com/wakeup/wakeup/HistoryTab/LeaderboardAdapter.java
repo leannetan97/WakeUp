@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.wakeup.wakeup.ObjectClass.LeaderboardModel;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;

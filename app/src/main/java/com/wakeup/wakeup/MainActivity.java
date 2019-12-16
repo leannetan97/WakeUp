@@ -44,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build()
+                new AuthUI.IdpConfig.PhoneBuilder().build()
+//                new AuthUI.IdpConfig.EmailBuilder().build(),
+//                new AuthUI.IdpConfig.GoogleBuilder().build()
         );
 
 

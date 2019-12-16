@@ -19,15 +19,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 
 public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, AdapterView.OnItemSelectedListener {
@@ -48,14 +45,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private int gameOption = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
 
         firebaseHelper = new FirebaseHelper();
-//        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
-
-
 
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
@@ -74,11 +68,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                 System.out.println("[DEBUG] Personal Details Fragment");
                 fragment = new PersonalAlarmDetailsFragment(prevAlarm.getAlarmName());
             }
-            try {
-                ((TextView) findViewById(R.id.tv_time_display)).setText(prevAlarm.getTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            ((TextView) findViewById(R.id.tv_time_display)).setText(prevAlarm.getTime());
             //TODO: Update Spinner value
 //        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
         } else {
@@ -134,24 +124,21 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     public void updateAlarm() {
         //update alarm with existing key
-//        firebaseHelper.updateAlarm(newAlarm, alarmKey);
+        firebaseHelper.updateAlarm(newAlarm, alarmKey);
     }
 
     public void addAlarm() {
-//        String id = dbAlarms.push().getKey();
-
-//        Alarm alarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
-//        Alarm newAlarm = new Alarm("2019-12-30 23:37:51","AlarmSatu",true, true,  1);
-//        dbAlarms.child(id).setValue(newAlarm);
-        firebaseHelper.addAlarm();
+        firebaseHelper.addAlarm(newAlarm);
     }
 
     public void submitButtonOnClick(View view) {
         //TODO: Save details in local database
+        setViewToInstanceVar();
+
         String time = (String) tvTimeDisplay.getText();
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGame());
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption());
             updateAlarm();
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);

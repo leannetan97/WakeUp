@@ -4,10 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +28,13 @@ import android.widget.Toast;
 import com.wakeup.wakeup.ObjectClass.Friend;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class AwakeStatusListActivity extends AppCompatActivity {
 
-    private ArrayList<Friend> friends;
-    private ListView lv;
+    private ArrayList<Friend> friendsAwake, friendsSleep;
+    private ListView lvAwake, lvSleep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,32 +44,42 @@ public class AwakeStatusListActivity extends AppCompatActivity {
         tb.setDisplayHomeAsUpEnabled(true);
         tb.setTitle("Awake Status List");
 
-        lv = (ListView) findViewById(R.id.lv_awakeStatusList);
-
-
-        friends = new ArrayList<>();
+        friendsAwake = new ArrayList<>();
         createDummyData();
 
-//        ArrayList<String> alName = new ArrayList<>();
-//        alName.add("friend1");
-//        alName.add("friend2");
-//        alName.add("friend3");
-//
-//        ArrayList<Boolean> alStatus = new ArrayList<>();
-//
-//        alStatus.add(false);
-//        alStatus.add(true);
-//        alStatus.add(true);
-//
-//        ArrayList<String> alEmail= new ArrayList<>();
-//
-//        alEmail.add("abc@bmail.com");
-//        alEmail.add("def@email.fom");
-//        alEmail.add("ghi@hmail.iom");
+        int nFriendsNotAwake;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            nFriendsNotAwake =
+                    friendsAwake.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
+        } else {
+            nFriendsNotAwake = 0;
+            for (Friend f : friendsAwake) {
+                if (!f.getIsAwake()) {
+                    nFriendsNotAwake += 1;
+                }
+            }
+        }
 
-        CustomAdapter customAdapter = new CustomAdapter(this, friends);
+        if(nFriendsNotAwake > 0){
+            tb.setTitle("(" + nFriendsNotAwake + ") is/are still sleeping");
+        }else {
+            tb.setTitle("All members are awake!");
+        }
 
-        lv.setAdapter(customAdapter);
+
+
+        lvAwake = (ListView) findViewById(R.id.lv_awakeStatusList_awake);
+//        lvSleep = (ListView) findViewById(R.id.lv_awakeStatusList_sleep);
+
+
+//        friendsSleep = new ArrayList<>();
+
+
+        CustomAdapter customAdapterAwake = new CustomAdapter(this, friendsAwake);
+//        CustomAdapter customAdapterSleep = new CustomAdapter(this, friendsSleep);
+
+        lvAwake.setAdapter(customAdapterAwake);
+//        lvSleep.setAdapter(customAdapterSleep);
 
 //        ArrayAdapter ad = new ArrayAdapter(this, android.R.layout.simple_list_item_1, al);
 //        lv.setAdapter(ad);
@@ -74,28 +94,36 @@ public class AwakeStatusListActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.awake_status_list_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
+        } else if (item.getItemId() == R.id.btn_refresh_awake_status_list_menu) {
+            // TODO: implement refresh button
+            Toast.makeText(this, "Refreshing list...", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void createDummyData() {
-        friends.add(new Friend("100"));
-        friends.add(new Friend("101"));
-        friends.add(new Friend("102"));
-        friends.add(new Friend("103"));
-        friends.add(new Friend("104"));
-        friends.add(new Friend("105"));
-        friends.add(new Friend("106"));
-        friends.add(new Friend("107"));
-        friends.add(new Friend("108"));
-        friends.add(new Friend("109"));
-        friends.add(new Friend("110"));
-        friends.add(new Friend("111"));
-        friends.add(new Friend("112"));
+        int n = 100;
+        for (int i = 0; i < 5; i++) {
+            friendsAwake.add(new Friend(Integer.toString(n), false));
+            n += 1;
+        }
+        n = 200;
+        for (int i = 0; i < 7; i++) {
+            friendsAwake.add(new Friend(Integer.toString(n), true));
+            n += 1;
+        }
+        Collections.sort(friendsAwake);
     }
 
 
@@ -147,12 +175,39 @@ public class AwakeStatusListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Toast.makeText(context, "call " + friends.get(position).getUserName(),
                             Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:0125389672"));
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                        checkUserPhonePermission();
+//                    }
+
+                    startActivity(intent);
+
+
                 }
             });
 //            System.out.println(titles.get(position));
 
 
             return row;
+        }
+    }
+
+    public boolean checkUserPhonePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CALL_PHONE)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        99);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        99);
+            }
+            return false;
+        } else {
+            return true;
         }
     }
 }

@@ -2,7 +2,7 @@ package com.wakeup.wakeup.ObjectClass;
 
 import androidx.annotation.NonNull;
 
-public class Friend extends User{
+public class Friend extends User implements Comparable{
     private String userName;
     private boolean checked;
     private boolean isAwake;
@@ -10,6 +10,11 @@ public class Friend extends User{
 
     public Friend() {
 
+    }
+
+    public Friend(String userName, boolean isAwake) {
+        this.userName = userName;
+        this.isAwake = isAwake;
     }
 
     // Testing Purpose
@@ -57,5 +62,10 @@ public class Friend extends User{
     @Override
     public String toString() {
         return this.userName;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return  -Boolean.compare(((Friend) o).getIsAwake(), getIsAwake());
     }
 }

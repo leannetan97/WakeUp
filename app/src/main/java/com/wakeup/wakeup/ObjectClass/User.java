@@ -2,18 +2,23 @@ package com.wakeup.wakeup.ObjectClass;
 
 public class User {
 
-    private String email;
+    private String phoneNum;
 
+    // Constructor
     public User() {
     }
 
-    public User(String email) {
-        this.email = email;
+    public User(String phone) {
+        this.phoneNum = phone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getPhoneNum() {
+        return phoneNum;
     }
 
-    // check email exists -->signup, checkpw
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
+    }
+
+// check email exists -->signup, checkpw
 }

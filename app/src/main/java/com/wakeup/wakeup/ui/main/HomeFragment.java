@@ -2,13 +2,11 @@ package com.wakeup.wakeup.ui.main;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,10 +21,7 @@ import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 
 /**
@@ -34,29 +29,29 @@ import java.util.ListIterator;
  */
 public class HomeFragment extends Fragment {
     // firebase
-    FirebaseHelper firebaseHelper;
     DatabaseReference dbAlarms;
     private List<Alarm> alarms;
 
+    // adapter
     private RecyclerView.Adapter homeAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rvAlarm;
+
 
     public HomeFragment() {
         // Required empty public constructor
         alarms = new ArrayList<>();
 
         // firebase
-        firebaseHelper = new FirebaseHelper();
-        dbAlarms = firebaseHelper.getDbAlarms();
-//        createDummyData();
+        dbAlarms = new FirebaseHelper().getDbUserAlarms();
+        // createDummyData();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
+//        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
 
         rvAlarm= view.findViewById(R.id.rv_home);
         layoutManager = new LinearLayoutManager(getContext());
@@ -79,7 +74,7 @@ public class HomeFragment extends Fragment {
                 // iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Alarm alarm = postSnapshot.getValue(Alarm.class);
-                    String alarmKey = postSnapshot.getKey(); //alarm i
+                    String alarmKey = postSnapshot.getKey(); //alarm key
                     alarm.setAlarmKey(alarmKey);
 
                     alarms.add(alarm);

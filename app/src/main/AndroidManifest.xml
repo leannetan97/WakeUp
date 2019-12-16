@@ -20,7 +20,7 @@
             android:name=".Home"
             android:label="@string/app_name">
         </activity>
-        <activity android:name=".Games.GameTicTacToe" />
+        <activity android:name=".Games.GameTicTacToe" android:exported="true" />
         <activity android:name=".Games.GameShake" />
         <activity android:name=".Games.GameMath" />
         <activity android:name=".UserLogin.ForgotPassword" />
