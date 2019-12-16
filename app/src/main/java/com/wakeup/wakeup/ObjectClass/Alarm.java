@@ -8,6 +8,7 @@ import com.google.firebase.database.PropertyName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,17 +22,19 @@ public class Alarm  implements Parcelable {
     private boolean isOn;
     private int gameOption;
     private String user;
+    private Calendar timeInCalendar;
 
     // Constructor
     public Alarm() {
     }
 
-    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int gameOption) {
+    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int gameOption, Calendar timeInCalendar) {
         this.time = time;
         this.alarmName = alarmName;
         this.isOn = isOn;
         this.isGroup = isGroup;
         this.gameOption = gameOption;
+        this.timeInCalendar = timeInCalendar;
     }
 
     // Parcel
@@ -126,6 +129,14 @@ public class Alarm  implements Parcelable {
     // Set
     public void setAlarmKey(String alarmKey) {
         this.alarmKey = alarmKey;
+    }
+
+    public Calendar getTimeInCalendar() {
+        return timeInCalendar;
+    }
+
+    public void setTimeInCalendar(Calendar timeInCalendar) {
+        this.timeInCalendar = timeInCalendar;
     }
 
     // Firebase

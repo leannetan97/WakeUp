@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.app.backup.FileBackupHelper;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Menu;
@@ -24,6 +29,9 @@ import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
@@ -36,6 +44,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private Alarm prevAlarm;
     private Alarm newAlarm;
     private String alarmKey;
+    private Calendar alarmCalendar;
     private FirebaseHelper firebaseHelper;
 
     private DecimalFormat digitFormatter = new DecimalFormat("00");
@@ -99,6 +108,9 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.menu.alarm_edit_menu) {
+            if(prevAlarm.isOn()){
+                cancelAlarm();
+            }
             deleteAlarm();
         }
         if (item.getItemId() == android.R.id.home) {
@@ -120,6 +132,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     public void deleteAlarm() {
         //TODO: perform delete alarm
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper.deleteAlarm(alarmKey);
     }
 
     public void updateAlarm() {
@@ -138,16 +152,21 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         String time = (String) tvTimeDisplay.getText();
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption());
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption(), alarmCalendar);
+//            if(prevAlarm.isOn()){
+//                cancelAlarm();
+//            }
+//            startAlarm(alarmCalendar);
             updateAlarm();
         } else if (viewTitle.contains("Personal")) {
-            newAlarm = new Alarm(time, alarmName, true, false, gameOption);
+            newAlarm = new Alarm(time, alarmName, true, false, gameOption, alarmCalendar);
+//            startAlarm(alarmCalendar);
             addAlarm();
         } else {
-            newAlarm = new Alarm(time, alarmName, true, true, gameOption);
+            newAlarm = new Alarm(time, alarmName, true, true, gameOption, alarmCalendar);
+//            startAlarm(alarmCalendar);
             addAlarm();
         }
-
         finish();
     }
 
@@ -164,11 +183,16 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
         String time = digitFormatter.format(hourOfDay) + ":" + digitFormatter.format(minutes);
         tvTimeDisplay.setText(time);
+        //TODO: need to store the calender?
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        c.set(Calendar.MINUTE, minutes);
+        alarmCalendar = c;
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        // assume gameOption = [NONE, TICTACTOE, MATH, SHAKER]
+        //  gameOption = [NONE, TICTACTOE, MATH, SHAKER]
         gameOption = position;
         //TODO: For testing purpose only
         Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
@@ -177,5 +201,48 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         //do nothing
+    }
+
+    private void startAlarm(Calendar c) {
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        //Change the alarm object to byte so that pass
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = null;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(newAlarm);
+            out.flush();
+            byte[] data = bos.toByteArray();
+            intent.putExtra("alarm", data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmKey.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (c.before(Calendar.getInstance())) {
+            c.add(Calendar.DATE, 1);
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= 19) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        }
+    }
+
+    private void cancelAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmKey.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+        Toast.makeText(this,"Alarm is Cancel.", Toast.LENGTH_SHORT).show();
     }
 }

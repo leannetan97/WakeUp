@@ -75,11 +75,11 @@ public class GroupFragment extends Fragment {
     }
 
     private void createDummyAlarmData(Group group){
-        group.addAlarm(new Alarm("02:00","Alarm Name 1", true, true,2));
-        group.addAlarm(new Alarm("07:00","Alarm Name 2", false, true,2));
-        group.addAlarm(new Alarm("13:00","Alarm Name 3", true, true,2));
-        group.addAlarm(new Alarm("22:00","Alarm Name 4", false, true,2));
-        group.addAlarm(new Alarm("23:00","Alarm Name 5", true, true,2));
+//        group.addAlarm(new Alarm("02:00","Alarm Name 1", true, true,2));
+//        group.addAlarm(new Alarm("07:00","Alarm Name 2", false, true,2));
+//        group.addAlarm(new Alarm("13:00","Alarm Name 3", true, true,2));
+//        group.addAlarm(new Alarm("22:00","Alarm Name 4", false, true,2));
+//        group.addAlarm(new Alarm("23:00","Alarm Name 5", true, true,2));
     }
 
 //    class GroupListViewAdapter extends ArrayAdapter<String> {
