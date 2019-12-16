@@ -91,14 +91,5 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void createDummyData() {
-        alarms.add(new Alarm("02:00","Alarm Name 1", true, false,2));
-        alarms.add(new Alarm("03:00","Alarm Name 2", false, true,2));
-        alarms.add(new Alarm("04:00","Alarm Name 3", true, true,2));
-        alarms.add(new Alarm("05:00","Alarm Name 4", false, false,2));
-        alarms.add(new Alarm("06:00","Alarm Name 5", true, true,2));
-        alarms.add(new Alarm("07:00","Alarm Name 6", false, true,2));
-        alarms.add(new Alarm("08:00","Alarm Name 7", true, false,2));
-    }
 }
 
