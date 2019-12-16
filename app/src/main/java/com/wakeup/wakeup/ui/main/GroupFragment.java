@@ -80,11 +80,11 @@ public class GroupFragment extends Fragment {
 
                 // iterating through all the nodes
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Group group = postSnapshot.getValue(Group.class);
-                    String groupKey = postSnapshot.getKey(); //alarm key
-                    group.setGroupKey(groupKey);
-
-                    groups.add(group);
+//                    Group group = postSnapshot.getValue(Group.class);
+//                    String groupKey = postSnapshot.getKey(); //alarm key
+//                    group.setGroupKey(groupKey);
+//
+//                    groups.add(group);
                 }
             }
 

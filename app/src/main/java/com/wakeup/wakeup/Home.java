@@ -1,6 +1,7 @@
 package com.wakeup.wakeup;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
@@ -14,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
@@ -71,6 +74,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         firebaseHelper = new FirebaseHelper();
 
         Button button = (Button)findViewById(R.id.button_temp);
+        button.setText(firebaseHelper.getUsername());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 //                firebaseHelper.addHistory(6);
@@ -146,6 +150,8 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -172,9 +178,10 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     }
 
 
+
     private void navigateToChangePassword() {
-        Intent intent = new Intent(this, ChangePassword.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, ChangePassword.class);
+//        startActivity(intent);
     }
 
     // Change ProfileName
@@ -188,6 +195,25 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         args.putString("InvalidButton", "DISCARD");
         changeNameDialog.setArguments(args);
         changeNameDialog.show(getSupportFragmentManager(), "change profile name dialog");
+
+////////////////
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName("Jane Q. User")
+                .build();
+
+        Task<Void> voidTask = user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Firebase Profile", "User profile updated.");
+                        }
+                    }
+                });
+////////////////////
+
     }
 
     @Override

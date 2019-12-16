@@ -42,8 +42,8 @@ public class FirebaseHelper {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            username = user.getDisplayName();
             phoneNum = user.getPhoneNumber();
+            username = user.getDisplayName();
             Log.e("addCur", "current user: " + user);
 
             // all nodes under current user
@@ -61,7 +61,8 @@ public class FirebaseHelper {
     }
 
     public void updateAlarm(Alarm alarm, String alarmKey) {
-        dbUserAlarms.child(alarmKey).setValue(alarm);
+        String id = dbUserAlarms.push().getKey();
+        dbUserAlarms.child(id).setValue(alarm);
     }
 
     public void deleteAlarm(String alarmKey) {
@@ -70,11 +71,12 @@ public class FirebaseHelper {
 
 
     // Group
-    public void addGroup(Group group) {
+    public String addGroup(Group group) {
         String id = dbGroups.push().getKey();
         updateGroup(group, id);
 
         addAdminToGroup(phoneNum, id);
+        return id;
     }
 
     public void updateGroup(Group group, String groupKey) {
@@ -102,7 +104,7 @@ public class FirebaseHelper {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
         childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, value);
-        // Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
+        Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -112,11 +114,8 @@ public class FirebaseHelper {
     }
 
     public void addAdminToGroup(String phone, String groupKey) {
-        dbGroups.child("admins").child(phone).setValue(true);
+        dbGroups.child(groupKey).child("admins").child(phone).setValue(true);
     }
-
-    // dummy method, implement in related Java class instead of here
-
 
 
     // Games
@@ -124,7 +123,6 @@ public class FirebaseHelper {
         String id = dbScores.push().getKey();
         dbUserAlarms.child(id).setValue(game);
     }
-
 
 
     // History
