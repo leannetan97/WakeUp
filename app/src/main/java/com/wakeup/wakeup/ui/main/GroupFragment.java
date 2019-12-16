@@ -57,7 +57,7 @@ public class GroupFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
 
-        createDummyData();
+//        createDummyData();
 
         rvGroup = view.findViewById(R.id.rv_group);
         layoutManager = new LinearLayoutManager(getContext());
@@ -82,10 +82,16 @@ public class GroupFragment extends Fragment {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     String groupName = postSnapshot.getValue(String.class);
                     String groupKey = postSnapshot.getKey(); //alarm key
-//                    group.setGroupKey(groupKey);
 
-                    groups.add(new Group());
+                    Group group = new Group(groupName);
+                    group.setGroupKey(groupKey);
+
+                    groups.add(group);
                 }
+
+                // create adapter
+                groupAdapter = new GroupFragmentAdapter(groups);
+                rvGroup.setAdapter(groupAdapter);
             }
 
             @Override
@@ -96,32 +102,32 @@ public class GroupFragment extends Fragment {
     }
 
 
-    private void createDummyData() {
-        Group temp = new Group("Group A");
-        groups.add(temp);
-        createDummyAlarmData(temp);
-        temp = new Group("Group B");
-        groups.add(temp);
-        createDummyAlarmData(temp);
-        temp = new Group("Group C");
-        groups.add(temp);
-        createDummyAlarmData(temp);
-        temp = new Group("Group D");
-        groups.add(temp);
-        createDummyAlarmData(temp);
-        temp = new Group("Group E");
-        groups.add(temp);
-        temp = new Group("Group F");
-        groups.add(temp);
-        createDummyAlarmData(temp);
-    }
-
-    private void createDummyAlarmData(Group group){
-        group.addAlarm(new Alarm("02:00","Alarm Name 1", true, true,2));
-        group.addAlarm(new Alarm("07:00","Alarm Name 2", false, true,2));
-        group.addAlarm(new Alarm("13:00","Alarm Name 3", true, true,2));
-        group.addAlarm(new Alarm("22:00","Alarm Name 4", false, true,2));
-        group.addAlarm(new Alarm("23:00","Alarm Name 5", true, true,2));
-    }
+//    private void createDummyData() {
+//        Group temp = new Group("Group A");
+//        groups.add(temp);
+//        createDummyAlarmData(temp);
+//        temp = new Group("Group B");
+//        groups.add(temp);
+//        createDummyAlarmData(temp);
+//        temp = new Group("Group C");
+//        groups.add(temp);
+//        createDummyAlarmData(temp);
+//        temp = new Group("Group D");
+//        groups.add(temp);
+//        createDummyAlarmData(temp);
+//        temp = new Group("Group E");
+//        groups.add(temp);
+//        temp = new Group("Group F");
+//        groups.add(temp);
+//        createDummyAlarmData(temp);
+//    }
+//
+//    private void createDummyAlarmData(Group group){
+//        group.addAlarm(new Alarm("02:00","Alarm Name 1", true, true,2));
+//        group.addAlarm(new Alarm("07:00","Alarm Name 2", false, true,2));
+//        group.addAlarm(new Alarm("13:00","Alarm Name 3", true, true,2));
+//        group.addAlarm(new Alarm("22:00","Alarm Name 4", false, true,2));
+//        group.addAlarm(new Alarm("23:00","Alarm Name 5", true, true,2));
+//    }
 }
 
