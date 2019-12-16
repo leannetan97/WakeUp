@@ -1,5 +1,7 @@
 package com.wakeup.wakeup.ObjectClass;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +25,7 @@ public class FirebaseHelper {
     private DatabaseReference dbUsers;
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbUserHistory;
+    private DatabaseReference dbUserGroups;
     // private DatabaseReference dbCurrentUser;
 
 
@@ -39,13 +42,14 @@ public class FirebaseHelper {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            username = user.getDisplayName();
             phoneNum = user.getPhoneNumber();
+            username = user.getDisplayName();
+            Log.e("addCur", "current user: " + user);
 
             // all nodes under current user
-//            dbCurrentUser = dbUsers.child(emailHashed);
             dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
             dbUserHistory = dbUsers.child(phoneNum).child("history");
+            dbUserGroups = dbUsers.child(phoneNum).child("groups");
         }
     }
 
@@ -57,7 +61,8 @@ public class FirebaseHelper {
     }
 
     public void updateAlarm(Alarm alarm, String alarmKey) {
-        dbUserAlarms.child(alarmKey).setValue(alarm);
+        String id = dbUserAlarms.push().getKey();
+        dbUserAlarms.child(id).setValue(alarm);
     }
 
     public void deleteAlarm(String alarmKey) {
@@ -66,9 +71,12 @@ public class FirebaseHelper {
 
 
     // Group
-    public void addGroup(Group group) {
+    public String addGroup(Group group) {
         String id = dbGroups.push().getKey();
         updateGroup(group, id);
+
+        addAdminToGroup(phoneNum, id);
+        return id;
     }
 
     public void updateGroup(Group group, String groupKey) {
@@ -81,6 +89,7 @@ public class FirebaseHelper {
 
     public void modifyGroup(Group group, String groupKey, Object value) {
         // add to current user
+        Log.d("add", "here " + this.phoneNum);
         addUserToGroup(phoneNum, groupKey, value);
 
         // add other users
@@ -93,8 +102,9 @@ public class FirebaseHelper {
     // relationship between users and groups
     public void addUserToGroup(String phoneNum, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/users/" + phoneNum + "/groups", value);
-        childUpdates.put("/groups/" + groupKey + "/users", value);
+        childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
+        childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, value);
+        Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -104,11 +114,8 @@ public class FirebaseHelper {
     }
 
     public void addAdminToGroup(String phone, String groupKey) {
-        dbGroups.child("admins").child(phone).setValue(true);
+        dbGroups.child(groupKey).child("admins").child(phone).setValue(true);
     }
-
-    // dummy method, implement in related Java class instead of here
-
 
 
     // Games
@@ -116,7 +123,6 @@ public class FirebaseHelper {
         String id = dbScores.push().getKey();
         dbUserAlarms.child(id).setValue(game);
     }
-
 
 
     // History
@@ -164,5 +170,9 @@ public class FirebaseHelper {
 
     public DatabaseReference getDbUserHistory() {
         return dbUserHistory;
+    }
+
+    public DatabaseReference getDbUserGroups() {
+        return dbUserGroups;
     }
 }

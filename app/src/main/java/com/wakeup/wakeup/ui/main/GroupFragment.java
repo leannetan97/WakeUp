@@ -1,9 +1,10 @@
 package com.wakeup.wakeup.ui.main;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,11 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.wakeup.wakeup.HistoryTab.HistoryAdapter;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.History;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
@@ -26,14 +35,21 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class GroupFragment extends Fragment {
+    // firebase
+    private DatabaseReference dbUserGroups;
+    private List<Group> groups;
+
+    // adapter
     private RecyclerView rvGroup;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter groupAdapter;
-    private List<Group> groups;
 
     public GroupFragment() {
         // Required empty public constructor
         groups = new ArrayList<>();
+
+        // firebase
+        dbUserGroups = new FirebaseHelper().getDbUserGroups();
     }
 
     @Override
@@ -48,11 +64,37 @@ public class GroupFragment extends Fragment {
         rvGroup.setLayoutManager(layoutManager);
         groupAdapter = new GroupFragmentAdapter(groups);
         rvGroup.setAdapter(groupAdapter);
-//        GroupFragment.GroupListViewAdapter groupCardListAdapter =
-//                new GroupFragment.GroupListViewAdapter(getContext(), groupName);
-//        rvGroup.setAdapter(groupCardListAdapter);
+
         return view;
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        dbUserGroups.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // clear previous list
+                groups.clear();
+
+                // iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                    Group group = postSnapshot.getValue(Group.class);
+//                    String groupKey = postSnapshot.getKey(); //alarm key
+//                    group.setGroupKey(groupKey);
+//
+//                    groups.add(group);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+
+    }
+
 
     private void createDummyData() {
         Group temp = new Group("Group A");
@@ -81,27 +123,5 @@ public class GroupFragment extends Fragment {
         group.addAlarm(new Alarm("22:00","Alarm Name 4", false, true,2));
         group.addAlarm(new Alarm("23:00","Alarm Name 5", true, true,2));
     }
-
-//    class GroupListViewAdapter extends ArrayAdapter<String> {
-//        Context context;
-//        private ArrayList<String> groupName;
-//
-//
-//        GroupListViewAdapter(Context c, ArrayList<String> groupName) {
-//            super(c, R.layout.res_group_card_view, R.id.tv_group_name, groupName);
-//            this.context = c;
-//            this.groupName = groupName;
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView,
-//                            ViewGroup parent) {
-//            LayoutInflater inflater =
-//                    (LayoutInflater) getActivity().getApplicationContext().getSystemService(context.LAYOUT_INFLATER_SERVICE);
-//            View card = inflater.inflate(R.layout.res_group_card_view, parent, false);
-//            ((TextView) card.findViewById(R.id.tv_group_name)).setText(groupName.get(position));
-//            return card;
-//        }
-//    }
 }
 
