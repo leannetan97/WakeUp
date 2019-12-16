@@ -75,8 +75,6 @@ public class Alarm  implements Parcelable {
         parcel.writeInt(gameOption);
         parcel.writeString(alarmKey);
     }
-
-
     // Get
     public String getAlarmKey() {
         return alarmKey;

@@ -116,22 +116,7 @@ public class FirebaseHelper {
     }
 
     // dummy method, implement in related Java class instead of here
-    public void checkAdmin(String phoneNum, String groupKey) {
-        boolean isAdmin = false;
-        dbGroups.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(groupKey).child("admins").child(phoneNum).exists()) {
-                    //user exists, do something
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
 
     // Games

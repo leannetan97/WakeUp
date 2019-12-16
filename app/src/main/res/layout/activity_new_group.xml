@@ -24,9 +24,9 @@
             android:hint="Group Name"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toTopOf="@+id/textView2"
-            app:layout_constraintEnd_toEndOf="@+id/et_enterEmail"
+            app:layout_constraintEnd_toEndOf="@+id/et_enterPhoneNumber"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/et_enterEmail" />
+            app:layout_constraintStart_toStartOf="@+id/et_enterPhoneNumber" />
 
         <View
             android:layout_width="match_parent"
@@ -42,17 +42,15 @@
             app:layout_constraintTop_toBottomOf="@+id/et_groupName" />
 
         <EditText
-            android:id="@+id/et_enterEmail"
+            android:id="@+id/et_enterPhoneNumber"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginRight="24dp"
             android:layout_marginBottom="16dp"
             android:ems="15"
-            android:hint="Invite via Email"
-            android:inputType="textEmailAddress"
+            android:hint="Invite via Phone Number"
+            android:inputType="phone"
             app:layout_constraintBottom_toTopOf="@+id/btn_groupInvite"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -62,8 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Group Members:"
-            app:layout_constraintBottom_toTopOf="@+id/et_enterEmail"
-            app:layout_constraintStart_toStartOf="@+id/et_enterEmail" />
+            app:layout_constraintBottom_toTopOf="@+id/et_enterPhoneNumber"
+            app:layout_constraintStart_toStartOf="@+id/et_enterPhoneNumber" />
 
         <Button
             android:id="@+id/btn_groupInvite"
@@ -74,8 +72,8 @@
             android:backgroundTint="@color/colorAccent"
             android:text="Invite"
             app:layout_constraintBottom_toTopOf="@+id/tv_orNewGroup"
-            app:layout_constraintEnd_toEndOf="@+id/et_enterEmail"
-            app:layout_constraintStart_toStartOf="@+id/et_enterEmail" />
+            app:layout_constraintEnd_toEndOf="@+id/et_enterPhoneNumber"
+            app:layout_constraintStart_toStartOf="@+id/et_enterPhoneNumber" />
 
         <TextView
             android:id="@+id/tv_orNewGroup"

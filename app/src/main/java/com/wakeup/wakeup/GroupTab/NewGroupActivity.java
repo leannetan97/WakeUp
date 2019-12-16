@@ -4,19 +4,34 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.AwakeStatusListActivity;
 import com.wakeup.wakeup.ListFriendsActivity;
 import com.wakeup.wakeup.ObjectClass.Friend;
@@ -28,14 +43,17 @@ import java.util.ArrayList;
 
 public class NewGroupActivity extends AppCompatActivity {
     ArrayList<Friend> friends;
+    RecyclerView recyclerView;
+    private DatabaseReference dbUsers;
+    private boolean exist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
-
+        dbUsers = FirebaseDatabase.getInstance().getReference("users");
+        // Friends Selected
         friends = new ArrayList<>();
-        createDummyData();
 
         ActionBar ab = getSupportActionBar();
 //        assert ab != null;
@@ -46,8 +64,14 @@ public class NewGroupActivity extends AppCompatActivity {
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 // TODO: Implemenet invite add to list
-//                Intent I = new Intent(NewGroupActivity.this, AwakeStatusListActivity.class);
-//                startActivity(I);
+                TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
+                String phoneNumber = tvPhoneNumber.getText().toString();
+                System.out.println(phoneNumber);
+                // TODO: Check if phone number is in database
+                checkExistInDatabase(phoneNumber);
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                tvPhoneNumber.setText("");
             }
         });
 
@@ -57,6 +81,8 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListFriendsActivity.class);
                 startActivityForResult(intent, 0);
+                Toast.makeText(getApplicationContext(), "Loading Contacts...",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -69,12 +95,13 @@ public class NewGroupActivity extends AppCompatActivity {
 ////        assert ab != null;
 //        ab.setDisplayHomeAsUpEnabled(true);
 
-        RecyclerView recyclerView = findViewById(R.id.rv_new_group_friends_list);
+        recyclerView = findViewById(R.id.rv_new_group_friends_list);
 //        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
         recyclerView.setAdapter(adapter);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,37 +128,65 @@ public class NewGroupActivity extends AppCompatActivity {
         }
     }
 
-    private void createDummyData() {
-        friends.add(new Friend("100"));
-        friends.add(new Friend("101"));
-        friends.add(new Friend("102"));
-        friends.add(new Friend("103"));
-        friends.add(new Friend("104"));
-        friends.add(new Friend("105"));
-        friends.add(new Friend("106"));
-        friends.add(new Friend("107"));
-        friends.add(new Friend("108"));
-        friends.add(new Friend("109"));
-        friends.add(new Friend("110"));
-        friends.add(new Friend("111"));
-        friends.add(new Friend("112"));
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                String name = data.getStringExtra("Name");
-                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
+//                String name = data.getStringExtra("Name");
+                ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
+//                System.out.println(friendsSelected.get(0));
+                friends.addAll(friendsSelected);
+                NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
+                recyclerView.setAdapter(adapter);
+//                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-//    @Override
-//    public boolean onNavigateUp() {
-//        finish();
-//        return true;
-//
-//    }
+    public void checkExistInDatabase(Friend friend) {
+        boolean isAdmin = false;
+        dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(friend.getPhoneNumber()).exists()) {
+                    //user exists, do something
+                    System.out.println("heyhey");
+                    friends.add(friend);
+                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void checkExistInDatabase(String phoneNumber) {
+        dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(phoneNumber).exists()) {
+                    //user exists, do something
+                    friends.add(new Friend(phoneNumber, phoneNumber));
+                    NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(getApplicationContext(), friends);
+                    recyclerView.setAdapter(adapter);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"
+                            , Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
 }
