@@ -77,6 +77,7 @@ public class Alarm  implements Parcelable {
 
         Date date = dateFormatter.parse(time);
         String strTime = stringFormatter.format(date);
+        System.out.println("@@@@@ "+ strTime);
         return strTime;
     }
 
