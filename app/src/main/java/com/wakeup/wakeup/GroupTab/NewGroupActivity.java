@@ -25,6 +25,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.AwakeStatusListActivity;
 import com.wakeup.wakeup.ListFriendsActivity;
 import com.wakeup.wakeup.ObjectClass.Friend;
@@ -37,17 +42,16 @@ import java.util.ArrayList;
 public class NewGroupActivity extends AppCompatActivity {
     ArrayList<Friend> friends;
     RecyclerView recyclerView;
+    private DatabaseReference dbUsers;
+    private boolean exist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
-//        checkUserPhonePermission();
+        dbUsers = FirebaseDatabase.getInstance().getReference("users");
         // Friends Selected
         friends = new ArrayList<>();
-//        createDummyData();
-
-//        getContactList();
 
         ActionBar ab = getSupportActionBar();
 //        assert ab != null;
@@ -61,6 +65,12 @@ public class NewGroupActivity extends AppCompatActivity {
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
                 // TODO: Check if phone number is in database
+                if (checkExistInDatabase(phoneNumber)) {
+                    friends.add(new Friend(phoneNumber, phoneNumber));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"
+                            , Toast.LENGTH_SHORT).show();
+                }
                 tvPhoneNumber.setText("");
             }
         });
@@ -71,7 +81,8 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListFriendsActivity.class);
                 startActivityForResult(intent, 0);
-                Toast.makeText(getApplicationContext(), "Loading Contacts...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Loading Contacts...",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -90,7 +101,6 @@ public class NewGroupActivity extends AppCompatActivity {
         NewGroupFriendsListAdapter adapter = new NewGroupFriendsListAdapter(this, friends);
         recyclerView.setAdapter(adapter);
     }
-
 
 
     @Override
@@ -134,5 +144,45 @@ public class NewGroupActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void checkExistInDatabase(Friend friend) {
+        boolean isAdmin = false;
+        dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(friend.getPhoneNumber()).exists()) {
+                    //user exists, do something
+                    friends.add(friend);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public boolean checkExistInDatabase(String phoneNumber) {
+        dbUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(phoneNumber).exists()) {
+                    //user exists, do something
+                    exist = true;
+                } else {
+                    exist = false;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        return exist;
+    }
+
 
 }

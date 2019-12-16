@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-
 public class ListFriendsActivity extends AppCompatActivity {
     ArrayList<Friend> friends = new ArrayList<>();
     ArrayList<Friend> allContacts = new ArrayList<>();
@@ -51,9 +50,15 @@ public class ListFriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_friends);
 //        createDummyData();
         checkUserPhonePermission();
-
-        getContactList();
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
+        getContactList();
+        for (Friend f : allContacts) {
+            if (f.getPhoneNumber().contains(".") || f.getPhoneNumber().contains("#") || f.getPhoneNumber().contains("$") || f.getPhoneNumber().contains("[") || f.getPhoneNumber().contains("]")) {
+                continue;
+            }
+            checkExistInDatabase(f);
+        }
+
         ActionBar ab = getSupportActionBar();
         String title = String.format("Friends List (%d)", friends.size());
         ab.setTitle(title);
