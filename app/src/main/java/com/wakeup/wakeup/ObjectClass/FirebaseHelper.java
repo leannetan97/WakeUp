@@ -84,17 +84,22 @@ public class FirebaseHelper {
     }
 
     public void deleteGroup(Group group, String groupKey) {
-        modifyGroup(group, groupKey, null);
+        modifyGroup(group, groupKey, false);
     }
 
-    public void modifyGroup(Group group, String groupKey, Object value) {
+    public void modifyGroup(Group group, String groupKey, boolean value) {
+        String groupName = null;
+        if (value) {
+            groupName = group.getGroupName();
+        }
+
         // add to current user
         Log.d("add", "here " + this.phoneNum);
-        addUserToGroup(phoneNum, groupKey, value);
+        addUserToGroup(phoneNum, groupKey, groupName);
 
         // add other users
         for (User user : group.getUsersInGroup()) {
-            addUserToGroup(user.getPhoneNum(), groupKey, value);
+            addUserToGroup(user.getPhoneNum(), groupKey, groupName);
         }
     }
 
