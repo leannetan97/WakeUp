@@ -3,9 +3,13 @@ package com.wakeup.wakeup;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +28,7 @@ import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.ObjectClass.User;
 import com.wakeup.wakeup.UserLogin.ChangePassword;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
@@ -68,7 +73,8 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         Button button = (Button)findViewById(R.id.button_temp);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                firebaseHelper.addHistory(6);
+//                firebaseHelper.addHistory(6);
+                firebaseHelper.addGroup(new Group("Group 1"));
             }
         });
         ///////////
@@ -150,6 +156,16 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             case R.id.item_change_password:
                 navigateToChangePassword();
                 return true;
+            case R.id.item_logout:
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            }
+                        });
             default:
                 return super.onOptionsItemSelected(item);
         }

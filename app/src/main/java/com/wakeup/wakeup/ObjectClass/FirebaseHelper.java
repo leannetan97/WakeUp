@@ -1,5 +1,7 @@
 package com.wakeup.wakeup.ObjectClass;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +25,7 @@ public class FirebaseHelper {
     private DatabaseReference dbUsers;
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbUserHistory;
+    private DatabaseReference dbUserGroups;
     // private DatabaseReference dbCurrentUser;
 
 
@@ -41,11 +44,13 @@ public class FirebaseHelper {
         if (user != null) {
             username = user.getDisplayName();
             phoneNum = user.getPhoneNumber();
+            Log.e("addCur", "current user: " + user);
 
             // all nodes under current user
 //            dbCurrentUser = dbUsers.child(emailHashed);
             dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
             dbUserHistory = dbUsers.child(phoneNum).child("history");
+            dbUserGroups = dbUsers.child(phoneNum).child("groups");
         }
     }
 
@@ -81,20 +86,22 @@ public class FirebaseHelper {
 
     public void modifyGroup(Group group, String groupKey, Object value) {
         // add to current user
-        addUserToGroup(phoneNum, groupKey, value);
+        Log.d("add", "here " + this.phoneNum);
+        addUserToGroup(this.phoneNum, groupKey, value);
 
         // add other users
-        for (User user : group.getUsersInGroup()) {
-            addUserToGroup(user.getPhoneNum(), groupKey, value);
-        }
+//        for (User user : group.getUsersInGroup()) {
+//            addUserToGroup(user.getPhoneNum(), groupKey, value);
+//        }
     }
 
 
     // relationship between users and groups
     public void addUserToGroup(String phoneNum, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/users/" + phoneNum + "/groups", value);
-        childUpdates.put("/groups/" + groupKey + "/users", value);
+        childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
+        Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
+        childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, value);
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -179,5 +186,9 @@ public class FirebaseHelper {
 
     public DatabaseReference getDbUserHistory() {
         return dbUserHistory;
+    }
+
+    public DatabaseReference getDbUserGroups() {
+        return dbUserGroups;
     }
 }
