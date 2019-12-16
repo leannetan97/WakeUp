@@ -1,11 +1,10 @@
 package com.wakeup.wakeup.ObjectClass;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Group implements Serializable {
     private String groupKey;
@@ -31,6 +30,7 @@ public class Group implements Serializable {
     }
 
     // Get
+    @Exclude
     public String getGroupKey() {
         return groupKey;
     }
@@ -63,11 +63,13 @@ public class Group implements Serializable {
 //        return map;
 //    }
 
-    public Iterator<Alarm> getAlarmsInGroupIterator(){
-        return alarmsInGroup.iterator();
-    }
+
+//    public Iterator<Alarm> getAlarmsInGroupIterator(){
+//        return alarmsInGroup.iterator();
+//    }
 
     // Set
+    @Exclude
     public void setGroupKey(String groupKey) {
         this.groupKey = groupKey;
     }

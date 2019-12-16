@@ -62,7 +62,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        dbAlarms = FirebaseDatabase.getInstance().getReference("alarms");
 
         rvAlarm= view.findViewById(R.id.rv_home);
         layoutManager = new LinearLayoutManager(getContext());

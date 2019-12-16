@@ -158,8 +158,9 @@ public class AwakeStatusListActivity extends AppCompatActivity {
             TextView tvFriendName = row.findViewById(R.id.tv_friendName);
             tvFriendName.setText(friends.get(position).getUserName());
 
-            TextView tvFriendEmail = row.findViewById(R.id.tv_friendEmail);
-            tvFriendEmail.setText(friends.get(position).getEmail());
+            TextView tvFriendPhone = row.findViewById(R.id.tv_friendPhoneNumber);
+            System.out.println(friends.get(position).getPhoneNum());
+            tvFriendPhone.setText(friends.get(position).getPhoneNum());
 
             ImageView ivAwakeStatus = row.findViewById(R.id.iv_awakeStatus);
             ImageView btnCall = row.findViewById(R.id.btn_call);
@@ -194,15 +195,15 @@ public class AwakeStatusListActivity extends AppCompatActivity {
     }
 
     public boolean checkUserPhonePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.CALL_PHONE)) {
+                    Manifest.permission.READ_CONTACTS)) {
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CALL_PHONE},
+                        new String[]{Manifest.permission.READ_CONTACTS},
                         99);
             } else {
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CALL_PHONE},
+                        new String[]{Manifest.permission.READ_CONTACTS},
                         99);
             }
             return false;
