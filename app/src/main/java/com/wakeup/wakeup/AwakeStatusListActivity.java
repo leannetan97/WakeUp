@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
@@ -45,7 +46,7 @@ public class AwakeStatusListActivity extends AppCompatActivity {
     private DatabaseReference dbGroups;
     FirebaseHelper firebaseHelper;
     String currentUserPhoneNum;
-    ActionBar tb = getSupportActionBar();
+    ActionBar tb;
     String groupKey;
 
     @Override
@@ -55,13 +56,14 @@ public class AwakeStatusListActivity extends AppCompatActivity {
 
         firebaseHelper = new FirebaseHelper();
 
+        dbGroups = FirebaseDatabase.getInstance().getReference("groups");
+        friends = new ArrayList<>();
         currentUserPhoneNum = firebaseHelper.getPhoneNum();
 
-        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
-        groupKey = getIntent().getExtras().getString("GroupKey");
 
-        tb.setDisplayHomeAsUpEnabled(true);
-        tb.setTitle("Awake Status List");
+        System.out.println(groupKey);
+        System.out.println(groupKey);
+
 
 //        createDummyData();
 
@@ -179,14 +181,20 @@ public class AwakeStatusListActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+
     protected void onStart() {
         super.onStart();
-        friends = new ArrayList<>();
+        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
+        groupKey = getIntent().getExtras().getString("GroupKey");
+        System.out.println(groupKey);
         dbGroups.child(groupKey).child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                tb = getSupportActionBar();
+                tb.setDisplayHomeAsUpEnabled(true);
+                tb.setTitle("Awake Status List");
                 int n;
+                friends.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     String phoneNum = postSnapshot.getKey();
                     boolean isAwake = (boolean) postSnapshot.getValue();
@@ -208,10 +216,10 @@ public class AwakeStatusListActivity extends AppCompatActivity {
                 int nFriendsNotAwake;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     nFriendsNotAwake =
-                            friendsAwake.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
+                            friends.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
                 } else {
                     nFriendsNotAwake = 0;
-                    for (Friend f : friendsAwake) {
+                    for (Friend f : friends) {
                         if (!f.getIsAwake()) {
                             nFriendsNotAwake += 1;
                         }

@@ -150,7 +150,7 @@ public class SingleGroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(SingleGroupActivity.this,
                         GroupSettingsFriendsActivity.class);
                 intent.putExtra("GroupKey", groupKey);
-//                intent.putExtra("Group", group);
+                intent.putExtra("Group", (Parcelable) group);
                 intent.putParcelableArrayListExtra("AllContacts", allContacts);
                 startActivity(intent);
                 return true;

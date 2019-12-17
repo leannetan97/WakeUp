@@ -127,6 +127,8 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("Group", (Parcelable) group);
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("GroupKey", group.getGroupKey());
             toEditorDeletePersonalOrGroupAlarmActivity.putParcelableArrayListExtra("AllContacts", allContacts);
+            System.out.println("allcontacts");
+            System.out.println(allContacts);
         } else {
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("ViewTitle", "Edit Personal Alarm");
         }

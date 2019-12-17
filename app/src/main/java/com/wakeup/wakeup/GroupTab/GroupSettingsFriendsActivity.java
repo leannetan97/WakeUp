@@ -65,7 +65,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
         members = new ArrayList<>();
         allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
         groupKey = getIntent().getExtras().getString("GroupKey");
-//        group = getIntent().getExtras().getParcelable("GroupKey");
+        group = getIntent().getExtras().getParcelable("Group");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
         tb = getSupportActionBar();
 //        getContactList();
@@ -246,7 +246,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     btnLeaveDeleteGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            firebaseHelper.deleteGroup(groupKey);
+                            firebaseHelper.deleteGroup(group);
                             Toast.makeText(getApplicationContext(), "Group Deleted!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Home.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

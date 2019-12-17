@@ -88,13 +88,30 @@ public class FirebaseHelper {
         modifyGroup(group, groupKey);
     }
 
-    public void deleteGroup(String groupKey) {
-        dbGroups.child(groupKey).setValue(null);
+    public void deleteGroup(Group group) {
+        String groupKey =group.getGroupKey();
+//        dbGroups.child(groupKey).setValue(null);
+
+//        addUserToGroup(phoneNum, groupKey, null);
+        System.out.println("asdakj");
+        System.out.println(group.getUsersInGroup().size());
+        for (User user : group.getUsersInGroup()) {
+            System.out.println(user.getPhoneNum());
+            System.out.println("lkdsfa");
+            dbUsers.child(user.getPhoneNum()).child("groups").child(groupKey).removeValue();
+        }
+        dbUsers.child(phoneNum).child("groups").child(groupKey).removeValue();
+
+
+        // add other users
+
+        dbGroups.child(groupKey).removeValue();
+
     }
 
     public void modifyGroup(Group group, String groupKey) {
-//        String groupName = group.getGroupName();
-        boolean groupName = false;
+        String groupName = group.getGroupName();
+//        boolean groupName = false;
 
         // add to current user
         Log.d("add", "here " + this.phoneNum);
@@ -118,7 +135,7 @@ public class FirebaseHelper {
     public void addUserToGroup(String phoneNum, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
-        childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, value);
+        childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, false);
         Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
 
         dbFirebase.updateChildren(childUpdates);
@@ -126,6 +143,8 @@ public class FirebaseHelper {
 
     public void removeUserFromGroup(String phoneNum, String groupKey) {
         addUserToGroup(phoneNum, groupKey, null);
+
+        dbGroups.child(groupKey).child("users").child(phoneNum).setValue(null);
     }
 
     public void addAdminToGroup(String phone, String groupKey) {

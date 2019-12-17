@@ -70,7 +70,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
         groupKey = getIntent().getExtras().getString("GroupKey");
         group = getIntent().getExtras().getParcelable("Group");
-        allContacts = getIntent().getExtras().getParcelable("AllContacts");
+        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
 
