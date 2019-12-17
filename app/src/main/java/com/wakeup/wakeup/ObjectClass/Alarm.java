@@ -108,7 +108,7 @@ public class Alarm  implements Parcelable {
 
     @Exclude
     public Date getTimeDate() throws ParseException { //whole date in date format
-        SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = dateFormatter.parse(time);
         return date;
     }
