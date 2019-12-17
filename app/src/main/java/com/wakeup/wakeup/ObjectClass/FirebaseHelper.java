@@ -93,7 +93,8 @@ public class FirebaseHelper {
     }
 
     public void modifyGroup(Group group, String groupKey) {
-        String groupName = group.getGroupName();
+//        String groupName = group.getGroupName();
+        boolean groupName = false;
 
         // add to current user
         Log.d("add", "here " + this.phoneNum);
@@ -106,6 +107,10 @@ public class FirebaseHelper {
             }
         }
 
+    }
+
+    public void setUserAwake(String groupKey) {
+        dbGroups.child(groupKey).child("users").child(phoneNum).setValue(true);
     }
 
 
@@ -132,6 +137,7 @@ public class FirebaseHelper {
         String groupKey = group.getGroupKey();
         String groupAlarmKey = dbGroups.child(groupKey).child("alarms").push().getKey();
 
+        alarm.setGroupKey(groupKey);
         updateAlarmOfGroup(alarm, group, groupAlarmKey);
     }
 
