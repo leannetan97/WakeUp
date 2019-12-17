@@ -60,12 +60,12 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_settings_friends);
 
-        checkUserPhonePermission();
+//        checkUserPhonePermission();
 
         members = new ArrayList<>();
         allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
         groupKey = getIntent().getExtras().getString("GroupKey");
-        group = getIntent().getExtras().getParcelable("GroupKey");
+//        group = getIntent().getExtras().getParcelable("GroupKey");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
         tb = getSupportActionBar();
 //        getContactList();
@@ -241,6 +241,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     lv.setAdapter(customAdapter);
                     Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
                     btnLeaveDeleteGroup.setText(R.string.delete_group);
+                    btnLeaveDeleteGroup.setVisibility(View.VISIBLE);
 
                     btnLeaveDeleteGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -259,6 +260,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                             members, false);
                     lv.setAdapter(customAdapter);
                     Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
+                    btnLeaveDeleteGroup.setVisibility(View.VISIBLE);
                     btnLeaveDeleteGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

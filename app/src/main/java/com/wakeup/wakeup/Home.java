@@ -69,6 +69,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         checkUserPhonePermission();
+
         getContactList();
         // set action bar
 //        getSupportActionBar();
@@ -84,7 +85,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         // temp, for testing
         firebaseHelper = new FirebaseHelper();
 
-        Button button = (Button)findViewById(R.id.button_temp);
+        Button button = (Button) findViewById(R.id.button_temp);
         button.setText(firebaseHelper.getUsername());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -162,7 +163,6 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -179,7 +179,8 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             public void onComplete(@NonNull Task<Void> task) {
                                 // user is now signed out
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                startActivity(new Intent(getApplicationContext(),
+                                        MainActivity.class));
                                 finish();
                             }
                         });
@@ -205,14 +206,14 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
 
         Bundle args = new Bundle();
         args.putString("DialogTitle", "Change Profile Name");
-        args.putString("Hint","Change Profile Name");
+        args.putString("Hint", "Change Profile Name");
         args.putString("ValidButton", "SAVE");
         args.putString("InvalidButton", "DISCARD");
         changeNameDialog.setArguments(args);
         changeNameDialog.show(getSupportFragmentManager(), "change profile name dialog");
     }
 
-    private void updateProfileName(String name){
+    private void updateProfileName(String name) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -232,9 +233,9 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
 
     @Override
     public void applyTexts(String profileName) {
-        if(profileName.length() == 0){
-            Toast.makeText(this,"Name cannot be empty. Please try again.",Toast.LENGTH_SHORT).show();
-        }else {
+        if (profileName.length() == 0) {
+            Toast.makeText(this, "Name cannot be empty. Please try again.", Toast.LENGTH_SHORT).show();
+        } else {
             Toast.makeText(this, "Profile name changed to " + profileName, Toast.LENGTH_SHORT).show();
             updateProfileName(profileName);
         }
@@ -280,6 +281,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
                 break;
         }
     }
+
     // New Alarm
     private void navigateToCreateAlarm(View view) {
         Intent alarmView = new Intent(Home.this, CreateDeleteAlarm.class);
@@ -364,5 +366,4 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             return true;
         }
     }
-
 }

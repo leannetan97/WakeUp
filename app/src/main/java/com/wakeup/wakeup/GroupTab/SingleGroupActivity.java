@@ -8,9 +8,15 @@ import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.Home;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.R;
@@ -22,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +52,8 @@ public class SingleGroupActivity extends AppCompatActivity {
     private String groupKey;
     private Group group;
 
+    private DatabaseReference dbGroupAlarms;
+
     private RecyclerView rvGroupAlarm;
     private RecyclerView.Adapter groupAlarmAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -62,6 +71,7 @@ public class SingleGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single_group);
         allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
 
+
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -78,19 +88,50 @@ public class SingleGroupActivity extends AppCompatActivity {
         groupName = getIntent().getExtras().getString("GroupName");
         group = getIntent().getExtras().getParcelable("Group");
         getSupportActionBar().setTitle(groupName);
-        alarms = getIntent().getParcelableArrayListExtra("GroupAlarmsList");
-        if (alarms.size() > 0) {
-            TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
-            tvNoAlarm.setVisibility(View.GONE);
-            rvGroupAlarm = (RecyclerView) findViewById(R.id.rv_group_cards);
-            layoutManager = new LinearLayoutManager(this);
-            rvGroupAlarm.setLayoutManager(layoutManager);
-            groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms);
-            rvGroupAlarm.setAdapter(groupAlarmAdapter);
-        } else {
-            TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
-            tvNoAlarm.setVisibility(View.VISIBLE);
-        }
+
+
+
+//        alarms = getIntent().getParcelableArrayListExtra("GroupAlarmsList");
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        dbGroupAlarms = FirebaseDatabase.getInstance().getReference("groups").child(groupKey).child("alarms");
+        dbGroupAlarms.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println("yo");
+                alarms.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    System.out.println("true");
+                    Alarm alarm = postSnapshot.getValue(Alarm.class);
+                    String alarmKey = postSnapshot.getKey();
+                    alarm.setAlarmKey(alarmKey);
+                    alarms.add(alarm);
+                }
+
+                if (alarms.size() > 0) {
+
+                    TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
+                    tvNoAlarm.setVisibility(View.GONE);
+                    rvGroupAlarm = (RecyclerView) findViewById(R.id.rv_group_cards);
+                    layoutManager = new LinearLayoutManager(getApplicationContext());
+                    rvGroupAlarm.setLayoutManager(layoutManager);
+                    groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms);
+                    rvGroupAlarm.setAdapter(groupAlarmAdapter);
+                } else {
+                    TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
+                    tvNoAlarm.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -109,7 +150,7 @@ public class SingleGroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(SingleGroupActivity.this,
                         GroupSettingsFriendsActivity.class);
                 intent.putExtra("GroupKey", groupKey);
-                intent.putExtra("Group", group);
+//                intent.putExtra("Group", group);
                 intent.putParcelableArrayListExtra("AllContacts", allContacts);
                 startActivity(intent);
                 return true;
@@ -128,6 +169,8 @@ public class SingleGroupActivity extends AppCompatActivity {
         Intent alarmView = new Intent(this, CreateDeleteAlarm.class);
         alarmView.putExtra("ViewTitle", "New Group Alarm");
         alarmView.putExtra("ButtonName", "Create Alarm");
+        alarmView.putExtra("GroupKey", groupKey);
+        alarmView.putExtra("Group", (Parcelable) group);
         startActivity(alarmView);
     }
 }

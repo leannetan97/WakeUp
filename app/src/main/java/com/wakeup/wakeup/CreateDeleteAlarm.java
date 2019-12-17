@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
@@ -47,11 +48,14 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private String alarmKey;
     private FirebaseHelper firebaseHelper;
 
+    private String groupKey;
+
     private DecimalFormat digitFormatter = new DecimalFormat("00");
 //    private TextView tvAlarmName;
     private TextView tvTimeDisplay;
     private Spinner spinnerGameOption;
     private int gameOption = 0;
+    private Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -59,7 +63,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         setContentView(R.layout.activity_create_delete_alarm);
         setViewToInstanceVar();
         firebaseHelper = new FirebaseHelper();
-
+        groupKey = getIntent().getExtras().getString("GroupKey");
+        group = getIntent().getExtras().getParcelable("Group");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
         updateViewDetails();
@@ -173,8 +178,12 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         firebaseHelper.updateAlarm(newAlarm, alarmKey);
     }
 
-    public void addAlarm() {
-        firebaseHelper.addAlarm(newAlarm);
+    public void addAlarm(boolean isGroup) {
+        if(isGroup){
+            firebaseHelper.addAlarmToGroup(newAlarm, groupKey);
+        } else {
+            firebaseHelper.addAlarm(newAlarm);
+        }
     }
 
     public void submitButtonOnClick(View view) {
@@ -193,11 +202,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);
 //            startAlarm(alarmCalendar);
-            addAlarm();
+            addAlarm(false);
         } else {
             newAlarm = new Alarm(time, alarmName, true, true, gameOption);
 //            startAlarm(alarmCalendar);
-            addAlarm();
+            addAlarm(true);
         }
         finish();
     }
