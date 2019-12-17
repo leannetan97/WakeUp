@@ -44,6 +44,10 @@ public class FirebaseHelper {
         if (user != null) {
             phoneNum = user.getPhoneNumber();
             username = user.getDisplayName();
+            if (username.length() == 0) {
+                username = phoneNum.substring(phoneNum.length() - 4);
+            }
+
             Log.e("addCur", "current user: " + user);
 
             // all nodes under current user
@@ -138,7 +142,7 @@ public class FirebaseHelper {
     // Games
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
-        dbUserAlarms.child(id).setValue(game);
+        dbScores.child(id).setValue(game);
     }
 
 

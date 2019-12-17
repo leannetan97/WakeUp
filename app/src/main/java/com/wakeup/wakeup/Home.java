@@ -28,6 +28,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Game;
 import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
 import com.wakeup.wakeup.ui.main.GroupFragment;
@@ -75,8 +76,9 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         button.setText(firebaseHelper.getUsername());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                firebaseHelper.addHistory(6);
+//                firebaseHelper.addHistory(6);
 //                firebaseHelper.addGroup(new Group("Group 1"));
+                firebaseHelper.addScore(new Game(3, 6, firebaseHelper.getUsername()));
             }
         });
         ///////////
