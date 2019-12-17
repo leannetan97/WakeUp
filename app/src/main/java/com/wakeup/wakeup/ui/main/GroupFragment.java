@@ -66,7 +66,6 @@ public class GroupFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onStart() {
         super.onStart();

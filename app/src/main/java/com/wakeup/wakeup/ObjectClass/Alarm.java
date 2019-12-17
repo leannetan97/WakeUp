@@ -8,6 +8,7 @@ import com.google.firebase.database.PropertyName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,6 +112,15 @@ public class Alarm  implements Parcelable {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = dateFormatter.parse(time);
         return date;
+    }
+
+    @Exclude
+    public Calendar getTimeInCalender(){
+        String[] details = time.split(":");
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY,Integer.parseInt(details[0]));
+        c.set(Calendar.MINUTE,Integer.parseInt(details[1]));
+        return  c;
     }
 
     @Exclude

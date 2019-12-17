@@ -97,9 +97,12 @@ public class FirebaseHelper {
         addUserToGroup(phoneNum, groupKey, groupName);
 
         // add other users
-        for (User user : group.getUsersInGroup()) {
-            addUserToGroup(user.getPhoneNum(), groupKey, groupName);
+        if (group != null) {
+            for (User user : group.getUsersInGroup()) {
+                addUserToGroup(user.getPhoneNum(), groupKey, groupName);
+            }
         }
+
     }
 
 
@@ -135,7 +138,6 @@ public class FirebaseHelper {
     }
 
 
-
     // Games
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
@@ -150,11 +152,6 @@ public class FirebaseHelper {
         String id = dbScores.push().getKey();
         dbUserHistory.child(id).setValue(history);
     }
-
-
-
-
-
 
 
     // Get
@@ -174,7 +171,7 @@ public class FirebaseHelper {
         return username;
     }
 
-    public String getEmail() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 

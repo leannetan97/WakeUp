@@ -52,8 +52,10 @@ public class GroupFragmentAdapter extends RecyclerView.Adapter<GroupFragmentAdap
     private void navigateToSingleGroupActivity(View view, Group groupItem){
         Intent toSingleGroupActivity = new Intent(view.getContext(), SingleGroupActivity.class);
         toSingleGroupActivity.putExtra("GroupName", groupItem.getGroupName());
+        toSingleGroupActivity.putExtra("GroupKey", groupItem.getGroupKey());
         toSingleGroupActivity.putParcelableArrayListExtra("GroupAlarmsList", (ArrayList<?
                 extends Parcelable>) groupItem.getAlarmsInGroup());
+        toSingleGroupActivity.putExtra("Group", groupItem);
         view.getContext().startActivity(toSingleGroupActivity);
     }
 
