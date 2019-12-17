@@ -220,7 +220,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     btnLeaveDeleteGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            firebaseHelper.deleteGroup(group, groupKey);
+                            firebaseHelper.deleteGroup(groupKey);
                             Toast.makeText(getApplicationContext(), "Group Deleted!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Home.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

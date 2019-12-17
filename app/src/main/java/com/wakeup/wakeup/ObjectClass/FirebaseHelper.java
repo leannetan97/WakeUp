@@ -79,18 +79,15 @@ public class FirebaseHelper {
     }
 
     public void updateGroup(Group group, String groupKey) {
-        modifyGroup(group, groupKey, true);
+        modifyGroup(group, groupKey);
     }
 
-    public void deleteGroup(Group group, String groupKey) {
-        modifyGroup(group, groupKey, false);
+    public void deleteGroup(String groupKey) {
+        dbGroups.child(groupKey).removeValue();
     }
 
-    public void modifyGroup(Group group, String groupKey, boolean value) {
-        String groupName = null;
-        if (value) {
-            groupName = group.getGroupName();
-        }
+    public void modifyGroup(Group group, String groupKey) {
+        String groupName = group.getGroupName();
 
         // add to current user
         Log.d("add", "here " + this.phoneNum);
