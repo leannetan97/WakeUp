@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.wakeup.wakeup.AlarmReceiver;
 import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.R;
 
 import java.text.ParseException;
@@ -34,8 +36,23 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
     private List<Alarm> alarms;
     private FirebaseHelper firebaseHelper;
     private Context context;
+    private Group group;
+
+
+
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+
 
     public PersonalGroupAlarmFragmentAdapter(List<Alarm> alarms) {
+        this.alarms = alarms;
+    }
+
+    public PersonalGroupAlarmFragmentAdapter(List<Alarm> alarms, Group group) {
+        this.group = group;
         this.alarms = alarms;
     }
 
@@ -103,6 +120,8 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
         Intent toEditorDeletePersonalOrGroupAlarmActivity = new Intent(view.getContext(), CreateDeleteAlarm.class);
         if(alarmItem.isGroup()){
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("ViewTitle", "Edit Group Alarm");
+            toEditorDeletePersonalOrGroupAlarmActivity.putExtra("Group", (Parcelable) group);
+            toEditorDeletePersonalOrGroupAlarmActivity.putExtra("GroupKey", group.getGroupKey());
         }else{
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("ViewTitle", "Edit Personal Alarm");
         }
