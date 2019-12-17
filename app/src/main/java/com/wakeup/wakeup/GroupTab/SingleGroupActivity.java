@@ -128,6 +128,7 @@ public class SingleGroupActivity extends AppCompatActivity {
         Intent alarmView = new Intent(this, CreateDeleteAlarm.class);
         alarmView.putExtra("ViewTitle", "New Group Alarm");
         alarmView.putExtra("ButtonName", "Create Alarm");
+        alarmView.putExtra("GroupKey", groupKey);
         startActivity(alarmView);
     }
 }
