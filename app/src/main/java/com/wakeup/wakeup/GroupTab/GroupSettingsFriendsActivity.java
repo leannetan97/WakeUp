@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -62,10 +64,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
         lv = findViewById(R.id.lv_GroupFriends);
 
 
-
 //        createDummyData();
-
-
 
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
@@ -101,11 +100,10 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     System.out.println(currentUserPhoneNum);
                     System.out.println(phoneNum);
 
-                    if (n > 0) {
-                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
-                    } else if (currentUserPhoneNum.equals(phoneNum)) {
-
+                    if (currentUserPhoneNum.equals(phoneNum)) {
                         name = "Me";
+                    } else if (n > 0) {
+                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
                     } else {
                         name = phoneNum;
                     }
@@ -130,15 +128,16 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     String phoneNum = postSnapshot.getKey();
                     n = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).size();
 
-                    boolean isAdmin = members.stream().filter(o -> phoneNum.equals(o.getPhoneNum()) && o.isAdmin()).collect(Collectors.toList()).size() != 0;
-                    if(isAdmin){
+                    boolean isAdmin =
+                            members.stream().filter(o -> phoneNum.equals(o.getPhoneNum()) && o.isAdmin()).collect(Collectors.toList()).size() != 0;
+                    if (isAdmin) {
                         continue;
                     }
                     String name;
-                    if (n > 0) {
-                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
-                    } else if (currentUserPhoneNum.equals(phoneNum)) {
+                    if (currentUserPhoneNum.equals(phoneNum)) {
                         name = "Me";
+                    } else if (n > 0) {
+                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
                     } else {
                         name = phoneNum;
                     }
@@ -230,12 +229,12 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
     }
 
 
-    private void createDummyData() {
-        members.add(new GroupMember("me", true, "0123456987"));
-        members.add(new GroupMember("A", false, "0123456987"));
-        members.add(new GroupMember("B", false, "0123456987"));
-        members.add(new GroupMember("C", false, "0123456987"));
-    }
+//    private void createDummyData() {
+//        members.add(new GroupMember("me", true, "0123456987"));
+//        members.add(new GroupMember("A", false, "0123456987"));
+//        members.add(new GroupMember("B", false, "0123456987"));
+//        members.add(new GroupMember("C", false, "0123456987"));
+//    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -274,15 +273,15 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             ImageView ivBtnCall = row.findViewById(R.id.btn_call);
 
             String name = members.get(position).getUserName();
-            String email = members.get(position).getPhoneNum();
+            String phoneNum = members.get(position).getPhoneNum();
             boolean isAdmin = members.get(position).isAdmin();
 
 
             tvFriendName.setText(name);
-            tvFriendEmail.setText(email);
+            tvFriendEmail.setText(phoneNum);
 
 
-            if (name.equals("me")) {
+            if (name.equals("Me")) {
                 ivBtnCall.setVisibility(View.GONE);
                 ivRemove.setVisibility(View.GONE);
                 if (isAdmin) {
@@ -326,6 +325,9 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Toast.makeText(context, "call " + members.get(position).getUserName(),
                             Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:"+phoneNum));
+                    startActivity(intent);
                 }
             });
 
