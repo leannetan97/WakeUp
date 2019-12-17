@@ -282,4 +282,5 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         Intent leaderBoard = new Intent(Home.this, LeaderboardActivity.class);
         startActivity(leaderBoard);
     }
+
 }

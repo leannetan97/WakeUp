@@ -82,14 +82,14 @@ public class SingleGroupActivity extends AppCompatActivity {
         if (alarms.size() > 0) {
             TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
             tvNoAlarm.setVisibility(View.GONE);
-        } else {
-
-
             rvGroupAlarm = (RecyclerView) findViewById(R.id.rv_group_cards);
             layoutManager = new LinearLayoutManager(this);
             rvGroupAlarm.setLayoutManager(layoutManager);
             groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms);
             rvGroupAlarm.setAdapter(groupAlarmAdapter);
+        } else {
+            TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
+            tvNoAlarm.setVisibility(View.VISIBLE);
         }
     }
 
