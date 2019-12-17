@@ -69,19 +69,19 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
-        // temp, for testing
-        firebaseHelper = new FirebaseHelper();
-
-        Button button = (Button)findViewById(R.id.button_temp);
-        button.setText(firebaseHelper.getUsername());
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                firebaseHelper.addHistory(6);
-//                firebaseHelper.addGroup(new Group("Group 1"));
-                firebaseHelper.addScore(new Game(3, 6, firebaseHelper.getUsername()));
-            }
-        });
-        ///////////
+//        // temp, for testing
+//        firebaseHelper = new FirebaseHelper();
+//
+//        Button button = (Button)findViewById(R.id.button_temp);
+//        button.setText(firebaseHelper.getUsername());
+//        button.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+////                firebaseHelper.addHistory(6);
+////                firebaseHelper.addGroup(new Group("Group 1"));
+//                firebaseHelper.addScore(new Game(3, 6, firebaseHelper.getUsername()));
+//            }
+//        });
+//        ///////////
 
         fabAddAlarm = (FloatingActionButton) findViewById(R.id.btn_floating_add_alarm);
         fabAddGroup = (FloatingActionButton) findViewById(R.id.btn_floating_add_group);
