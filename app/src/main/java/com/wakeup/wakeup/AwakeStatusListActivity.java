@@ -25,7 +25,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,64 +39,33 @@ import java.util.stream.Collectors;
 
 public class AwakeStatusListActivity extends AppCompatActivity {
 
-    private ArrayList<Friend> friendsAwake, friendsSleep;
+    private ArrayList<Friend> friendsAwake, friendsSleep, friends;
     private ListView lvAwake, lvSleep;
+    private ArrayList<Friend> allContacts;
+    private DatabaseReference dbGroups;
+    FirebaseHelper firebaseHelper;
+    String currentUserPhoneNum;
+    ActionBar tb = getSupportActionBar();
+    String groupKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_awake_status_list);
-        ActionBar tb = getSupportActionBar();
+
+        firebaseHelper = new FirebaseHelper();
+
+        currentUserPhoneNum = firebaseHelper.getPhoneNum();
+
+        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
+        groupKey = getIntent().getExtras().getString("GroupKey");
+
         tb.setDisplayHomeAsUpEnabled(true);
         tb.setTitle("Awake Status List");
 
-        friendsAwake = new ArrayList<>();
-        createDummyData();
-
-        int nFriendsNotAwake;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            nFriendsNotAwake =
-                    friendsAwake.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
-        } else {
-            nFriendsNotAwake = 0;
-            for (Friend f : friendsAwake) {
-                if (!f.getIsAwake()) {
-                    nFriendsNotAwake += 1;
-                }
-            }
-        }
-
-        if(nFriendsNotAwake > 0){
-            tb.setTitle("(" + nFriendsNotAwake + ") is/are still sleeping");
-        }else {
-            tb.setTitle("All members are awake!");
-        }
+//        createDummyData();
 
 
-
-        lvAwake = (ListView) findViewById(R.id.lv_awakeStatusList_awake);
-//        lvSleep = (ListView) findViewById(R.id.lv_awakeStatusList_sleep);
-
-
-//        friendsSleep = new ArrayList<>();
-
-
-        CustomAdapter customAdapterAwake = new CustomAdapter(this, friendsAwake);
-//        CustomAdapter customAdapterSleep = new CustomAdapter(this, friendsSleep);
-
-        lvAwake.setAdapter(customAdapterAwake);
-//        lvSleep.setAdapter(customAdapterSleep);
-
-//        ArrayAdapter ad = new ArrayAdapter(this, android.R.layout.simple_list_item_1, al);
-//        lv.setAdapter(ad);
-//
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(view.getContext(),
-//                        "Clicked: " + al.get(position), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     @Override
@@ -131,19 +106,11 @@ public class AwakeStatusListActivity extends AppCompatActivity {
         Context context;
 
         ArrayList<Friend> friends;
-//        ArrayList<String> names;
-//        ArrayList<String> emails;
-//        ArrayList<Boolean> awakeStatus;
-//        String descriptions[];
 
         CustomAdapter(Context c, ArrayList<Friend> friends) {
             super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, friends);
             this.context = c;
             this.friends = friends;
-//            this.names = names;
-//            this.awakeStatus = awakeStatus;
-//            this.emails = emails;
-//            this.descriptions = descriptions;
         }
 
         @NonNull
@@ -177,7 +144,7 @@ public class AwakeStatusListActivity extends AppCompatActivity {
                     Toast.makeText(context, "call " + friends.get(position).getUserName(),
                             Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:0125389672"));
+                    intent.setData(Uri.parse("tel:" + friends.get(position).getPhoneNum()));
 //                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //                        checkUserPhonePermission();
 //                    }
@@ -210,5 +177,67 @@ public class AwakeStatusListActivity extends AppCompatActivity {
         } else {
             return true;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        friends = new ArrayList<>();
+        dbGroups.child(groupKey).child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int n;
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String phoneNum = postSnapshot.getKey();
+                    boolean isAwake = (boolean) postSnapshot.getValue();
+
+                    n = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).size();
+
+                    String name;
+                    if (currentUserPhoneNum.equals(phoneNum)) {
+                        continue;
+                    } else if (n > 0) {
+                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
+                    } else {
+                        name = phoneNum;
+                    }
+                    friends.add(new Friend(name, isAwake, phoneNum));
+                }
+                Collections.sort(friends);
+
+                int nFriendsNotAwake;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    nFriendsNotAwake =
+                            friendsAwake.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
+                } else {
+                    nFriendsNotAwake = 0;
+                    for (Friend f : friendsAwake) {
+                        if (!f.getIsAwake()) {
+                            nFriendsNotAwake += 1;
+                        }
+                    }
+                }
+
+                if(nFriendsNotAwake > 0){
+                    tb.setTitle("(" + nFriendsNotAwake + ") is/are still sleeping");
+                }else {
+                    tb.setTitle("All members are awake!");
+                }
+                lvAwake = (ListView) findViewById(R.id.lv_awakeStatusList_awake);
+                CustomAdapter customAdapterAwake = new CustomAdapter(getApplicationContext(), friends);
+                lvAwake.setAdapter(customAdapterAwake);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
+
+    public void retrieveAllMembers(String groupKey) {
+
     }
 }

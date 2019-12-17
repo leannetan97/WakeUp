@@ -15,8 +15,11 @@ import android.widget.Toast;
 
 import com.wakeup.wakeup.AwakeStatusListActivity;
 import com.wakeup.wakeup.DialogWithTitle;
+import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.R;
+
+import java.util.ArrayList;
 
 
 /**
@@ -25,8 +28,17 @@ import com.wakeup.wakeup.R;
 public class GroupAlarmDetailsFragment extends Fragment implements DialogWithTitle.DialogListener {
     private String alarmName;
     private TextView tvAlarmName;
+    private ArrayList<Friend> allContacts;
+    String groupKey;
+
     public GroupAlarmDetailsFragment(String alarmName) {
         this.alarmName = alarmName;
+    }
+
+    public GroupAlarmDetailsFragment(String alarmName, ArrayList<Friend> allContacts, String groupKey) {
+        this.alarmName = alarmName;
+        this.allContacts = allContacts;
+        this.groupKey = groupKey;
     }
 
     @Override
@@ -71,6 +83,8 @@ public class GroupAlarmDetailsFragment extends Fragment implements DialogWithTit
 
     private void navigateToAwakeStatusActivity(View view){
         Intent toAwakeStatus = new Intent(view.getContext(), AwakeStatusListActivity.class);
+        toAwakeStatus.putParcelableArrayListExtra("AllContacts", allContacts);
+        toAwakeStatus.putExtra("GroupKey", groupKey);
         startActivity(toAwakeStatus);
     }
 

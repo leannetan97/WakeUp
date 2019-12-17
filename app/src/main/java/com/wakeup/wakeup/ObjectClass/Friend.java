@@ -22,6 +22,12 @@ public class Friend extends User implements Comparable, Parcelable {
 //        this.phoneNum = "012345";
     }
 
+    public Friend(String userName, boolean isAwake, String phoneNum) {
+        this.userName = userName;
+        this.isAwake = isAwake;
+        this.phoneNum = phoneNum;
+    }
+
 
     public Friend(String userName, String phoneNum) {
         this.userName = userName;

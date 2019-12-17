@@ -23,22 +23,24 @@ import com.wakeup.wakeup.AlarmReceiver;
 import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.R;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 // NOTE: This adapter is Shared by SingleGroupActivity and AlarmFragment
 
-public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<PersonalGroupAlarmFragmentAdapter.AlarmFragmentViewHolder>{
+public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<PersonalGroupAlarmFragmentAdapter.AlarmFragmentViewHolder> {
     private List<Alarm> alarms;
     private FirebaseHelper firebaseHelper;
     private Context context;
     private Group group;
 
-
+    private ArrayList<Friend> allContacts;
 
 
     public void setGroup(Group group) {
@@ -46,40 +48,41 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
     }
 
 
-
     public PersonalGroupAlarmFragmentAdapter(List<Alarm> alarms) {
         this.alarms = alarms;
     }
 
-    public PersonalGroupAlarmFragmentAdapter(List<Alarm> alarms, Group group) {
+    public PersonalGroupAlarmFragmentAdapter(List<Alarm> alarms, Group group, ArrayList<Friend> allContacts) {
         this.group = group;
         this.alarms = alarms;
+        this.allContacts = allContacts;
     }
 
     @NonNull
     @Override
     public AlarmFragmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.res_alarm_card_view, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.res_alarm_card_view
+                , parent, false);
         firebaseHelper = new FirebaseHelper();
         context = parent.getContext();
         return new AlarmFragmentViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AlarmFragmentViewHolder holder, int position){
+    public void onBindViewHolder(@NonNull AlarmFragmentViewHolder holder, int position) {
         Alarm alarmItem = alarms.get(position);
         holder.tvTimeDisplay.setText(alarmItem.getTime());
         holder.tvAlarmName.setText(alarmItem.getAlarmName());
         holder.ivIcon.setVisibility(View.INVISIBLE);
-        if(alarmItem.isOn()){
+        if (alarmItem.isOn()) {
             holder.tBtnAlarm.setChecked(true);
-        }else {
+        } else {
             holder.tBtnAlarm.setChecked(false);
         }
         holder.rowParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigateToEditPersonalOrGroupAlarm(view,alarmItem);
+                navigateToEditPersonalOrGroupAlarm(view, alarmItem);
             }
         });
 
@@ -91,21 +94,21 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
     }
 
     // handle alarm switch
-    private void handleSwitch(CompoundButton buttonView, boolean isChecked, Alarm alarm){
-        if(alarm.isOn()){
+    private void handleSwitch(CompoundButton buttonView, boolean isChecked, Alarm alarm) {
+        if (alarm.isOn()) {
             //originally is set
             alarm.setOn(false);
             buttonView.setChecked(false);
-            Toast.makeText(context,alarm.getTime() + " is OFF",Toast.LENGTH_SHORT).show();
-        }else{
+            Toast.makeText(context, alarm.getTime() + " is OFF", Toast.LENGTH_SHORT).show();
+        } else {
             // originally is not set
             alarm.setOn(true);
             buttonView.setChecked(true);
-            Toast.makeText(context,alarm.getTime() + " is ON",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, alarm.getTime() + " is ON", Toast.LENGTH_SHORT).show();
         }
         updateAlarm(alarm);
     }
-    
+
     public void updateAlarm(Alarm alarm) {
         //update alarm with existing key
         firebaseHelper.updateAlarm(alarm, alarm.getAlarmKey());
@@ -116,13 +119,15 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
         return alarms.size();
     }
 
-    private void navigateToEditPersonalOrGroupAlarm(View view, Alarm alarmItem){
-        Intent toEditorDeletePersonalOrGroupAlarmActivity = new Intent(view.getContext(), CreateDeleteAlarm.class);
-        if(alarmItem.isGroup()){
+    private void navigateToEditPersonalOrGroupAlarm(View view, Alarm alarmItem) {
+        Intent toEditorDeletePersonalOrGroupAlarmActivity = new Intent(view.getContext(),
+                CreateDeleteAlarm.class);
+        if (alarmItem.isGroup()) {
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("ViewTitle", "Edit Group Alarm");
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("Group", (Parcelable) group);
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("GroupKey", group.getGroupKey());
-        }else{
+            toEditorDeletePersonalOrGroupAlarmActivity.putParcelableArrayListExtra("AllContacts", allContacts);
+        } else {
             toEditorDeletePersonalOrGroupAlarmActivity.putExtra("ViewTitle", "Edit Personal Alarm");
         }
         toEditorDeletePersonalOrGroupAlarmActivity.putExtra("ButtonName", "Save Alarm");
@@ -131,7 +136,7 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
     }
 
 
-    public class AlarmFragmentViewHolder extends RecyclerView.ViewHolder{
+    public class AlarmFragmentViewHolder extends RecyclerView.ViewHolder {
         private TextView tvTimeDisplay;
         private ImageView ivIcon;
         private TextView tvAlarmName;

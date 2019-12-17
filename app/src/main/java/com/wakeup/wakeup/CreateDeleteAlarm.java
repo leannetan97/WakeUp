@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
@@ -37,6 +38,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener { //AdapterView.OnItemSelectedListener
@@ -58,6 +60,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private Spinner spinnerGameOption;
     private int gameOption = 0;
     private Group group;
+    private ArrayList<Friend> allContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -67,6 +70,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
         groupKey = getIntent().getExtras().getString("GroupKey");
         group = getIntent().getExtras().getParcelable("Group");
+        allContacts = getIntent().getExtras().getParcelable("AllContacts");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
 
@@ -83,7 +87,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             //set up view with previous data
             if (prevAlarm.isGroup()) { //isGroup
                 System.out.println("[DEBUG] Group Details Fragment");
-                fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName());
+                fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName(), allContacts, groupKey);
             } else { //isPersonal
                 System.out.println("[DEBUG] Personal Details Fragment");
                 fragment = new PersonalAlarmDetailsFragment(prevAlarm.getAlarmName());

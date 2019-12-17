@@ -119,7 +119,7 @@ public class SingleGroupActivity extends AppCompatActivity {
                     rvGroupAlarm = (RecyclerView) findViewById(R.id.rv_group_cards);
                     layoutManager = new LinearLayoutManager(getApplicationContext());
                     rvGroupAlarm.setLayoutManager(layoutManager);
-                    groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms, group);
+                    groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms, group, allContacts);
                     rvGroupAlarm.setAdapter(groupAlarmAdapter);
                 } else {
                     TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
