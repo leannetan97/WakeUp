@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
     // firebase
     DatabaseReference dbAlarms;
     DatabaseReference dbUserGroups;
-    DatabaseReference dbTemp;
+    DatabaseReference dbGroupAlarms;
     private List<Alarm> allAlarms;
     private List<Alarm> personalAlarms;
     private List<Alarm> groupAlarms;
@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
 
         // firebase
         dbAlarms = new FirebaseHelper().getDbUserAlarms();
-        dbUserGroups = new FirebaseHelper().getDbUserGroups();
+        dbGroupAlarms = new FirebaseHelper().getDbUserGroupAlarms();
         // createDummyData();
     }
 
@@ -99,8 +99,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 // create adapter
-                homeAdapter = new HomeFragmentAdapter(personalAlarms);
-                rvAlarm.setAdapter(homeAdapter);
+                createAlarmAdaptor();
             }
 
             @Override
@@ -108,39 +107,43 @@ public class HomeFragment extends Fragment {
             }
         });
 
-//        // group alarms
-//        dbAlarms.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                // clear previous list
-//                personalAlarms.clear();
-//
-//                // iterating through all the nodes
-//                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                    Alarm alarm = postSnapshot.getValue(Alarm.class);
-//                    String alarmKey = postSnapshot.getKey(); //alarm key
-//                    alarm.setAlarmKey(alarmKey);
-//                    if (alarm.isOn()) {
-//                        try {
-//                            startAlarm(alarm);
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//                        cancelAlarm(alarm);
-//                    }
-//                    personalAlarms.add(alarm);
-//                }
-//
-//                // create adapter
-//                homeAdapter = new HomeFragmentAdapter(personalAlarms);
-//                rvAlarm.setAdapter(homeAdapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//            }
-//        });
+        // group alarms
+        dbGroupAlarms.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // clear previous list
+                groupAlarms.clear();
+
+                // iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Alarm alarm = postSnapshot.getValue(Alarm.class);
+                    String alarmKey = postSnapshot.getKey(); //alarm key
+                    alarm.setAlarmKey(alarmKey);
+                    if (alarm.isOn()) {
+                        startAlarm(alarm);
+                    } else {
+                        cancelAlarm(alarm);
+                    }
+                    personalAlarms.add(alarm);
+                }
+
+                // create adapter
+                createAlarmAdaptor();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void createAlarmAdaptor() {
+        allAlarms.clear();
+        allAlarms.addAll(personalAlarms);
+        allAlarms.addAll(groupAlarms);
+
+        homeAdapter = new HomeFragmentAdapter(allAlarms);
+        rvAlarm.setAdapter(homeAdapter);
     }
 
     @Override

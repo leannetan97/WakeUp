@@ -1,5 +1,6 @@
 package com.wakeup.wakeup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -63,11 +64,13 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
         setViewToInstanceVar();
-        firebaseHelper = new FirebaseHelper();
+
         groupKey = getIntent().getExtras().getString("GroupKey");
         group = getIntent().getExtras().getParcelable("Group");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
+
+        firebaseHelper = new FirebaseHelper();
         updateViewDetails();
 
         updateActionBarColor();
@@ -133,11 +136,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                 cancelAlarm();
             }
             System.out.println("Delete Alarm");
-            deleteAlarm();
+            deleteAlarm(prevAlarm.isGroup());
             finish();
         }
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            onBackPressed();
         }
         return true;
     }
@@ -168,15 +171,24 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         spinnerGameOption = findViewById(R.id.input_spinner);
     }
 
-    public void deleteAlarm() {
+    public void deleteAlarm(boolean isGroup) {
         //TODO: perform delete alarm
-        FirebaseHelper firebaseHelper = new FirebaseHelper();
-        firebaseHelper.deleteAlarm(alarmKey);
+        if(isGroup){
+            System.out.println(groupKey);
+            firebaseHelper.deleteAlarmFromGroup(alarmKey, group);
+        }else{
+//            FirebaseHelper firebaseHelper = new FirebaseHelper();
+            firebaseHelper.deleteAlarm(alarmKey);
+        }
     }
 
-    public void updateAlarm() {
+    public void updateAlarm(boolean isGroup) {
         //update alarm with existing key
-        firebaseHelper.updateAlarm(newAlarm, alarmKey);
+        if(isGroup){
+            firebaseHelper.updateAlarmOfGroup(newAlarm, group, alarmKey);
+        }else{
+            firebaseHelper.updateAlarm(newAlarm, alarmKey);
+        }
     }
 
     public void addAlarm(boolean isGroup) {
@@ -202,7 +214,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 //                cancelAlarm();
 //            }
 //            startAlarm(alarmCalendar);
-            updateAlarm();
+            updateAlarm(prevAlarm.isGroup());
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);
 //            startAlarm(alarmCalendar);
@@ -289,5 +301,16 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmKey.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
         Toast.makeText(this,"Alarm is Cancel.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
