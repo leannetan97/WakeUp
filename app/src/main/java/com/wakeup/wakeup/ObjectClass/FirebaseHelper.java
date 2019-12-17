@@ -79,27 +79,27 @@ public class FirebaseHelper {
     }
 
     public void updateGroup(Group group, String groupKey) {
-        modifyGroup(group, groupKey, true);
+        modifyGroup(group, groupKey);
     }
 
-    public void deleteGroup(Group group, String groupKey) {
-        modifyGroup(group, groupKey, false);
+    public void deleteGroup(String groupKey) {
+        dbGroups.child(groupKey).removeValue();
     }
 
-    public void modifyGroup(Group group, String groupKey, boolean value) {
-        String groupName = null;
-        if (value) {
-            groupName = group.getGroupName();
-        }
+    public void modifyGroup(Group group, String groupKey) {
+        String groupName = group.getGroupName();
 
         // add to current user
         Log.d("add", "here " + this.phoneNum);
         addUserToGroup(phoneNum, groupKey, groupName);
 
         // add other users
-        for (User user : group.getUsersInGroup()) {
-            addUserToGroup(user.getPhoneNum(), groupKey, groupName);
+        if (group != null) {
+            for (User user : group.getUsersInGroup()) {
+                addUserToGroup(user.getPhoneNum(), groupKey, groupName);
+            }
         }
+
     }
 
 
@@ -133,7 +133,6 @@ public class FirebaseHelper {
     public void updateAlarmOfGroup(Alarm alarm, String alarmKey, String groupKey) {
         dbGroups.child(groupKey).child("alarms").child(alarmKey).setValue(alarm);
     }
-
 
 
     // Games

@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#8e24aa</color>
-    <color name="colorPrimaryDark">#5c007a</color>
-    <color name="colorPrimaryLight">#c158dc</color>
-    <color name="colorAccent">#ffc107</color>
-    <color name="colorAccentLight">#fff350</color>
-    <color name="colorAccentDark">#c79100</color>
+    <color name="colorPrimary">#764ba2</color>-->
+    <color name="colorPrimaryDark">#29323c</color>
+    <color name="colorAccent">#a1c4fd</color>
     <color name="colorBackground">#e1bee7</color>
     <color name="colorBackgroundTrans">#50e1bee7</color>
-    <color name="colorSecondary">#ffc107</color>
+
+    <color name="colorSecondary">#667eea</color>
     <color name="colorSecondaryLight">#fff350</color>
     <color name="colorSecondaryDark">#c79100</color>
 
     <color name="white">#ffffff</color>
     <color name="lightGrey">#c1d5e0</color>
+
+<!--    <color name="colorPrimary">#8e24aa</color>-->
+<!--    <color name="colorPrimaryDark">#5c007a</color>-->
+<!--    <color name="colorPrimaryLight">#c158dc</color>-->
+<!--    <color name="colorAccent">#ffc107</color>-->
+<!--    <color name="colorAccentLight">#fff350</color>-->
+<!--    <color name="colorAccentDark">#c79100</color>-->
+<!--    <color name="colorBackground">#e1bee7</color>-->
+<!--    <color name="colorBackgroundTrans">#50e1bee7</color>-->
+<!--    <color name="colorSecondary">#ffc107</color>-->
+<!--    <color name="colorSecondaryLight">#fff350</color>-->
+<!--    <color name="colorSecondaryDark">#c79100</color>-->
+
+<!--    <color name="white">#ffffff</color>-->
+<!--    <color name="lightGrey">#c1d5e0</color>-->
 
 </resources>

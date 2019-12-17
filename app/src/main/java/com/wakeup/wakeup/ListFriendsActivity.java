@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.ObjectClass.Friend;
+import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 
 public class ListFriendsActivity extends AppCompatActivity {
     ArrayList<Friend> friends = new ArrayList<>();
+    ArrayList<GroupMember> allContactsInGroupMember;
     ArrayList<Friend> allContacts = new ArrayList<>();
     private DatabaseReference dbUsers;
     ListView listView;
@@ -51,16 +54,21 @@ public class ListFriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_friends);
 //        createDummyData();
-        checkUserPhonePermission();
+//        checkUserPhonePermission();
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
-
+        allContactsInGroupMember = getIntent().getExtras().getParcelableArrayList("AllContacts");
 
         listView = (ListView) findViewById(R.id.lv_list_friends);
         ArrayAdapter<Friend> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_multiple_choice, android.R.id.text1, friends);
         ab = getSupportActionBar();
 
-        getContactList();
+//        getContactList();
+
+        for (GroupMember groupMember: allContactsInGroupMember){
+            allContacts.add(new Friend(groupMember.getUserName(), groupMember.getPhoneNum()));
+        }
+
         for (Friend f : allContacts) {
             if (f.getPhoneNum().contains(".") || f.getPhoneNum().contains("#") || f.getPhoneNum().contains("$") || f.getPhoneNum().contains("[") || f.getPhoneNum().contains("]")) {
                 continue;
@@ -109,6 +117,10 @@ public class ListFriendsActivity extends AppCompatActivity {
 //        friends.add(new Friend("111"));
 //        friends.add(new Friend("112"));
 //    }
+
+    private Friend convertGroupMemberToFriend(GroupMember groupMember){
+        return new Friend(groupMember.getUserName(), groupMember.getPhoneNum());
+    }
 
     private void filterContacts() {
 

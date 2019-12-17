@@ -38,6 +38,7 @@ import com.wakeup.wakeup.ListFriendsActivity;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.ObjectClass.User;
 import com.wakeup.wakeup.R;
 import com.wakeup.wakeup.ui.main.NewGroupFriendsListAdapter;
@@ -52,6 +53,7 @@ public class NewGroupActivity extends AppCompatActivity {
     private DatabaseReference dbUsers;
     private DatabaseReference dbGroups;
     private boolean exist;
+    ArrayList<GroupMember> allContacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class NewGroupActivity extends AppCompatActivity {
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
         // Friends Selected
         friends = new ArrayList<>();
+        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
 
         ActionBar ab = getSupportActionBar();
 //        assert ab != null;
@@ -94,6 +97,7 @@ public class NewGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ListFriendsActivity.class);
+                intent.putParcelableArrayListExtra("AllContacts", allContacts);
                 startActivityForResult(intent, 0);
                 Toast.makeText(getApplicationContext(), "Loading Contacts...",
                         Toast.LENGTH_SHORT).show();

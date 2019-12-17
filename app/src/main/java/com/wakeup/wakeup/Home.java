@@ -1,7 +1,10 @@
 package com.wakeup.wakeup;
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
@@ -11,10 +14,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,20 +32,19 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
-import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
-import com.wakeup.wakeup.ObjectClass.User;
-import com.wakeup.wakeup.UserLogin.ChangePassword;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
 import com.wakeup.wakeup.ui.main.GroupFragment;
 import com.wakeup.wakeup.ui.main.HistoryFragment;
 import com.wakeup.wakeup.ui.main.HomeFragment;
 import com.wakeup.wakeup.ui.main.ViewPagerAdapter;
+
+import java.util.ArrayList;
 
 public class Home extends AppCompatActivity implements DialogWithTitle.DialogListener {
     // temp
@@ -48,6 +54,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ArrayList<GroupMember> allContacts = new ArrayList<>();
     private FloatingActionButton fabAddAlarm, fabAddGroup, fabLeaderboard;
 
     private int[] tabIcons = {
@@ -61,9 +68,13 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        checkUserPhonePermission();
+        getContactList();
         // set action bar
-        getSupportActionBar();
+//        getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -159,9 +170,9 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             case R.id.item_change_name:
                 openDialog();
                 return true;
-            case R.id.item_change_password:
-                navigateToChangePassword();
-                return true;
+//            case R.id.item_change_password:
+//                navigateToChangePassword();
+//                return true;
             case R.id.item_logout:
                 AuthUI.getInstance()
                         .signOut(this)
@@ -177,7 +188,11 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         }
     }
 
-
+    @Override
+    public boolean onNavigateUp() {
+        finish();
+        return true;
+    }
 
     private void navigateToChangePassword() {
 //        Intent intent = new Intent(this, ChangePassword.class);
@@ -195,25 +210,6 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         args.putString("InvalidButton", "DISCARD");
         changeNameDialog.setArguments(args);
         changeNameDialog.show(getSupportFragmentManager(), "change profile name dialog");
-
-////////////////
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-//                .setDisplayName("Jane Q. User")
-//                .build();
-//
-//        Task<Void> voidTask = user.updateProfile(profileUpdates)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("Firebase Profile", "User profile updated.");
-//                        }
-//                    }
-//                });
-////////////////////
-
     }
 
     private void updateProfileName(String name){
@@ -248,7 +244,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), "HOME");
         adapter.addFragment(new AlarmFragment(), "ALARM");
-        adapter.addFragment(new GroupFragment(), "GROUP");
+        adapter.addFragment(new GroupFragment(allContacts), "GROUP");
         adapter.addFragment(new HistoryFragment(), "HISTORY");
         viewPager.setAdapter(adapter);
     }
@@ -295,6 +291,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     // NewGroup
     private void navigateToCreateGroup(View view) {
         Intent createGroupView = new Intent(Home.this, NewGroupActivity.class);
+        createGroupView.putParcelableArrayListExtra("AllContacts", allContacts);
         startActivity(createGroupView);
     }
 
@@ -303,4 +300,69 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         Intent leaderBoard = new Intent(Home.this, LeaderboardActivity.class);
         startActivity(leaderBoard);
     }
+
+    private void getContactList() {
+        Toast.makeText(this, "Initializing...", Toast.LENGTH_LONG).show();
+        ArrayList<String> names = new ArrayList<>();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        if (names.contains(name)) {
+                            continue;
+                        }
+
+//                        System.out.println(phoneNo.replaceAll("\\s+", "").replaceAll("-+", ""));
+//                        System.out.println(name);
+//                        System.out.println(phoneNo);
+                        names.add(name);
+                        allContacts.add(new GroupMember(name, false, phoneNo.replaceAll("\\s+",
+                                "").replaceAll("-+", "")));
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+    }
+
+    public boolean checkUserPhonePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        99);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        99);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }
