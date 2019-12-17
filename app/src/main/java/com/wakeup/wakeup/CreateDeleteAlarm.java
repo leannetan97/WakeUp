@@ -137,7 +137,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             finish();
         }
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            onBackPressed();
         }
         return true;
     }
