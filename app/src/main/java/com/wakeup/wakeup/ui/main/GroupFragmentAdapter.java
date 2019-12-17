@@ -55,6 +55,7 @@ public class GroupFragmentAdapter extends RecyclerView.Adapter<GroupFragmentAdap
         toSingleGroupActivity.putExtra("GroupKey", groupItem.getGroupKey());
         toSingleGroupActivity.putParcelableArrayListExtra("GroupAlarmsList", (ArrayList<?
                 extends Parcelable>) groupItem.getAlarmsInGroup());
+        toSingleGroupActivity.putExtra("Group", groupItem);
         view.getContext().startActivity(toSingleGroupActivity);
     }
 

@@ -12,6 +12,7 @@ import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.Home;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.Friend;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.R;
 import com.wakeup.wakeup.ui.main.PersonalGroupAlarmFragmentAdapter;
 
@@ -42,6 +43,7 @@ public class SingleGroupActivity extends AppCompatActivity {
 
     private String groupName;
     private String groupKey;
+    private Group group;
 
     private RecyclerView rvGroupAlarm;
     private RecyclerView.Adapter groupAlarmAdapter;
@@ -74,6 +76,7 @@ public class SingleGroupActivity extends AppCompatActivity {
 
         groupKey = getIntent().getExtras().getString("GroupKey");
         groupName = getIntent().getExtras().getString("GroupName");
+        group = getIntent().getExtras().getParcelable("Group");
         getSupportActionBar().setTitle(groupName);
         alarms = getIntent().getParcelableArrayListExtra("GroupAlarmsList");
 
@@ -100,6 +103,7 @@ public class SingleGroupActivity extends AppCompatActivity {
                 Toast.makeText(this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SingleGroupActivity.this, GroupSettingsFriendsActivity.class);
                 intent.putExtra("GroupKey", groupKey);
+                intent.putExtra("Group", group);
                 startActivity(intent);
                 return true;
             case android.R.id.home:

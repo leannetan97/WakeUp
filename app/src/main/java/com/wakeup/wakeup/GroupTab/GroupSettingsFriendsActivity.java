@@ -29,6 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.wakeup.wakeup.Home;
+import com.wakeup.wakeup.MainActivity;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
@@ -46,6 +48,8 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
     private ArrayList<GroupMember> allContacts;
     String currentUserPhoneNum;
     ActionBar tb;
+    FirebaseHelper firebaseHelper;
+    Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
         members = new ArrayList<>();
         allContacts = new ArrayList<>();
         groupKey = getIntent().getExtras().getString("GroupKey");
+        group = getIntent().getExtras().getParcelable("GroupKey");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
         tb = getSupportActionBar();
         getContactList();
@@ -67,7 +72,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 //        createDummyData();
 
 
-        FirebaseHelper firebaseHelper = new FirebaseHelper();
+        firebaseHelper = new FirebaseHelper();
 
         currentUserPhoneNum = firebaseHelper.getPhoneNum();
 
@@ -211,11 +216,33 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     lv.setAdapter(customAdapter);
                     Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
                     btnLeaveDeleteGroup.setText(R.string.delete_group);
+
+                    btnLeaveDeleteGroup.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            firebaseHelper.deleteGroup(group, groupKey);
+                            Toast.makeText(getApplicationContext(), "Group Deleted!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), Home.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    });
+
                     lv.setAdapter(customAdapter);
                 } else {
                     CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),
                             members, false);
                     lv.setAdapter(customAdapter);
+                    Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
+                    btnLeaveDeleteGroup.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            firebaseHelper.removeUserFromGroup(currentUserPhoneNum, groupKey);
+                            Intent intent = new Intent(getApplicationContext(), Home.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    });
                 }
                 tb.setTitle("Friends List (" + (members.size()) + ")");
 
@@ -318,6 +345,9 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Toast.makeText(context, "remove " + members.get(position).getUserName(),
                             Toast.LENGTH_SHORT).show();
+                    firebaseHelper.removeUserFromGroup(phoneNum, groupKey);
+                    members.remove(members.get(position));
+                    notifyDataSetChanged();
                 }
             });
             ivBtnCall.setOnClickListener(new View.OnClickListener() {
@@ -326,7 +356,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     Toast.makeText(context, "call " + members.get(position).getUserName(),
                             Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:"+phoneNum));
+                    intent.setData(Uri.parse("tel:" + phoneNum));
                     startActivity(intent);
                 }
             });

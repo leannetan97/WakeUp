@@ -97,9 +97,12 @@ public class FirebaseHelper {
         addUserToGroup(phoneNum, groupKey, groupName);
 
         // add other users
-        for (User user : group.getUsersInGroup()) {
-            addUserToGroup(user.getPhoneNum(), groupKey, groupName);
+        if (group != null) {
+            for (User user : group.getUsersInGroup()) {
+                addUserToGroup(user.getPhoneNum(), groupKey, groupName);
+            }
         }
+
     }
 
 
@@ -133,7 +136,6 @@ public class FirebaseHelper {
     public void updateAlarmOfGroup(Alarm alarm, String alarmKey, String groupKey) {
         dbGroups.child(groupKey).child("alarms").child(alarmKey).setValue(alarm);
     }
-
 
 
     // Games
