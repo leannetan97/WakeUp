@@ -140,8 +140,8 @@ public class HistoryFragment extends Fragment {
                 // set chart gradient color
 //                int startColor = ContextCompat.getColor(getContext(), android.R.color.holo_blue_light);
 //                int endColor = ContextCompat.getColor(getContext(), android.R.color.holo_purple);
-                int startColor = getResources().getColor(R.color.colorSecondary);
-                int endColor = getResources().getColor(R.color.colorPrimary);
+                int endColor = getResources().getColor(R.color.colorSecondary);
+                int startColor = getResources().getColor(R.color.colorPrimary);
 
                 barDataSet.setGradientColor(startColor, endColor);
                 barDataSet.setValueFormatter(new DefaultValueFormatter(0));

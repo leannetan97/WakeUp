@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -180,7 +181,10 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     public void addAlarm(boolean isGroup) {
         if(isGroup){
-            firebaseHelper.addAlarmToGroup(newAlarm, groupKey);
+//            Log.d("group", group.getUsersInGroup().get(0).getPhoneNum());
+//            System.out.println(group.getUsersInGroup().get(0).getPhoneNum());
+            System.out.println("group");
+            firebaseHelper.addAlarmToGroup(newAlarm, group);
         } else {
             firebaseHelper.addAlarm(newAlarm);
         }

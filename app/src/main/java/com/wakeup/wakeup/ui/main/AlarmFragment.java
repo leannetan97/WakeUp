@@ -30,12 +30,12 @@ public class AlarmFragment extends Fragment {
 
     // firebase
     DatabaseReference dbAlarms;
+    private List<Alarm> alarms;
 
     // Adapter
     private RecyclerView rvAlarm;
     private RecyclerView.Adapter personalAlarmAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private List<Alarm> alarms;
 
     public AlarmFragment() {
         // Required empty public constructor
@@ -59,15 +59,6 @@ public class AlarmFragment extends Fragment {
         return view;
     }
 
-    private void createDummyData() {
-//        alarms.add(new Alarm("02:00","Alarm Name 1", true, false,2));
-//        alarms.add(new Alarm("03:00","Alarm Name 2", false, false,2));
-//        alarms.add(new Alarm("04:00","Alarm Name 3", true, false,2));
-//        alarms.add(new Alarm("05:00","Alarm Name 4", false, false,2));
-//        alarms.add(new Alarm("06:00","Alarm Name 5", true, false,2));
-//        alarms.add(new Alarm("07:00","Alarm Name 6", false, false,2));
-//        alarms.add(new Alarm("08:00","Alarm Name 7", true, false,2));
-    }
 
     @Override
     public void onStart() {

@@ -26,6 +26,7 @@ public class FirebaseHelper {
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbUserHistory;
     private DatabaseReference dbUserGroups;
+    private DatabaseReference dbUserGroupAlarms;
     // private DatabaseReference dbCurrentUser;
 
 
@@ -44,12 +45,17 @@ public class FirebaseHelper {
         if (user != null) {
             phoneNum = user.getPhoneNumber();
             username = user.getDisplayName();
+            if (username.length() == 0) {
+                username = phoneNum.substring(phoneNum.length() - 4);
+            }
+
             Log.e("addCur", "current user: " + user);
 
             // all nodes under current user
             dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
             dbUserHistory = dbUsers.child(phoneNum).child("history");
             dbUserGroups = dbUsers.child(phoneNum).child("groups");
+            dbUserGroupAlarms = dbUsers.child(phoneNum).child("groupalarms");
         }
     }
 
@@ -83,7 +89,7 @@ public class FirebaseHelper {
     }
 
     public void deleteGroup(String groupKey) {
-        dbGroups.child(groupKey).removeValue();
+        dbGroups.child(groupKey).setValue(null);
     }
 
     public void modifyGroup(Group group, String groupKey) {
@@ -122,23 +128,50 @@ public class FirebaseHelper {
     }
 
     // alarms and groups
-    public void addAlarmToGroup(Alarm alarm, String groupKey) {
-        dbGroups.child(groupKey).child("alarms").push().setValue(alarm);
+    public void addAlarmToGroup(Alarm alarm, Group group) {
+        String groupKey = group.getGroupKey();
+        String groupAlarmKey = dbGroups.child(groupKey).child("alarms").push().getKey();
+
+        updateAlarmOfGroup(alarm, group, groupAlarmKey);
     }
 
-    public void deleteAlarmFromGroup(String alarmKey, String groupKey) {
-        dbGroups.child(groupKey).child("alarms").child(alarmKey).setValue(null);
+    public void deleteAlarmFromGroup(String groupAlarmKey, Group group) {
+        String groupKey = group.getGroupKey();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        dbGroups.child(groupKey).child("alarms").child(groupAlarmKey).setValue(null);
+
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(null);
+
+        for (User user : group.getUsersInGroup()) {
+            childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
+        }
+
+        dbFirebase.updateChildren(childUpdates);
     }
 
-    public void updateAlarmOfGroup(Alarm alarm, String alarmKey, String groupKey) {
-        dbGroups.child(groupKey).child("alarms").child(alarmKey).setValue(alarm);
+    public void updateAlarmOfGroup(Alarm alarm, Group group, String groupAlarmKey) {
+        String groupKey = group.getGroupKey();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/groups/" + groupKey + "/alarms/" + groupAlarmKey, alarm);
+
+        //add to every user
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(alarm);
+
+        for (User user : group.getUsersInGroup()) {
+            childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
+        }
+
+        dbFirebase.updateChildren(childUpdates);
     }
 
 
     // Games
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
-        dbUserAlarms.child(id).setValue(game);
+        dbScores.child(id).setValue(game);
     }
 
 

@@ -35,6 +35,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Game;
 import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.ObjectClass.GroupMember;
@@ -82,18 +83,20 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
-        // temp, for testing
-        firebaseHelper = new FirebaseHelper();
+//        // temp, for testing
+//        firebaseHelper = new FirebaseHelper();
+//
+//        Button button = (Button)findViewById(R.id.button_temp);
+//        button.setText(firebaseHelper.getUsername());
+//        button.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+////                firebaseHelper.addHistory(6);
+////                firebaseHelper.addGroup(new Group("Group 1"));
+//                firebaseHelper.addScore(new Game(3, 6, firebaseHelper.getUsername()));
+//            }
+//        });
+//        ///////////
 
-        Button button = (Button) findViewById(R.id.button_temp);
-        button.setText(firebaseHelper.getUsername());
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-//                firebaseHelper.addHistory(6);
-                firebaseHelper.addGroup(new Group("Group 1"));
-            }
-        });
-        ///////////
 
         fabAddAlarm = (FloatingActionButton) findViewById(R.id.btn_floating_add_alarm);
         fabAddGroup = (FloatingActionButton) findViewById(R.id.btn_floating_add_group);

@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Alarm  implements Parcelable {
+public class Alarm implements Parcelable {
 
     private String alarmKey;
     private String time;
