@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wakeup.wakeup.GroupTab.SingleGroupActivity;
 import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
@@ -20,9 +21,11 @@ import java.util.List;
 
 public class GroupFragmentAdapter extends RecyclerView.Adapter<GroupFragmentAdapter.GroupFragmentViewHolder>{
     private List<Group> groups;
+    ArrayList<GroupMember> allContacts;
 
-    public GroupFragmentAdapter(List<Group> groups){
+    public GroupFragmentAdapter(List<Group> groups, ArrayList<GroupMember> allContacts){
         this.groups = groups;
+        this.allContacts = allContacts;
     }
 
     @NonNull
@@ -55,7 +58,8 @@ public class GroupFragmentAdapter extends RecyclerView.Adapter<GroupFragmentAdap
         toSingleGroupActivity.putExtra("GroupKey", groupItem.getGroupKey());
         toSingleGroupActivity.putParcelableArrayListExtra("GroupAlarmsList", (ArrayList<?
                 extends Parcelable>) groupItem.getAlarmsInGroup());
-        toSingleGroupActivity.putExtra("Group", groupItem);
+        toSingleGroupActivity.putParcelableArrayListExtra("AllContacts", allContacts);
+        toSingleGroupActivity.putExtra("Group", (Parcelable) groupItem);
         view.getContext().startActivity(toSingleGroupActivity);
     }
 

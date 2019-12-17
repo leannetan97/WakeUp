@@ -24,6 +24,7 @@ import com.wakeup.wakeup.HistoryTab.HistoryAdapter;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.ObjectClass.History;
 import com.wakeup.wakeup.R;
 
@@ -43,9 +44,13 @@ public class GroupFragment extends Fragment {
     private RecyclerView rvGroup;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter groupAdapter;
+    ArrayList<GroupMember> allContacts;
 
-    public GroupFragment() {
+    public GroupFragment(ArrayList<GroupMember> allContacts) {
         // Required empty public constructor
+
+        this.allContacts = allContacts;
+
         groups = new ArrayList<>();
 
         // firebase
@@ -60,7 +65,7 @@ public class GroupFragment extends Fragment {
         rvGroup = view.findViewById(R.id.rv_group);
         layoutManager = new LinearLayoutManager(getContext());
         rvGroup.setLayoutManager(layoutManager);
-        groupAdapter = new GroupFragmentAdapter(groups);
+        groupAdapter = new GroupFragmentAdapter(groups, allContacts);
         rvGroup.setAdapter(groupAdapter);
 
         return view;
@@ -87,7 +92,7 @@ public class GroupFragment extends Fragment {
                 }
 
                 // create adapter
-                groupAdapter = new GroupFragmentAdapter(groups);
+                groupAdapter = new GroupFragmentAdapter(groups, allContacts);
                 rvGroup.setAdapter(groupAdapter);
             }
 

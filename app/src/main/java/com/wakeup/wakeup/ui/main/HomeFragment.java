@@ -1,11 +1,9 @@
 package com.wakeup.wakeup.ui.main;
 
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.AlarmReceiver;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.R;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -97,11 +90,7 @@ public class HomeFragment extends Fragment {
                     String alarmKey = postSnapshot.getKey(); //alarm key
                     alarm.setAlarmKey(alarmKey);
                     if (alarm.isOn()) {
-                        try {
-                            startAlarm(alarm);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        startAlarm(alarm);
                     } else {
                         cancelAlarm(alarm);
                     }
@@ -153,30 +142,13 @@ public class HomeFragment extends Fragment {
 //        });
     }
 
-    private void startAlarm(Alarm alarm) throws ParseException {
+    private void startAlarm(Alarm alarm) {
         Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        //Change the alarm object to byte so that pass
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
-//        try {
+
         Bundle alarmBundle = new Bundle();
         alarmBundle.putParcelable("alarm", alarm);
-        intent.putExtra("alarmBundle",alarmBundle);
-//            out = new ObjectOutputStream(bos);
-//            out.writeObject(alarm);
-//            out.flush();
-//            byte[] data = bos.toByteArray();
-//            intent.putExtra("alarm", data);
+        intent.putExtra("alarmBundle", alarmBundle);
         System.out.println("Data is store in byte:" + alarmBundle);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                bos.close();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
 
         AlarmManager alarmManager =
                 (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -196,6 +168,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // Cancel if already created
     private void cancelAlarm(Alarm alarm) {
         AlarmManager alarmManager =
                 (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -205,7 +178,8 @@ public class HomeFragment extends Fragment {
                 (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent);
-            Toast.makeText(getContext(), "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
+            System.out.println("[DEBUG] Alarm is cancel");
+//            Toast.makeText(getContext(), "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
         }
     }
 

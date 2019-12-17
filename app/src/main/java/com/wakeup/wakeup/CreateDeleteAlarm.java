@@ -1,5 +1,6 @@
 package com.wakeup.wakeup;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
@@ -35,7 +37,7 @@ import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, AdapterView.OnItemSelectedListener {
+public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener { //AdapterView.OnItemSelectedListener
 
     private String viewTitle, buttonName;
 
@@ -46,22 +48,28 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private String alarmKey;
     private FirebaseHelper firebaseHelper;
 
+    private String groupKey;
+
     private DecimalFormat digitFormatter = new DecimalFormat("00");
-    private TextView tvAlarmName;
+//    private TextView tvAlarmName;
     private TextView tvTimeDisplay;
     private Spinner spinnerGameOption;
     private int gameOption = 0;
+    private Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
-
+        setViewToInstanceVar();
         firebaseHelper = new FirebaseHelper();
-
+        groupKey = getIntent().getExtras().getString("GroupKey");
+        group = getIntent().getExtras().getParcelable("Group");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
         updateViewDetails();
+
+        updateActionBarColor();
 
         Fragment fragment = null;
         if (viewTitle.contains("Edit")) {
@@ -76,9 +84,6 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                 System.out.println("[DEBUG] Personal Details Fragment");
                 fragment = new PersonalAlarmDetailsFragment(prevAlarm.getAlarmName());
             }
-            ((TextView) findViewById(R.id.tv_time_display)).setText(prevAlarm.getTime());
-            //TODO: Update Spinner value
-//        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
         } else {
             //A Default time
             setDefaultTimeDisplay();
@@ -89,13 +94,26 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         transaction.replace(R.id.fragment_alarm_details, fragment);
         transaction.commit();
 
-        setViewToInstanceVar();
+
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.game_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGameOption.setAdapter(adapter);
-        spinnerGameOption.setOnItemSelectedListener(this);
+//        spinnerGameOption.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setViewToInstanceVar();
+        // Update value of Spinner not work at onCreate
+        if (viewTitle.contains("Edit")) {
+            //TODO: Update Spinner value
+            System.out.println("[DEBUG] prevAlarm.getGameOption() :"+ prevAlarm.getGameOption());
+            spinnerGameOption.setSelection(prevAlarm.getGameOption());
+            tvTimeDisplay.setText(prevAlarm.getTime());
+        }
     }
 
     @Override
@@ -108,16 +126,25 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.menu.alarm_edit_menu) {
+        if (item.getItemId() == R.id.btn_delete_alarm) {
             if(prevAlarm.isOn()){
+                System.out.println("Cancel Alarm");
                 cancelAlarm();
             }
+            System.out.println("Delete Alarm");
             deleteAlarm();
+            finish();
         }
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
+    }
+
+    private void updateActionBarColor(){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
     }
 
     private void setDefaultTimeDisplay(){
@@ -126,7 +153,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         int minutes = c.get(Calendar.MINUTE);
         String time = digitFormatter.format(hourOfDay) + ":" + digitFormatter.format(minutes);
-        tvTimeDisplay.setText(time);
+        ((TextView)findViewById(R.id.tv_time_display)).setText(time);
     }
 
     private void updateViewDetails() {
@@ -136,7 +163,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     private void setViewToInstanceVar() {
         tvTimeDisplay = findViewById(R.id.tv_time_display);
-        tvAlarmName = findViewById(R.id.tv_alarm_name);
+//        tvAlarmName = findViewById(R.id.tv_alarm_name);
         spinnerGameOption = findViewById(R.id.input_spinner);
     }
 
@@ -151,18 +178,22 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         firebaseHelper.updateAlarm(newAlarm, alarmKey);
     }
 
-    public void addAlarm() {
-        firebaseHelper.addAlarm(newAlarm);
+    public void addAlarm(boolean isGroup) {
+        if(isGroup){
+            firebaseHelper.addAlarmToGroup(newAlarm, groupKey);
+        } else {
+            firebaseHelper.addAlarm(newAlarm);
+        }
     }
 
     public void submitButtonOnClick(View view) {
         //TODO: Save details in local database
         setViewToInstanceVar();
-
+        int gameOption = spinnerGameOption.getSelectedItemPosition();
         String time = (String) tvTimeDisplay.getText();
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption());
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), gameOption);
 //            if(prevAlarm.isOn()){
 //                cancelAlarm();
 //            }
@@ -171,11 +202,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);
 //            startAlarm(alarmCalendar);
-            addAlarm();
+            addAlarm(false);
         } else {
             newAlarm = new Alarm(time, alarmName, true, true, gameOption);
 //            startAlarm(alarmCalendar);
-            addAlarm();
+            addAlarm(true);
         }
         finish();
     }
@@ -200,18 +231,18 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 //        alarmCalendar = c;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        //  gameOption = [NONE, TICTACTOE, MATH, SHAKER]
-        gameOption = position;
-        //TODO: For testing purpose only
-        Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+//        //  gameOption = [NONE, TICTACTOE, MATH, SHAKER]
+//        gameOption = position;
+//        //TODO: For testing purpose only
+//        Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+//    }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        //do nothing
-    }
+//    @Override
+//    public void onNothingSelected(AdapterView<?> adapterView) {
+//        //do nothing
+//    }
 
     private void startAlarm(Calendar c) {
         Intent intent = new Intent(this, AlarmReceiver.class);
