@@ -24,10 +24,12 @@ public class Group implements Serializable, Parcelable {
         this.usersInGroup = new ArrayList<>();
     }
 
+    // parcel
     protected Group(Parcel in) {
         groupKey = in.readString();
         groupName = in.readString();
         alarmsInGroup = in.createTypedArrayList(Alarm.CREATOR);
+        usersInGroup = in.createTypedArrayList(User.CREATOR);
     }
 
     public static final Creator<Group> CREATOR = new Creator<Group>() {
@@ -105,5 +107,6 @@ public class Group implements Serializable, Parcelable {
         dest.writeString(groupKey);
         dest.writeString(groupName);
         dest.writeTypedList(alarmsInGroup);
+        dest.writeTypedList(usersInGroup);
     }
 }

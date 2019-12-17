@@ -26,6 +26,7 @@ public class FirebaseHelper {
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbUserHistory;
     private DatabaseReference dbUserGroups;
+    private DatabaseReference dbUserGroupAlarms;
     // private DatabaseReference dbCurrentUser;
 
 
@@ -54,6 +55,7 @@ public class FirebaseHelper {
             dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
             dbUserHistory = dbUsers.child(phoneNum).child("history");
             dbUserGroups = dbUsers.child(phoneNum).child("groups");
+            dbUserGroupAlarms = dbUsers.child(phoneNum).child("groupalarms");
         }
     }
 
@@ -87,7 +89,7 @@ public class FirebaseHelper {
     }
 
     public void deleteGroup(String groupKey) {
-        dbGroups.child(groupKey).removeValue();
+        dbGroups.child(groupKey).setValue(null);
     }
 
     public void modifyGroup(Group group, String groupKey) {
@@ -140,7 +142,8 @@ public class FirebaseHelper {
 
         dbGroups.child(groupKey).child("alarms").child(groupAlarmKey).setValue(null);
 
-        //delete from every user
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(null);
+
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
         }
@@ -155,6 +158,8 @@ public class FirebaseHelper {
         childUpdates.put("/groups/" + groupKey + "/alarms/" + groupAlarmKey, alarm);
 
         //add to every user
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(alarm);
+
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
         }
@@ -214,5 +219,9 @@ public class FirebaseHelper {
 
     public DatabaseReference getDbUserGroups() {
         return dbUserGroups;
+    }
+
+    public DatabaseReference getDbUserGroupAlarms() {
+        return dbUserGroupAlarms;
     }
 }

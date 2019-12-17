@@ -181,8 +181,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     public void addAlarm(boolean isGroup) {
         if(isGroup){
-            Log.d("group", group.getUsersInGroup().get(0).getPhoneNum());
-            System.out.println(group.getUsersInGroup().get(0).getPhoneNum());
+//            Log.d("group", group.getUsersInGroup().get(0).getPhoneNum());
+//            System.out.println(group.getUsersInGroup().get(0).getPhoneNum());
             System.out.println("group");
             firebaseHelper.addAlarmToGroup(newAlarm, group);
         } else {

@@ -1,7 +1,10 @@
 package com.wakeup.wakeup.ui.main;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +18,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wakeup.wakeup.AlarmReceiver;
 import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.R;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.List;
 
 // NOTE: This adapter is Shared by SingleGroupActivity and AlarmFragment
@@ -83,7 +88,7 @@ public class PersonalGroupAlarmFragmentAdapter extends RecyclerView.Adapter<Pers
         }
         updateAlarm(alarm);
     }
-
+    
     public void updateAlarm(Alarm alarm) {
         //update alarm with existing key
         firebaseHelper.updateAlarm(alarm, alarm.getAlarmKey());

@@ -84,10 +84,10 @@ public class AlarmPopUp extends AppCompatActivity {
                 moveTaskToBack(true);
                 break;
             case 1:
-                navigateToMath(v);
+                navigateToTicTacToe(v);
                 break;
             case 2:
-                navigateToTicTacToe(v);
+                navigateToMath(v);
                 break;
             case 3:
                 navigateToShake(v);
