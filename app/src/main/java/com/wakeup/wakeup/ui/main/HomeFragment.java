@@ -45,6 +45,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView.Adapter homeAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rvAlarm;
+    private Context context;
 
 
     public HomeFragment() {
@@ -145,8 +146,14 @@ public class HomeFragment extends Fragment {
         rvAlarm.setAdapter(homeAdapter);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
     private void startAlarm(Alarm alarm) {
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        Intent intent = new Intent(context, AlarmReceiver.class);
 
         Bundle alarmBundle = new Bundle();
         alarmBundle.putParcelable("alarm", alarm);
@@ -155,7 +162,7 @@ public class HomeFragment extends Fragment {
 
         AlarmManager alarmManager =
                 (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                 (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar c = alarm.getTimeInCalender();
@@ -175,14 +182,14 @@ public class HomeFragment extends Fragment {
     private void cancelAlarm(Alarm alarm) {
         AlarmManager alarmManager =
                 (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
+        Intent intent = new Intent(context, AlarmReceiver.class);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(),
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                 (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent);
             System.out.println("[DEBUG] Alarm is cancel");
-//            Toast.makeText(getContext(), "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
         }
     }
 
