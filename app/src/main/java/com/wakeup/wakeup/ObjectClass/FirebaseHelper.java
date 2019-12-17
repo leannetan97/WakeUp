@@ -152,11 +152,6 @@ public class FirebaseHelper {
     }
 
 
-
-
-
-
-
     // Get
     public DatabaseReference getDbUsers() {
         return dbUsers;

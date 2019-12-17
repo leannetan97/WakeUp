@@ -2,6 +2,7 @@ package com.wakeup.wakeup.ui.main;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,9 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.R;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +28,10 @@ import java.util.List;
  */
 public class AlarmFragment extends Fragment {
 
+    // firebase
+    DatabaseReference dbAlarms;
+
+    // Adapter
     private RecyclerView rvAlarm;
     private RecyclerView.Adapter personalAlarmAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -29,7 +40,9 @@ public class AlarmFragment extends Fragment {
     public AlarmFragment() {
         // Required empty public constructor
         alarms = new ArrayList<>();
-        createDummyData();
+
+        // firebase
+        dbAlarms = new FirebaseHelper().getDbUserAlarms();
     }
 
     @Override
@@ -47,13 +60,43 @@ public class AlarmFragment extends Fragment {
     }
 
     private void createDummyData() {
-        alarms.add(new Alarm("02:00","Alarm Name 1", true, false,2));
-        alarms.add(new Alarm("03:00","Alarm Name 2", false, false,2));
-        alarms.add(new Alarm("04:00","Alarm Name 3", true, false,2));
-        alarms.add(new Alarm("05:00","Alarm Name 4", false, false,2));
-        alarms.add(new Alarm("06:00","Alarm Name 5", true, false,2));
-        alarms.add(new Alarm("07:00","Alarm Name 6", false, false,2));
-        alarms.add(new Alarm("08:00","Alarm Name 7", true, false,2));
+//        alarms.add(new Alarm("02:00","Alarm Name 1", true, false,2));
+//        alarms.add(new Alarm("03:00","Alarm Name 2", false, false,2));
+//        alarms.add(new Alarm("04:00","Alarm Name 3", true, false,2));
+//        alarms.add(new Alarm("05:00","Alarm Name 4", false, false,2));
+//        alarms.add(new Alarm("06:00","Alarm Name 5", true, false,2));
+//        alarms.add(new Alarm("07:00","Alarm Name 6", false, false,2));
+//        alarms.add(new Alarm("08:00","Alarm Name 7", true, false,2));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        dbAlarms.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // clear previous list
+                alarms.clear();
+
+                // iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Alarm alarm = postSnapshot.getValue(Alarm.class);
+                    String alarmKey = postSnapshot.getKey(); //alarm key
+                    alarm.setAlarmKey(alarmKey);
+                    if (!alarm.isGroup()) {
+                        alarms.add(alarm);
+                    }
+                }
+
+                // create adapter
+                personalAlarmAdapter = new HomeFragmentAdapter(alarms);
+                rvAlarm.setAdapter(personalAlarmAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
 }
