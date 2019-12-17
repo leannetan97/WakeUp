@@ -2,7 +2,9 @@ package com.wakeup.wakeup.Games;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 
+import android.app.AlarmManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -12,14 +14,17 @@ import android.widget.TextView;
 
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Game;
+import com.wakeup.wakeup.AlarmPopUp;
+import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.R;
 
 public class GameTicTacToe extends AppCompatActivity {
-
+    private Alarm alarm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_tic_tac_toe);
+        alarm = getIntent().getExtras().getParcelable("AlarmData");
 
     }
     boolean isGameActive = true;
@@ -119,8 +124,15 @@ public class GameTicTacToe extends AppCompatActivity {
 
                 if(playerWin==99){
                     new FirebaseHelper().addScore(new Game(3, 10));
-//            new FirebaseHelper().setUserAwake();
                     finish();
+
+                    if(alarm.isGroup()){
+                        new FirebaseHelper().setUserAwake(alarm.getGroupKey());
+                        System.out.println("[DEBUG] isGroup: need update awakeStatus");
+                        //Update the awake status
+                    }
+                    AlarmPopUp.stopAlarm();
+                    finishAffinity();
                 }
             }
         }

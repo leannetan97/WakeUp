@@ -12,6 +12,8 @@ import android.view.Window;
 
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Game;
+import com.wakeup.wakeup.AlarmPopUp;
+import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.R;
 
 public class GameShake extends AppCompatActivity {
@@ -23,7 +25,7 @@ public class GameShake extends AppCompatActivity {
     public float acelVal; // CURRENT ACCELERATION VALUE AND GRAVITY
     public float acelLast; // LAST ACCELERATION VALUE AND GRAVITY
     public float shake; // ACCELERATION VALUE differ from GRAVITY
-
+    private Alarm alarm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -33,6 +35,8 @@ public class GameShake extends AppCompatActivity {
 
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sm.registerListener(sensorListener, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
+
+        alarm = getIntent().getExtras().getParcelable("AlarmData");
 
         acelVal = SensorManager.GRAVITY_EARTH;
         acelLast = SensorManager.GRAVITY_EARTH;
@@ -55,8 +59,16 @@ public class GameShake extends AppCompatActivity {
 
             if (shake > 12) {
                 new FirebaseHelper().addScore(new Game(2, 10));
-                //            new FirebaseHelper().setUserAwake();
                 finish();
+
+                if(alarm.isGroup()){
+                    new FirebaseHelper().setUserAwake(alarm.getGroupKey());
+
+                    System.out.println("[DEBUG] isGroup: need update awakeStatus");
+                    //Update the awake status
+                }
+                AlarmPopUp.stopAlarm();
+                finishAffinity();
             }
         }
 
