@@ -61,8 +61,7 @@ public class FirebaseHelper {
     }
 
     public void updateAlarm(Alarm alarm, String alarmKey) {
-        String id = dbUserAlarms.push().getKey();
-        dbUserAlarms.child(id).setValue(alarm);
+        dbUserAlarms.child(alarmKey).setValue(alarm);
     }
 
     public void deleteAlarm(String alarmKey) {
@@ -104,7 +103,7 @@ public class FirebaseHelper {
     }
 
 
-    // relationship between users and groups
+    // users and groups
     public void addUserToGroup(String phoneNum, String groupKey, Object value) {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
@@ -114,13 +113,27 @@ public class FirebaseHelper {
         dbFirebase.updateChildren(childUpdates);
     }
 
-    public void removeUserFromGroup(String phone, String groupKey) {
-        addUserToGroup(phone, groupKey, null);
+    public void removeUserFromGroup(String phoneNum, String groupKey) {
+        addUserToGroup(phoneNum, groupKey, null);
     }
 
     public void addAdminToGroup(String phone, String groupKey) {
         dbGroups.child(groupKey).child("admins").child(phone).setValue(true);
     }
+
+    // alarms and groups
+    public void addAlarmToGroup(Alarm alarm, String groupKey) {
+        dbGroups.child(groupKey).child("alarms").push().setValue(alarm);
+    }
+
+    public void deleteAlarmFromGroup(String alarmKey, String groupKey) {
+        dbGroups.child(groupKey).child("alarms").child(alarmKey).setValue(null);
+    }
+
+    public void updateAlarmOfGroup(Alarm alarm, String alarmKey, String groupKey) {
+        dbGroups.child(groupKey).child("alarms").child(alarmKey).setValue(alarm);
+    }
+
 
 
     // Games
@@ -156,7 +169,7 @@ public class FirebaseHelper {
         return username;
     }
 
-    public String getEmail() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 

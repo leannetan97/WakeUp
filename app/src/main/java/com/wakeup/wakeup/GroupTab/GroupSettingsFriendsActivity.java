@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.R;
 
@@ -36,6 +37,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
     private ListView lv;
     private ArrayList<GroupMember> members;
     private DatabaseReference dbGroups;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,27 +55,43 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 
 
         tb.setTitle("Friends List (" + (members.size() - 1) + ")");
-        boolean amIAdmin = true;
 
-        CustomAdapter customAdapter = new CustomAdapter(this, members, amIAdmin);
+        FirebaseHelper firebaseHelper = new FirebaseHelper();
 
-        lv.setAdapter(customAdapter);
-        Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
-        if (amIAdmin) {
-            btnLeaveDeleteGroup.setText(R.string.delete_group);
-        }
+        String currentUserPhoneNum = firebaseHelper.getPhoneNum();
+
+        handleSelfAdmin(currentUserPhoneNum, null);
+//        boolean amIAdmin = true;
+//
+//        CustomAdapter customAdapter = new CustomAdapter(this, members, amIAdmin);
+//
+//        lv.setAdapter(customAdapter);
+//        Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
+//        if (amIAdmin) {
+//            btnLeaveDeleteGroup.setText(R.string.delete_group);
+//        }
 
     }
 
-    public void checkAdmin(String phoneNum, String groupKey) {
+    public void handleSelfAdmin(String phoneNum, String groupKey) {
         boolean isAdmin = false;
         dbGroups.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(groupKey).child("admins").child(phoneNum).exists()) {
                     //user exists, do something
+                    CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),
+                            members, true);
 
+                    lv.setAdapter(customAdapter);
+                    Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
+                    btnLeaveDeleteGroup.setText(R.string.delete_group);
+                    lv.setAdapter(customAdapter);
+                }else{
+                    CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), members, false);
+                    lv.setAdapter(customAdapter);
                 }
+
             }
 
             @Override
@@ -84,8 +102,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
     }
 
 
-
-    private void createDummyData(){
+    private void createDummyData() {
         members.add(new GroupMember("me", true, "0123456987"));
         members.add(new GroupMember("A", false, "0123456987"));
         members.add(new GroupMember("B", false, "0123456987"));
@@ -137,7 +154,6 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             tvFriendEmail.setText(email);
 
 
-
             if (name.equals("me")) {
                 ivBtnCall.setVisibility(View.GONE);
                 ivRemove.setVisibility(View.GONE);
@@ -173,13 +189,15 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             ivRemove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "remove " + members.get(position).getUserName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "remove " + members.get(position).getUserName(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
             ivBtnCall.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "call " + members.get(position).getUserName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "call " + members.get(position).getUserName(),
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 

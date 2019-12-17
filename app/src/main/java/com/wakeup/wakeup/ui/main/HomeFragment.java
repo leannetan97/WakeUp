@@ -110,7 +110,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
     private void startAlarm(Alarm alarm) throws ParseException {
         Intent intent = new Intent(getContext(), AlarmReceiver.class);
         //Change the alarm object to byte so that pass
@@ -166,5 +165,6 @@ public class HomeFragment extends Fragment {
             Toast.makeText(getContext(), "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
         }
     }
+
 }
 

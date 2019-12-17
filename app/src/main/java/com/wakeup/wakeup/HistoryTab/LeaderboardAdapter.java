@@ -10,18 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wakeup.wakeup.ObjectClass.LeaderboardModel;
+import com.wakeup.wakeup.ObjectClass.Game;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeaderboardAdapter extends ArrayAdapter<LeaderboardModel> {
+public class LeaderboardAdapter extends ArrayAdapter<Game> {
     private int resourceLayout;
     private Context mContext;
-    private ArrayList<LeaderboardModel> leaderboardModelArrayList;
+    private ArrayList<Game> leaderboardModelArrayList;
 
-    public LeaderboardAdapter(@NonNull Context context, int resource, @NonNull List<LeaderboardModel> objects) {
+    public LeaderboardAdapter(@NonNull Context context, int resource, @NonNull List<Game> objects) {
         super(context, resource, objects);
         this.resourceLayout = resource;
         this.mContext = context;
@@ -39,14 +39,14 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardModel> {
             v = vi.inflate(resourceLayout, null);
         }
 
-        LeaderboardModel p = getItem(position);
+        Game p = getItem(position);
 
         if (p != null) {
             TextView tv1 = (TextView) v.findViewById(R.id.tv_leaderboardViewList1);
             TextView tv2 = (TextView) v.findViewById(R.id.tv_leaderboardViewList2);
 
             if (tv1 != null) {
-                tv1.setText(p.getName());
+                tv1.setText(p.getUser());
             }
             if (tv2 != null) {
                 tv2.setText(Integer.toString(p.getScore()));
