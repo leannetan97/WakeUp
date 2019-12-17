@@ -1,12 +1,15 @@
 package com.wakeup.wakeup.ObjectClass;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Group implements Serializable {
+public class Group implements Serializable, Parcelable {
     private String groupKey;
     private String groupName;
     private List<Alarm> alarmsInGroup;
@@ -20,6 +23,24 @@ public class Group implements Serializable {
         this.alarmsInGroup = new ArrayList<>();
         this.usersInGroup = new ArrayList<>();
     }
+
+    protected Group(Parcel in) {
+        groupKey = in.readString();
+        groupName = in.readString();
+        alarmsInGroup = in.createTypedArrayList(Alarm.CREATOR);
+    }
+
+    public static final Creator<Group> CREATOR = new Creator<Group>() {
+        @Override
+        public Group createFromParcel(Parcel in) {
+            return new Group(in);
+        }
+
+        @Override
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
 
     public void addAlarm(Alarm alarmItem) {
         alarmsInGroup.add(alarmItem);
@@ -72,5 +93,17 @@ public class Group implements Serializable {
     @Exclude
     public void setGroupKey(String groupKey) {
         this.groupKey = groupKey;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(groupKey);
+        dest.writeString(groupName);
+        dest.writeTypedList(alarmsInGroup);
     }
 }

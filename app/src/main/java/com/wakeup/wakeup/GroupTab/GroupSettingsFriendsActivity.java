@@ -65,7 +65,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
         members = new ArrayList<>();
         allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
         groupKey = getIntent().getExtras().getString("GroupKey");
-        group = getIntent().getExtras().getParcelable("GroupKey");
+//        group = getIntent().getExtras().getParcelable("GroupKey");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
         tb = getSupportActionBar();
 //        getContactList();

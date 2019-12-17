@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
@@ -53,6 +54,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private TextView tvTimeDisplay;
     private Spinner spinnerGameOption;
     private int gameOption = 0;
+    private Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -61,6 +63,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         setViewToInstanceVar();
         firebaseHelper = new FirebaseHelper();
         groupKey = getIntent().getExtras().getString("GroupKey");
+        group = getIntent().getExtras().getParcelable("Group");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
         updateViewDetails();
