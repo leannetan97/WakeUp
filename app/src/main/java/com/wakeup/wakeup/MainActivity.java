@@ -53,9 +53,11 @@ public class MainActivity extends AppCompatActivity {
         if (auth.getCurrentUser() != null) {
             // already signed in
             startSignedInActivity(null);
+            finish();
         } else {
             // not signed in
             signIn();
+            finish();
         }
     }
 

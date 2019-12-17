@@ -157,9 +157,9 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             case R.id.item_change_name:
                 openDialog();
                 return true;
-            case R.id.item_change_password:
-                navigateToChangePassword();
-                return true;
+//            case R.id.item_change_password:
+//                navigateToChangePassword();
+//                return true;
             case R.id.item_logout:
                 AuthUI.getInstance()
                         .signOut(this)
@@ -193,12 +193,13 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         args.putString("InvalidButton", "DISCARD");
         changeNameDialog.setArguments(args);
         changeNameDialog.show(getSupportFragmentManager(), "change profile name dialog");
+    }
 
-////////////////
+    private void updateProfileName(String name){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName("Jane Q. User")
+                .setDisplayName(name)
                 .build();
 
         Task<Void> voidTask = user.updateProfile(profileUpdates)
@@ -210,8 +211,6 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
                         }
                     }
                 });
-////////////////////
-
     }
 
     @Override
@@ -220,6 +219,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             Toast.makeText(this,"Name cannot be empty. Please try again.",Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(this, "Profile name changed to " + profileName, Toast.LENGTH_SHORT).show();
+            updateProfileName(profileName);
         }
     }
 
