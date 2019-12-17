@@ -220,4 +220,8 @@ public class FirebaseHelper {
     public DatabaseReference getDbUserGroups() {
         return dbUserGroups;
     }
+
+    public DatabaseReference getDbUserGroupAlarms() {
+        return dbUserGroupAlarms;
+    }
 }
