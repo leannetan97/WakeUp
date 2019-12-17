@@ -8,19 +8,21 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wakeup.wakeup.AlarmPopUp;
+import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.R;
 
 import java.util.Random;
 
 public class GameMath extends AppCompatActivity {
-
+    private Alarm alarm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_math);
-
+        alarm = getIntent().getExtras().getParcelable("AlarmData");
         setNewNumbers();
     }
     int value1;
@@ -64,7 +66,13 @@ public class GameMath extends AppCompatActivity {
 
 
         if(correctPoint==3){
-            finish();
+            if(alarm.isGroup()){
+                System.out.println("[DEBUG] isGroup: need update awakeStatus");
+                //Update the awake status
+            }
+            AlarmPopUp.stopAlarm();
+            finishAffinity();
+//            finish();
         }
     }
 

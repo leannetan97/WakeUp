@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -159,22 +160,26 @@ public class HomeFragment extends Fragment {
         alarmBundle.putParcelable("alarm", alarm);
         intent.putExtra("alarmBundle", alarmBundle);
         System.out.println("Data is store in byte:" + alarmBundle);
+        FragmentActivity activity = getActivity();
+        if(activity != null) {
+            AlarmManager alarmManager =
+                    (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                    (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager alarmManager =
-                (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Calendar c = alarm.getTimeInCalender();
 
-        Calendar c = alarm.getTimeInCalender();
+            if (c.before(Calendar.getInstance())) {
+                c.add(Calendar.DATE, 1);
+            }
 
-        if (c.before(Calendar.getInstance())) {
-            c.add(Calendar.DATE, 1);
-        }
-
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            if (android.os.Build.VERSION.SDK_INT >= 19) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+            }
+        }else{
+            System.out.println("[DEBUG] Activity null?");
         }
     }
 
