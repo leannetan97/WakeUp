@@ -1,5 +1,6 @@
 package com.wakeup.wakeup;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -63,6 +64,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         buttonName = getIntent().getExtras().getString("ButtonName");
         updateViewDetails();
 
+        updateActionBarColor();
+
         Fragment fragment = null;
         if (viewTitle.contains("Edit")) {
             prevAlarm = getIntent().getExtras().getParcelable("AlarmData");
@@ -118,11 +121,12 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.menu.alarm_edit_menu) {
+        if (item.getItemId() == R.id.btn_delete_alarm) {
             if(prevAlarm.isOn()){
                 System.out.println("Cancel Alarm");
                 cancelAlarm();
             }
+            System.out.println("Delete Alarm");
             deleteAlarm();
             finish();
         }
@@ -130,6 +134,12 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             finish();
         }
         return true;
+    }
+
+    private void updateActionBarColor(){
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
     }
 
     private void setDefaultTimeDisplay(){

@@ -135,7 +135,8 @@ public class HomeFragment extends Fragment {
                 (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_NO_CREATE);
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent);
-            Toast.makeText(getContext(), "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
+            System.out.println("[DEBUG] Alarm is cancel");
+//            Toast.makeText(getContext(), "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
         }
     }
 

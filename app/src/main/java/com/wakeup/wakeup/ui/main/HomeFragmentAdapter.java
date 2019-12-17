@@ -1,5 +1,6 @@
 package com.wakeup.wakeup.ui.main;
 
+import android.content.Context;
 import android.content.Intent;
 
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +27,7 @@ import java.util.List;
 public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapter.HomeFragmentViewHolder> {
     private List<Alarm> alarms;
     private FirebaseHelper firebaseHelper;
+    private Context context;
 
     public HomeFragmentAdapter(List<Alarm> alarms) {
         this.alarms = alarms;
@@ -35,6 +38,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
     public HomeFragmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.res_alarm_card_view, parent,false);
         firebaseHelper = new FirebaseHelper();
+        context = parent.getContext();
         return new HomeFragmentViewHolder(view);
     }
 
@@ -89,20 +93,23 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
 
     // handle alarm switch
     private void handleSwitch(CompoundButton buttonView, boolean isChecked, Alarm alarm){
-        if(isChecked){
+        if(alarm.isOn()){
             //originally is set
             alarm.setOn(false);
             buttonView.setChecked(false);
+            Toast.makeText(context,alarm.getTime() + " is OFF",Toast.LENGTH_SHORT).show();
         }else{
             // originally is not set
             alarm.setOn(true);
             buttonView.setChecked(true);
+            Toast.makeText(context,alarm.getTime() + " is ON",Toast.LENGTH_SHORT).show();
         }
         updateAlarm(alarm);
     }
 
     public void updateAlarm(Alarm alarm) {
         //update alarm with existing key
+        System.out.println("[DEBUG] Update Firebase");
         firebaseHelper.updateAlarm(alarm, alarm.getAlarmKey());
     }
 
