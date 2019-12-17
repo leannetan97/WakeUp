@@ -87,7 +87,7 @@ public class FirebaseHelper {
     }
 
     public void deleteGroup(String groupKey) {
-        dbGroups.child(groupKey).removeValue();
+        dbGroups.child(groupKey).setValue(null);
     }
 
     public void modifyGroup(Group group, String groupKey) {
@@ -140,10 +140,15 @@ public class FirebaseHelper {
 
         dbGroups.child(groupKey).child("alarms").child(groupAlarmKey).setValue(null);
 
-        //delete from every user
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
         }
+        //delete from every user
+//        if (group.getUsersInGroup().size() > 0) {
+//            for (User user : group.getUsersInGroup()) {
+//                childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
+//            }
+//        }
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -158,6 +163,11 @@ public class FirebaseHelper {
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
         }
+//        if (group.getUsersInGroup().size() > 0) {
+//            for (User user : group.getUsersInGroup()) {
+//                childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
+//            }
+//        }
 
         dbFirebase.updateChildren(childUpdates);
     }
