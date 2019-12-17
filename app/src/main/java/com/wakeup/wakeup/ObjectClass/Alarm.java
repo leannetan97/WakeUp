@@ -124,6 +124,7 @@ public class Alarm implements Parcelable {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY,Integer.parseInt(details[0]));
         c.set(Calendar.MINUTE,Integer.parseInt(details[1]));
+        c.set(Calendar.SECOND,0);
         return  c;
     }
 
