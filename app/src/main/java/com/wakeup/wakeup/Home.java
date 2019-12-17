@@ -1,7 +1,6 @@
 package com.wakeup.wakeup;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
@@ -11,6 +10,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,15 +25,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
-import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Group;
-import com.wakeup.wakeup.ObjectClass.User;
-import com.wakeup.wakeup.UserLogin.ChangePassword;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
 import com.wakeup.wakeup.ui.main.GroupFragment;
 import com.wakeup.wakeup.ui.main.HistoryFragment;
@@ -63,7 +58,10 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         setContentView(R.layout.activity_home);
 
         // set action bar
-        getSupportActionBar();
+//        getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
