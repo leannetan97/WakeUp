@@ -52,8 +52,8 @@ public class SingleGroupActivity extends AppCompatActivity {
 
     private ArrayList<Friend> allContacts;
 
-    public SingleGroupActivity(){
-        this.alarms = new ArrayList<>() ;
+    public SingleGroupActivity() {
+        this.alarms = new ArrayList<>();
     }
 
     @Override
@@ -79,12 +79,18 @@ public class SingleGroupActivity extends AppCompatActivity {
         group = getIntent().getExtras().getParcelable("Group");
         getSupportActionBar().setTitle(groupName);
         alarms = getIntent().getParcelableArrayListExtra("GroupAlarmsList");
+        if (alarms.size() > 0) {
+            TextView tvNoAlarm = findViewById(R.id.tv_no_alarms_yet);
+            tvNoAlarm.setVisibility(View.GONE);
+        } else {
 
-        rvGroupAlarm = (RecyclerView) findViewById(R.id.rv_group_cards);
-        layoutManager = new LinearLayoutManager(this);
-        rvGroupAlarm.setLayoutManager(layoutManager);
-        groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms);
-        rvGroupAlarm.setAdapter(groupAlarmAdapter);
+
+            rvGroupAlarm = (RecyclerView) findViewById(R.id.rv_group_cards);
+            layoutManager = new LinearLayoutManager(this);
+            rvGroupAlarm.setLayoutManager(layoutManager);
+            groupAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms);
+            rvGroupAlarm.setAdapter(groupAlarmAdapter);
+        }
     }
 
     @Override
@@ -95,13 +101,13 @@ public class SingleGroupActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_groupSettings:
                 Toast.makeText(this, "Settings Selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SingleGroupActivity.this, GroupSettingsFriendsActivity.class);
+                Intent intent = new Intent(SingleGroupActivity.this,
+                        GroupSettingsFriendsActivity.class);
                 intent.putExtra("GroupKey", groupKey);
                 intent.putExtra("Group", group);
                 startActivity(intent);
@@ -115,6 +121,7 @@ public class SingleGroupActivity extends AppCompatActivity {
         }
 
     }
+
     // New Alarm
     private void navigateToCreateGroupAlarm(View view) {
         Intent alarmView = new Intent(this, CreateDeleteAlarm.class);
