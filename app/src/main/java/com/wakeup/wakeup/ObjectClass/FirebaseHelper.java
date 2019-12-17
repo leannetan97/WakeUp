@@ -26,6 +26,7 @@ public class FirebaseHelper {
     private DatabaseReference dbUserAlarms;
     private DatabaseReference dbUserHistory;
     private DatabaseReference dbUserGroups;
+    private DatabaseReference dbUserGroupAlarms;
     // private DatabaseReference dbCurrentUser;
 
 
@@ -54,6 +55,7 @@ public class FirebaseHelper {
             dbUserAlarms = dbUsers.child(phoneNum).child("alarms");
             dbUserHistory = dbUsers.child(phoneNum).child("history");
             dbUserGroups = dbUsers.child(phoneNum).child("groups");
+            dbUserGroupAlarms = dbUsers.child(phoneNum).child("groupalarms");
         }
     }
 
@@ -140,15 +142,11 @@ public class FirebaseHelper {
 
         dbGroups.child(groupKey).child("alarms").child(groupAlarmKey).setValue(null);
 
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(null);
+
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
         }
-        //delete from every user
-//        if (group.getUsersInGroup().size() > 0) {
-//            for (User user : group.getUsersInGroup()) {
-//                childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
-//            }
-//        }
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -160,14 +158,11 @@ public class FirebaseHelper {
         childUpdates.put("/groups/" + groupKey + "/alarms/" + groupAlarmKey, alarm);
 
         //add to every user
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(alarm);
+
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
         }
-//        if (group.getUsersInGroup().size() > 0) {
-//            for (User user : group.getUsersInGroup()) {
-//                childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
-//            }
-//        }
 
         dbFirebase.updateChildren(childUpdates);
     }
