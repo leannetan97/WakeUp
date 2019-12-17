@@ -22,6 +22,7 @@ public class Alarm implements Parcelable {
     private boolean isOn;
     private int gameOption;
     private String user;
+    private String groupKey = "";
 
     // Constructor
     public Alarm() {
@@ -43,6 +44,7 @@ public class Alarm implements Parcelable {
         isGroup = parcel.readByte() != 0;
         gameOption = parcel.readInt();
         alarmKey = parcel.readString();
+        groupKey = parcel.readString();
     }
 
     public static Creator<Alarm> getCREATOR() {
@@ -75,7 +77,9 @@ public class Alarm implements Parcelable {
         parcel.writeByte((byte) (isGroup ? 1 : 0));
         parcel.writeInt(gameOption);
         parcel.writeString(alarmKey);
+        parcel.writeString(groupKey);
     }
+
     // Get
     public String getAlarmKey() {
         return alarmKey;
@@ -137,6 +141,17 @@ public class Alarm implements Parcelable {
         String strTime = stringFormatter.format(date);
         return strTime;
     }
+
+    @Exclude
+    public String getGroupKey() {
+        return groupKey;
+    }
+
+    @Exclude
+    public void setGroupKey(String groupKey) {
+        this.groupKey = groupKey;
+    }
+
 
     // Set
     public void setAlarmKey(String alarmKey) {

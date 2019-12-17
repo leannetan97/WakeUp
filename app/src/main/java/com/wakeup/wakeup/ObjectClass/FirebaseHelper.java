@@ -137,6 +137,7 @@ public class FirebaseHelper {
         String groupKey = group.getGroupKey();
         String groupAlarmKey = dbGroups.child(groupKey).child("alarms").push().getKey();
 
+        alarm.setGroupKey(groupKey);
         updateAlarmOfGroup(alarm, group, groupAlarmKey);
     }
 
