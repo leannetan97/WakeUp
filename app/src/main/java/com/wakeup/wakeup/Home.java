@@ -302,6 +302,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     }
 
     private void getContactList() {
+        Toast.makeText(this, "Initializing...", Toast.LENGTH_LONG).show();
         ArrayList<String> names = new ArrayList<>();
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,

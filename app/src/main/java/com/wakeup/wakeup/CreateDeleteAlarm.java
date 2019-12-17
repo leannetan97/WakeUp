@@ -56,7 +56,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
-
+        setViewToInstanceVar();
         firebaseHelper = new FirebaseHelper();
 
         viewTitle = getIntent().getExtras().getString("ViewTitle");
@@ -89,7 +89,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         transaction.replace(R.id.fragment_alarm_details, fragment);
         transaction.commit();
 
-        setViewToInstanceVar();
+
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.game_options, android.R.layout.simple_spinner_item);
