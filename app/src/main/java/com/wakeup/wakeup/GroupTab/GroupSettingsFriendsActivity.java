@@ -4,10 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,13 +59,16 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_settings_friends);
+
+        checkUserPhonePermission();
+
         members = new ArrayList<>();
-        allContacts = new ArrayList<>();
+        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
         groupKey = getIntent().getExtras().getString("GroupKey");
         group = getIntent().getExtras().getParcelable("GroupKey");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
         tb = getSupportActionBar();
-        getContactList();
+//        getContactList();
 
 
         tb.setDisplayHomeAsUpEnabled(true);
@@ -91,6 +98,24 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 //            btnLeaveDeleteGroup.setText(R.string.delete_group);
 //        }
 
+    }
+
+    public boolean checkUserPhonePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        99);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        99);
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void retrieveAllAdmins(String groupKey) {

@@ -60,7 +60,7 @@ public class SingleGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_group);
-        allContacts = new ArrayList<>();
+        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
 
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -105,11 +105,12 @@ public class SingleGroupActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_groupSettings:
-                Toast.makeText(this, "Settings Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Loading Members...", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SingleGroupActivity.this,
                         GroupSettingsFriendsActivity.class);
                 intent.putExtra("GroupKey", groupKey);
                 intent.putExtra("Group", group);
+                intent.putParcelableArrayListExtra("AllContacts", allContacts);
                 startActivity(intent);
                 return true;
             case android.R.id.home:

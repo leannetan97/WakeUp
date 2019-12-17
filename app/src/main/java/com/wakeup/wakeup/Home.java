@@ -1,6 +1,10 @@
 package com.wakeup.wakeup;
 
+import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import com.firebase.ui.auth.AuthUI;
@@ -12,9 +16,12 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +35,16 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.wakeup.wakeup.GroupTab.NewGroupActivity;
 import com.wakeup.wakeup.HistoryTab.LeaderboardActivity;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.ui.main.AlarmFragment;
 import com.wakeup.wakeup.ui.main.GroupFragment;
 import com.wakeup.wakeup.ui.main.HistoryFragment;
 import com.wakeup.wakeup.ui.main.HomeFragment;
 import com.wakeup.wakeup.ui.main.ViewPagerAdapter;
+
+import java.util.ArrayList;
 
 public class Home extends AppCompatActivity implements DialogWithTitle.DialogListener {
     // temp
@@ -43,6 +54,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ArrayList<GroupMember> allContacts = new ArrayList<>();
     private FloatingActionButton fabAddAlarm, fabAddGroup, fabLeaderboard;
 
     private int[] tabIcons = {
@@ -56,7 +68,8 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        checkUserPhonePermission();
+        getContactList();
         // set action bar
 //        getSupportActionBar();
         ActionBar actionBar = getSupportActionBar();
@@ -175,7 +188,11 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         }
     }
 
-
+    @Override
+    public boolean onNavigateUp() {
+        finish();
+        return true;
+    }
 
     private void navigateToChangePassword() {
 //        Intent intent = new Intent(this, ChangePassword.class);
@@ -227,7 +244,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), "HOME");
         adapter.addFragment(new AlarmFragment(), "ALARM");
-        adapter.addFragment(new GroupFragment(), "GROUP");
+        adapter.addFragment(new GroupFragment(allContacts), "GROUP");
         adapter.addFragment(new HistoryFragment(), "HISTORY");
         viewPager.setAdapter(adapter);
     }
@@ -274,6 +291,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     // NewGroup
     private void navigateToCreateGroup(View view) {
         Intent createGroupView = new Intent(Home.this, NewGroupActivity.class);
+        createGroupView.putParcelableArrayListExtra("AllContacts", allContacts);
         startActivity(createGroupView);
     }
 
@@ -281,6 +299,69 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
     private void navigateToLeaderBoard(View view) {
         Intent leaderBoard = new Intent(Home.this, LeaderboardActivity.class);
         startActivity(leaderBoard);
+    }
+
+    private void getContactList() {
+        ArrayList<String> names = new ArrayList<>();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        if (names.contains(name)) {
+                            continue;
+                        }
+
+//                        System.out.println(phoneNo.replaceAll("\\s+", "").replaceAll("-+", ""));
+//                        System.out.println(name);
+//                        System.out.println(phoneNo);
+                        names.add(name);
+                        allContacts.add(new GroupMember(name, false, phoneNo.replaceAll("\\s+",
+                                "").replaceAll("-+", "")));
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+    }
+
+    public boolean checkUserPhonePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_CONTACTS)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        99);
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        99);
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
