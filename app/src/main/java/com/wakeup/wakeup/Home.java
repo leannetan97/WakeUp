@@ -75,8 +75,8 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         button.setText(firebaseHelper.getUsername());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                firebaseHelper.addHistory(6);
-                firebaseHelper.addGroup(new Group("Group 1"));
+                firebaseHelper.addHistory(6);
+//                firebaseHelper.addGroup(new Group("Group 1"));
             }
         });
         ///////////
