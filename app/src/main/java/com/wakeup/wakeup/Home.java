@@ -71,7 +71,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         setContentView(R.layout.activity_home);
         checkUserPhonePermission();
 
-        getContactList();
+//        getContactList();
         // set action bar
 //        getSupportActionBar();
         ActionBar actionBar = getSupportActionBar();
@@ -165,6 +165,23 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         return true;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 99:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                        getContactList();
+                    }
+                } else {
+                    Toast.makeText(this, "Permission Denied...", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                return;
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -174,7 +174,7 @@ public class NewGroupActivity extends AppCompatActivity {
                 return true;
 
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

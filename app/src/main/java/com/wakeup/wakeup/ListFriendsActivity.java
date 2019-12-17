@@ -206,6 +206,9 @@ public class ListFriendsActivity extends AppCompatActivity {
 //            Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
             finish();
             return true;
+        } else if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -103,7 +103,7 @@ public class AwakeStatusListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.btn_refresh_awake_status_list_menu) {
             // TODO: implement refresh button
