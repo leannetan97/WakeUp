@@ -35,7 +35,7 @@ import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener, AdapterView.OnItemSelectedListener {
+public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener { //AdapterView.OnItemSelectedListener
 
     private String viewTitle, buttonName;
 
@@ -47,7 +47,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private FirebaseHelper firebaseHelper;
 
     private DecimalFormat digitFormatter = new DecimalFormat("00");
-    private TextView tvAlarmName;
+//    private TextView tvAlarmName;
     private TextView tvTimeDisplay;
     private Spinner spinnerGameOption;
     private int gameOption = 0;
@@ -76,9 +76,6 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                 System.out.println("[DEBUG] Personal Details Fragment");
                 fragment = new PersonalAlarmDetailsFragment(prevAlarm.getAlarmName());
             }
-            ((TextView) findViewById(R.id.tv_time_display)).setText(prevAlarm.getTime());
-            //TODO: Update Spinner value
-//        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
         } else {
             //A Default time
             setDefaultTimeDisplay();
@@ -95,7 +92,20 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                 R.array.game_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGameOption.setAdapter(adapter);
-        spinnerGameOption.setOnItemSelectedListener(this);
+//        spinnerGameOption.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setViewToInstanceVar();
+        // Update value of Spinner not work at onCreate
+        if (viewTitle.contains("Edit")) {
+            //TODO: Update Spinner value
+            System.out.println("[DEBUG] prevAlarm.getGameOption() :"+ prevAlarm.getGameOption());
+            spinnerGameOption.setSelection(prevAlarm.getGameOption());
+            tvTimeDisplay.setText(prevAlarm.getTime());
+        }
     }
 
     @Override
@@ -110,9 +120,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.menu.alarm_edit_menu) {
             if(prevAlarm.isOn()){
+                System.out.println("Cancel Alarm");
                 cancelAlarm();
             }
             deleteAlarm();
+            finish();
         }
         if (item.getItemId() == android.R.id.home) {
             finish();
@@ -126,7 +138,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         int minutes = c.get(Calendar.MINUTE);
         String time = digitFormatter.format(hourOfDay) + ":" + digitFormatter.format(minutes);
-        tvTimeDisplay.setText(time);
+        ((TextView)findViewById(R.id.tv_time_display)).setText(time);
     }
 
     private void updateViewDetails() {
@@ -136,7 +148,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     private void setViewToInstanceVar() {
         tvTimeDisplay = findViewById(R.id.tv_time_display);
-        tvAlarmName = findViewById(R.id.tv_alarm_name);
+//        tvAlarmName = findViewById(R.id.tv_alarm_name);
         spinnerGameOption = findViewById(R.id.input_spinner);
     }
 
@@ -158,11 +170,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     public void submitButtonOnClick(View view) {
         //TODO: Save details in local database
         setViewToInstanceVar();
-
+        int gameOption = spinnerGameOption.getSelectedItemPosition();
         String time = (String) tvTimeDisplay.getText();
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption());
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), gameOption);
 //            if(prevAlarm.isOn()){
 //                cancelAlarm();
 //            }
@@ -200,18 +212,18 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 //        alarmCalendar = c;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        //  gameOption = [NONE, TICTACTOE, MATH, SHAKER]
-        gameOption = position;
-        //TODO: For testing purpose only
-        Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+//        //  gameOption = [NONE, TICTACTOE, MATH, SHAKER]
+//        gameOption = position;
+//        //TODO: For testing purpose only
+//        Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+//    }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        //do nothing
-    }
+//    @Override
+//    public void onNothingSelected(AdapterView<?> adapterView) {
+//        //do nothing
+//    }
 
     private void startAlarm(Calendar c) {
         Intent intent = new Intent(this, AlarmReceiver.class);

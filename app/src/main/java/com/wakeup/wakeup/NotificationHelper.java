@@ -33,7 +33,6 @@ public class NotificationHelper extends ContextWrapper {
         if (mManager == null) {
             mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
-
         return mManager;
     }
 
@@ -41,6 +40,6 @@ public class NotificationHelper extends ContextWrapper {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setContentTitle("Alarm!")
                 .setContentText("Alarm is Ringing")
-                .setSmallIcon(R.drawable.ic_alarm_add_black_24dp);
+                .setSmallIcon(R.drawable.ic_access_alarm_black_24dp);
     }
 }

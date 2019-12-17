@@ -90,6 +90,10 @@ public class Alarm  implements Parcelable {
         return isGroup;
     }
 
+    public void setOn(boolean on) {
+        isOn = on;
+    }
+
     @PropertyName("isOn")
     public boolean isOn() {
         return isOn;

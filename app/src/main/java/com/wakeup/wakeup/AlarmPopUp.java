@@ -66,6 +66,8 @@ public class AlarmPopUp extends AppCompatActivity {
             }
         });
 
+        System.out.println("[DEBUG] Alarm Option:" + alarm.getGameOption());
+
         //Call the alarm
         setAlarmRing();
         setVibration();
@@ -78,6 +80,7 @@ public class AlarmPopUp extends AppCompatActivity {
             case 0:
                 stopAlarm();
                 // TODO: Close Application
+                finish();
                 moveTaskToBack(true);
                 break;
             case 1:
@@ -91,7 +94,6 @@ public class AlarmPopUp extends AppCompatActivity {
                 break;
             default:
                 System.out.println("Opps pass default stopping alarm.");
-                stopAlarm();
                 break;
         }
     }
@@ -115,26 +117,7 @@ public class AlarmPopUp extends AppCompatActivity {
     }
 
     private void snooze(View view) {
-
         Intent intent = new Intent(this, AlarmReceiver.class);
-        //Change the alarm object to byte so that pass
-//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//        ObjectOutputStream out = null;
-//        try {
-//            out = new ObjectOutputStream(bos);
-//            out.writeObject(alarm);
-//            out.flush();
-//            byte[] data = bos.toByteArray();
-//            intent.putExtra("alarm", data);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                bos.close();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
         Bundle alarmBundle = new Bundle();
         alarmBundle.putParcelable("alarm", alarm);
         intent.putExtra("alarmBundle", alarmBundle);
@@ -157,6 +140,7 @@ public class AlarmPopUp extends AppCompatActivity {
         // Stop Alarm
         stopAlarm();
         // TODO: Close Application
+        finish();
         moveTaskToBack(true);
     }
 
@@ -192,13 +176,11 @@ public class AlarmPopUp extends AppCompatActivity {
             vibrator.vibrate(pattern, 0);
         }
     }
-
-    private static void stopAlarm() {
+    public static void stopAlarm() {
         System.out.println("Stop Alarm");
         mediaPlayer.stop();
         vibrator.cancel();
     }
-
     @Override
     public void onBackPressed() {
         if (!isAllowToBack) {

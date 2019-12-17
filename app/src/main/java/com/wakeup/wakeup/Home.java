@@ -197,10 +197,30 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         changeNameDialog.show(getSupportFragmentManager(), "change profile name dialog");
 
 ////////////////
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//
+//        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+//                .setDisplayName("Jane Q. User")
+//                .build();
+//
+//        Task<Void> voidTask = user.updateProfile(profileUpdates)
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.d("Firebase Profile", "User profile updated.");
+//                        }
+//                    }
+//                });
+////////////////////
+
+    }
+
+    private void updateProfileName(String name){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName("Jane Q. User")
+                .setDisplayName(name)
                 .build();
 
         Task<Void> voidTask = user.updateProfile(profileUpdates)
@@ -212,8 +232,6 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
                         }
                     }
                 });
-////////////////////
-
     }
 
     @Override
@@ -222,6 +240,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             Toast.makeText(this,"Name cannot be empty. Please try again.",Toast.LENGTH_SHORT).show();
         }else {
             Toast.makeText(this, "Profile name changed to " + profileName, Toast.LENGTH_SHORT).show();
+            updateProfileName(profileName);
         }
     }
 
