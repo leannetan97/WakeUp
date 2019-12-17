@@ -161,7 +161,7 @@ public class FirebaseHelper {
         return username;
     }
 
-    public String getEmail() {
+    public String getPhoneNum() {
         return phoneNum;
     }
 
