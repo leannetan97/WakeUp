@@ -25,6 +25,7 @@ import com.wakeup.wakeup.Games.GameMath;
 import com.wakeup.wakeup.Games.GameShake;
 import com.wakeup.wakeup.Games.GameTicTacToe;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -35,6 +36,7 @@ public class AlarmPopUp extends AppCompatActivity{
     private static Vibrator vibrator;
     private Alarm alarm;
     private boolean isAllowToBack = false;
+
 //    private GestureDetectorCompat mDetector;
 
     @Override
@@ -75,6 +77,7 @@ public class AlarmPopUp extends AppCompatActivity{
             case 0:
                 stopAlarm();
                 // TODO: Close Application
+                new FirebaseHelper().setUserAwake(alarm.getGroupKey());
                 finish();
                 moveTaskToBack(true);
                 break;
@@ -88,6 +91,7 @@ public class AlarmPopUp extends AppCompatActivity{
                 navigateToShake();
                 break;
             default:
+                new FirebaseHelper().setUserAwake(alarm.getGroupKey());
                 System.out.println("Opps pass default stopping alarm.");
                 break;
         }

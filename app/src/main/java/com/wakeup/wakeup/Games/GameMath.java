@@ -8,6 +8,8 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Game;
 import com.wakeup.wakeup.R;
 
 import java.util.Random;
@@ -64,6 +66,8 @@ public class GameMath extends AppCompatActivity {
 
 
         if(correctPoint==3){
+            new FirebaseHelper().addScore(new Game(1, 10));
+//            new FirebaseHelper().setUserAwake();
             finish();
         }
     }

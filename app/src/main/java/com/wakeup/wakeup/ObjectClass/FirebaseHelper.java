@@ -177,7 +177,14 @@ public class FirebaseHelper {
     // Games
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
+        game.setUser(username);
+
         dbScores.child(id).setValue(game);
+
+//        String id = dbScores.child(game.getPhoneNum()).push().getKey();
+//        game.setUser(username);
+//
+//        dbScores.child(game.getPhoneNum()).child(id).setValue(game);
     }
 
 

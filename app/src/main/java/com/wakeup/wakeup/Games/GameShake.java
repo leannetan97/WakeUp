@@ -10,6 +10,8 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Window;
 
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Game;
 import com.wakeup.wakeup.R;
 
 public class GameShake extends AppCompatActivity {
@@ -52,6 +54,8 @@ public class GameShake extends AppCompatActivity {
             shake = shake * 0.9f + delta;
 
             if (shake > 12) {
+                new FirebaseHelper().addScore(new Game(2, 10));
+                //            new FirebaseHelper().setUserAwake();
                 finish();
             }
         }

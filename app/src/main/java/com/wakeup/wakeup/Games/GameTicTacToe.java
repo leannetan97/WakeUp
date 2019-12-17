@@ -10,6 +10,8 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Game;
 import com.wakeup.wakeup.R;
 
 public class GameTicTacToe extends AppCompatActivity {
@@ -116,6 +118,8 @@ public class GameTicTacToe extends AppCompatActivity {
                 winLayout.animate().setDuration(800).alpha(1f);
 
                 if(playerWin==99){
+                    new FirebaseHelper().addScore(new Game(3, 10));
+//            new FirebaseHelper().setUserAwake();
                     finish();
                 }
             }
