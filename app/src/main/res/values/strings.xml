@@ -24,7 +24,7 @@
     <string name="show_leader_board">Show leader board</string>
 
 
-    <!--    HistoryActivity-->
+    <!-- HistoryActivity -->
     <string name="history_title">How long did it take to wake you up?</string>
 
     <string name="new_group_text">New Group</string>
@@ -40,6 +40,10 @@
     <string name="title_activity_create_edit_alarm">CreateEditAlarm</string>
     <string name="history2">History</string>
     <string name="delay">Delay</string>
+    <!-- Leaderboard -->
+    <string name="player">Player</string>
+    <string name="high_score">High Score</string>
+
 
     <!-- Login -->
     <string name="register"><u>Register here</u></string>
