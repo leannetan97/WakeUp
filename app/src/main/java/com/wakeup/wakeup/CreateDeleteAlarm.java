@@ -44,7 +44,6 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private Alarm prevAlarm;
     private Alarm newAlarm;
     private String alarmKey;
-    private Calendar alarmCalendar;
     private FirebaseHelper firebaseHelper;
 
     private DecimalFormat digitFormatter = new DecimalFormat("00");
@@ -81,6 +80,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             //TODO: Update Spinner value
 //        (Spinner) findViewById(R.id.input_spinner); // Update value of Spinner
         } else {
+            //A Default time
+            setDefaultTimeDisplay();
             fragment = new PersonalAlarmDetailsFragment("Alarm");
         }
         FragmentManager manager = getSupportFragmentManager();
@@ -119,6 +120,15 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         return true;
     }
 
+    private void setDefaultTimeDisplay(){
+        Calendar c = Calendar.getInstance();
+//        alarmCalendar = c;
+        int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+        int minutes = c.get(Calendar.MINUTE);
+        String time = digitFormatter.format(hourOfDay) + ":" + digitFormatter.format(minutes);
+        tvTimeDisplay.setText(time);
+    }
+
     private void updateViewDetails() {
         getSupportActionBar().setTitle(viewTitle);
         ((Button) findViewById(R.id.btn_create_save_alarm)).setText(buttonName);
@@ -152,18 +162,18 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         String time = (String) tvTimeDisplay.getText();
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption(), alarmCalendar);
+            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), prevAlarm.getGameOption());
 //            if(prevAlarm.isOn()){
 //                cancelAlarm();
 //            }
 //            startAlarm(alarmCalendar);
             updateAlarm();
         } else if (viewTitle.contains("Personal")) {
-            newAlarm = new Alarm(time, alarmName, true, false, gameOption, alarmCalendar);
+            newAlarm = new Alarm(time, alarmName, true, false, gameOption);
 //            startAlarm(alarmCalendar);
             addAlarm();
         } else {
-            newAlarm = new Alarm(time, alarmName, true, true, gameOption, alarmCalendar);
+            newAlarm = new Alarm(time, alarmName, true, true, gameOption);
 //            startAlarm(alarmCalendar);
             addAlarm();
         }
@@ -187,7 +197,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, hourOfDay);
         c.set(Calendar.MINUTE, minutes);
-        alarmCalendar = c;
+//        alarmCalendar = c;
     }
 
     @Override

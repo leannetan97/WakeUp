@@ -37,11 +37,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
     @Override
     public void onBindViewHolder(@NonNull HomeFragmentViewHolder holder, int position) {
         Alarm alarmItem = alarms.get(position);
-        try {
-            holder.tvTimeDisplay.setText(alarmItem.getTimeDisplay());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+            holder.tvTimeDisplay.setText(alarmItem.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
         holder.tvAlarmName.setText(alarmItem.getAlarmName());
         if(alarmItem.isGroup()) {
             holder.ivIcon.setImageResource(R.drawable.ic_group_black_24dp);

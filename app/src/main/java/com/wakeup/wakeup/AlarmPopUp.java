@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
@@ -36,14 +37,15 @@ public class AlarmPopUp extends AppCompatActivity {
     private static MediaPlayer mediaPlayer = new MediaPlayer();
     private static Vibrator vibrator;
     private Alarm alarm;
+    private boolean isAllowToBack = false;
+    private View snoozeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_pop_up);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
+        setContentView(R.layout.activity_alarm_pop_up);
 
         mContext = getApplicationContext();
         alarm = getIntent().getExtras().getParcelable("AlarmData");
@@ -59,6 +61,7 @@ public class AlarmPopUp extends AppCompatActivity {
         findViewById(R.id.btn_Snooze).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                snoozeView = view;
                 snooze(view);
             }
         });
@@ -74,6 +77,8 @@ public class AlarmPopUp extends AppCompatActivity {
         switch (alarm.getGameOption()) {
             case 0:
                 stopAlarm();
+                // TODO: Close Application
+                moveTaskToBack(true);
                 break;
             case 1:
                 navigateToMath(v);
@@ -93,39 +98,46 @@ public class AlarmPopUp extends AppCompatActivity {
 
     private void navigateToTicTacToe(View v) {
         Intent gameTicTacToe = new Intent(this, GameTicTacToe.class);
+        gameTicTacToe.putExtra("AlarmData", alarm);
         startActivity(gameTicTacToe);
     }
 
     private void navigateToMath(View v) {
-        Intent GoToMathPage = new Intent(this, GameMath.class);
-        startActivity(GoToMathPage);
+        Intent goToMathPage = new Intent(this, GameMath.class);
+        goToMathPage.putExtra("AlarmData", alarm);
+        startActivity(goToMathPage);
     }
 
     private void navigateToShake(View v) {
-        Intent GoToMathPage = new Intent(this, GameShake.class);
-        startActivity(GoToMathPage);
+        Intent goToShakePage = new Intent(this, GameShake.class);
+        goToShakePage.putExtra("AlarmData", alarm);
+        startActivity(goToShakePage);
     }
 
     private void snooze(View view) {
+
         Intent intent = new Intent(this, AlarmReceiver.class);
         //Change the alarm object to byte so that pass
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
-        try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(alarm);
-            out.flush();
-            byte[] data = bos.toByteArray();
-            intent.putExtra("alarm", data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        ObjectOutputStream out = null;
+//        try {
+//            out = new ObjectOutputStream(bos);
+//            out.writeObject(alarm);
+//            out.flush();
+//            byte[] data = bos.toByteArray();
+//            intent.putExtra("alarm", data);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                bos.close();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+        Bundle alarmBundle = new Bundle();
+        alarmBundle.putParcelable("alarm", alarm);
+        intent.putExtra("alarmBundle", alarmBundle);
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
@@ -142,7 +154,9 @@ public class AlarmPopUp extends AppCompatActivity {
             alarmManager.set(AlarmManager.RTC_WAKEUP, timeAfter10Minutes, pendingIntent);
         }
 
-        //TODO: Close Application
+        // Stop Alarm
+        stopAlarm();
+        // TODO: Close Application
         moveTaskToBack(true);
     }
 
@@ -180,7 +194,36 @@ public class AlarmPopUp extends AppCompatActivity {
     }
 
     private static void stopAlarm() {
+        System.out.println("Stop Alarm");
         mediaPlayer.stop();
         vibrator.cancel();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isAllowToBack) {
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_HOME) {
+            //preventing default implementation previous to android.os.Build.VERSION_CODES.ECLAIR
+            System.out.println("[DEBUG] Home is pressed");
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_POWER) {
+            System.out.println("[DEBUG] Power is pressed");
+            return true;
+//        }else{
+//
+//            snooze(snoozeView);
+//            System.out.println("[DEBUG] Wish to let them snooze");
+//            return super.onKeyDown(keyCode, event);
+//        }
+        }
+        return true;
     }
 }

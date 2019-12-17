@@ -22,19 +22,17 @@ public class Alarm  implements Parcelable {
     private boolean isOn;
     private int gameOption;
     private String user;
-    private Calendar timeInCalendar;
 
     // Constructor
     public Alarm() {
     }
 
-    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int gameOption, Calendar timeInCalendar) {
+    public Alarm(String time, String alarmName, boolean isOn, boolean isGroup, int gameOption) {
         this.time = time;
         this.alarmName = alarmName;
         this.isOn = isOn;
         this.isGroup = isGroup;
         this.gameOption = gameOption;
-        this.timeInCalendar = timeInCalendar;
     }
 
     // Parcel
@@ -117,6 +115,15 @@ public class Alarm  implements Parcelable {
     }
 
     @Exclude
+    public Calendar getTimeInCalender(){
+        String[] details = time.split(":");
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY,Integer.parseInt(details[0]));
+        c.set(Calendar.MINUTE,Integer.parseInt(details[1]));
+        return  c;
+    }
+
+    @Exclude
     public String getTimeDisplay() throws ParseException { // short date for display
         SimpleDateFormat dateFormatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat stringFormatter =new SimpleDateFormat("hh:mm");
@@ -129,14 +136,6 @@ public class Alarm  implements Parcelable {
     // Set
     public void setAlarmKey(String alarmKey) {
         this.alarmKey = alarmKey;
-    }
-
-    public Calendar getTimeInCalendar() {
-        return timeInCalendar;
-    }
-
-    public void setTimeInCalendar(Calendar timeInCalendar) {
-        this.timeInCalendar = timeInCalendar;
     }
 
     // Firebase
