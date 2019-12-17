@@ -209,7 +209,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         String time = (String) tvTimeDisplay.getText();
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
-            newAlarm = new Alarm(time, alarmName, prevAlarm.isOn(), prevAlarm.isGroup(), gameOption);
+            newAlarm = new Alarm(time, alarmName, true, prevAlarm.isGroup(), gameOption);
 //            if(prevAlarm.isOn()){
 //                cancelAlarm();
 //            }

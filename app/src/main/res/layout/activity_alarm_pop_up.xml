@@ -33,6 +33,24 @@
         android:textSize="14sp"
         android:textStyle="bold"/>
 
+<!--    <ImageView-->
+<!--        android:id="@+id/img_swipeup"-->
+<!--        android:layout_width="164dp"-->
+<!--        android:layout_height="99dp"-->
+<!--        android:layout_below="@+id/btn_Snooze"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginTop="90dp"-->
+<!--        android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />-->
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Swipe up to stop"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="#ffffff"-->
+<!--        android:layout_below="@id/img_swipeup"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginTop="10dp"/>-->
     <ImageView
         android:id="@+id/img_swipeup"
         android:layout_width="164dp"
@@ -40,11 +58,11 @@
         android:layout_below="@+id/btn_Snooze"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="90dp"
-        android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
+        android:src="@drawable/ic_alarm_off_blue_24dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Swipe up to stop"
+        android:text="Tap to stop"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#ffffff"
