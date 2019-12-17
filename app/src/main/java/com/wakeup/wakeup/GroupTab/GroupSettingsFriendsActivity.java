@@ -28,39 +28,55 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.Friend;
+import com.wakeup.wakeup.ObjectClass.Group;
 import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class GroupSettingsFriendsActivity extends AppCompatActivity {
     private ListView lv;
     private ArrayList<GroupMember> members;
     private DatabaseReference dbGroups;
+    String groupKey;
+    private ArrayList<GroupMember> allContacts;
+    String currentUserPhoneNum;
+    ActionBar tb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_settings_friends);
-
+        members = new ArrayList<>();
+        allContacts = new ArrayList<>();
+        groupKey = getIntent().getExtras().getString("GroupKey");
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
-        ActionBar tb = getSupportActionBar();
+        tb = getSupportActionBar();
+        getContactList();
+
+
         tb.setDisplayHomeAsUpEnabled(true);
 
-        lv = (ListView) findViewById(R.id.lv_GroupFriends);
-
-        members = new ArrayList<>();
-
-        createDummyData();
+        lv = findViewById(R.id.lv_GroupFriends);
 
 
-        tb.setTitle("Friends List (" + (members.size() - 1) + ")");
+
+//        createDummyData();
+
+
+
 
         FirebaseHelper firebaseHelper = new FirebaseHelper();
 
-        String currentUserPhoneNum = firebaseHelper.getPhoneNum();
+        currentUserPhoneNum = firebaseHelper.getPhoneNum();
 
-        handleSelfAdmin(currentUserPhoneNum, null);
+        retrieveAllAdmins(groupKey);
+
+//        retrieveAllMembers(groupKey);
+
+//        handleLayoutSelfAdmin(currentUserPhoneNum, groupKey);
 //        boolean amIAdmin = true;
 //
 //        CustomAdapter customAdapter = new CustomAdapter(this, members, amIAdmin);
@@ -73,7 +89,117 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 
     }
 
-    public void handleSelfAdmin(String phoneNum, String groupKey) {
+    public void retrieveAllAdmins(String groupKey) {
+        dbGroups.child(groupKey).child("admins").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int n;
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String phoneNum = postSnapshot.getKey();
+                    n = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).size();
+                    String name;
+                    System.out.println(currentUserPhoneNum);
+                    System.out.println(phoneNum);
+
+                    if (n > 0) {
+                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
+                    } else if (currentUserPhoneNum.equals(phoneNum)) {
+
+                        name = "Me";
+                    } else {
+                        name = phoneNum;
+                    }
+                    members.add(new GroupMember(name, true, phoneNum));
+                }
+                retrieveAllMembers(groupKey);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void retrieveAllMembers(String groupKey) {
+        dbGroups.child(groupKey).child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int n;
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String phoneNum = postSnapshot.getKey();
+                    n = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).size();
+
+                    boolean isAdmin = members.stream().filter(o -> phoneNum.equals(o.getPhoneNum()) && o.isAdmin()).collect(Collectors.toList()).size() != 0;
+                    if(isAdmin){
+                        continue;
+                    }
+                    String name;
+                    if (n > 0) {
+                        name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
+                    } else if (currentUserPhoneNum.equals(phoneNum)) {
+                        name = "Me";
+                    } else {
+                        name = phoneNum;
+                    }
+                    members.add(new GroupMember(name, false, phoneNum));
+                }
+                handleLayoutSelfAdmin(currentUserPhoneNum, groupKey);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getContactList() {
+        ArrayList<String> names = new ArrayList<>();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        if (names.contains(name)) {
+                            continue;
+                        }
+
+                        System.out.println(phoneNo.replaceAll("\\s+", "").replaceAll("-+", ""));
+                        System.out.println(name);
+//                        System.out.println(phoneNo);
+                        names.add(name);
+                        allContacts.add(new GroupMember(name, false, phoneNo.replaceAll("\\s+",
+                                "").replaceAll("-+", "")));
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if (cur != null) {
+            cur.close();
+        }
+    }
+
+    public void handleLayoutSelfAdmin(String phoneNum, String groupKey) {
         boolean isAdmin = false;
         dbGroups.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -87,10 +213,12 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                     Button btnLeaveDeleteGroup = findViewById(R.id.btn_leaveDeleteGroup);
                     btnLeaveDeleteGroup.setText(R.string.delete_group);
                     lv.setAdapter(customAdapter);
-                }else{
-                    CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), members, false);
+                } else {
+                    CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(),
+                            members, false);
                     lv.setAdapter(customAdapter);
                 }
+                tb.setTitle("Friends List (" + (members.size()) + ")");
 
             }
 

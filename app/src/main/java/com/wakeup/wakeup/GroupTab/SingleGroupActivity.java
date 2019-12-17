@@ -1,7 +1,9 @@
 package com.wakeup.wakeup.GroupTab;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -9,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.Home;
 import com.wakeup.wakeup.ObjectClass.Alarm;
+import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.R;
 import com.wakeup.wakeup.ui.main.PersonalGroupAlarmFragmentAdapter;
 
@@ -18,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,11 +41,14 @@ import java.util.List;
 public class SingleGroupActivity extends AppCompatActivity {
 
     private String groupName;
+    private String groupKey;
 
     private RecyclerView rvGroupAlarm;
     private RecyclerView.Adapter groupAlarmAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private List<Alarm> alarms;
+
+    private ArrayList<Friend> allContacts;
 
     public SingleGroupActivity(){
         this.alarms = new ArrayList<>() ;
@@ -51,6 +58,8 @@ public class SingleGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_group);
+        allContacts = new ArrayList<>();
+
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -63,6 +72,7 @@ public class SingleGroupActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        groupKey = getIntent().getExtras().getString("GroupKey");
         groupName = getIntent().getExtras().getString("GroupName");
         getSupportActionBar().setTitle(groupName);
         alarms = getIntent().getParcelableArrayListExtra("GroupAlarmsList");
@@ -81,12 +91,15 @@ public class SingleGroupActivity extends AppCompatActivity {
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_groupSettings:
                 Toast.makeText(this, "Settings Selected", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SingleGroupActivity.this, GroupSettingsFriendsActivity.class);
+                intent.putExtra("GroupKey", groupKey);
                 startActivity(intent);
                 return true;
             case android.R.id.home:
