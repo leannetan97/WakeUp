@@ -163,7 +163,7 @@ public class HomeFragment extends Fragment {
         FragmentActivity activity = getActivity();
         if(activity != null) {
             AlarmManager alarmManager =
-                    (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                    (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                     (alarm.getAlarmKey()).hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
