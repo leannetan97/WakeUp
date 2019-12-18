@@ -193,6 +193,36 @@ public class FirebaseHelper {
     }
 
 
+    //alarms and groups using groupKey
+    public void deleteAlarmFromGroup(String groupAlarmKey, String groupKey) {
+        dbGroups.child(groupAlarmKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Group group = dataSnapshot.getValue(Group.class);
+                deleteAlarmFromGroup(groupAlarmKey, group);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void updateAlarmOfGroup(Alarm alarm, String groupKey, String groupAlarmKey) {
+        dbGroups.child(groupAlarmKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Group group = dataSnapshot.getValue(Group.class);
+                updateAlarmOfGroup(alarm, group, groupAlarmKey);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+
     // Games
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
