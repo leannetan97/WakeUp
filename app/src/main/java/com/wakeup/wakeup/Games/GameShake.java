@@ -59,7 +59,6 @@ public class GameShake extends AppCompatActivity {
 
             if (shake > 12) {
                 new FirebaseHelper().addScore(new Game(2, 10));
-                finish();
 
                 if(alarm.isGroup()){
                     new FirebaseHelper().setUserAwake(alarm.getGroupKey());

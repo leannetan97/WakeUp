@@ -68,8 +68,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         setContentView(R.layout.activity_create_delete_alarm);
         setViewToInstanceVar();
 
-        groupKey = getIntent().getExtras().getString("GroupKey");
-        group = getIntent().getExtras().getParcelable("Group");
+//        groupKey = getIntent().getExtras().getString("GroupKey");
+//        group = getIntent().getExtras().getParcelable("Group");
         allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
@@ -87,6 +87,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             //set up view with previous data
             if (prevAlarm.isGroup()) { //isGroup
                 System.out.println("[DEBUG] Group Details Fragment");
+                groupKey = getIntent().getExtras().getString("GroupKey");
+                group = getIntent().getExtras().getParcelable("Group");
                 fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName(), allContacts, groupKey);
             } else { //isPersonal
                 System.out.println("[DEBUG] Personal Details Fragment");

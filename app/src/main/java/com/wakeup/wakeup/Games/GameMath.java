@@ -69,7 +69,6 @@ public class GameMath extends AppCompatActivity {
 
         if(correctPoint==3){
             new FirebaseHelper().addScore(new Game(1, 10));
-            finish();
 
 
             if(alarm.isGroup()){

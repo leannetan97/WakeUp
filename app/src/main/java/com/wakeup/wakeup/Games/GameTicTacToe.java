@@ -124,7 +124,6 @@ public class GameTicTacToe extends AppCompatActivity {
 
                 if(playerWin==99){
                     new FirebaseHelper().addScore(new Game(3, 10));
-                    finish();
 
                     if(alarm.isGroup()){
                         new FirebaseHelper().setUserAwake(alarm.getGroupKey());
