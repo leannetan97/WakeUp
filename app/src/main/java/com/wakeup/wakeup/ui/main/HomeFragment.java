@@ -125,7 +125,7 @@ public class HomeFragment extends Fragment {
                     } else {
                         cancelAlarm(alarm);
                     }
-                    personalAlarms.add(alarm);
+                    groupAlarms.add(alarm);
                 }
 
                 // create adapter
