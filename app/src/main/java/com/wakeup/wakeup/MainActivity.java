@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // not signed in
             signIn();
-            finish();
+//            finish();
         }
     }
 
