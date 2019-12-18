@@ -19,18 +19,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.wakeup.wakeup.CreateDeleteAlarm;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.R;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapter.HomeFragmentViewHolder> {
     private List<Alarm> alarms;
     private FirebaseHelper firebaseHelper;
     private Context context;
+    private ArrayList<GroupMember> allContacts;
 
-    public HomeFragmentAdapter(List<Alarm> alarms) {
+    public HomeFragmentAdapter(List<Alarm> alarms, ArrayList<GroupMember> allContacts) {
         this.alarms = alarms;
+        this.allContacts = allContacts;
     }
 
     @NonNull
@@ -88,6 +92,10 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
         toEditAlarmActivity.putExtra("ViewTitle", "Edit Alarm");
         toEditAlarmActivity.putExtra("ButtonName", "Save Alarm");
         toEditAlarmActivity.putExtra("AlarmData", alarmItem);
+        if(alarmItem.isGroup()){
+            toEditAlarmActivity.putExtra("GroupKey",alarmItem.getGroupKey());
+            toEditAlarmActivity.putExtra("AllContacts", allContacts);
+        }
         view.getContext().startActivity(toEditAlarmActivity);
     }
 

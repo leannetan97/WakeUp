@@ -263,7 +263,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HomeFragment(), "HOME");
+        adapter.addFragment(new HomeFragment(allContacts), "HOME");
         adapter.addFragment(new AlarmFragment(), "ALARM");
         adapter.addFragment(new GroupFragment(allContacts), "GROUP");
         adapter.addFragment(new HistoryFragment(), "HISTORY");

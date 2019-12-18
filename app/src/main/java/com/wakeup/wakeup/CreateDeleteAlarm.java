@@ -1,36 +1,48 @@
 package com.wakeup.wakeup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.backup.FileBackupHelper;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import com.wakeup.wakeup.ObjectClass.Friend;
 import com.wakeup.wakeup.ObjectClass.Group;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.PersonalAlarmTab.PersonalAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 
@@ -40,6 +52,8 @@ import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener { //AdapterView.OnItemSelectedListener
 
@@ -52,25 +66,31 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private String alarmKey;
     private FirebaseHelper firebaseHelper;
 
-    private String groupKey;
 
     private DecimalFormat digitFormatter = new DecimalFormat("00");
-//    private TextView tvAlarmName;
+    //    private TextView tvAlarmName;
     private TextView tvTimeDisplay;
     private Spinner spinnerGameOption;
-    private int gameOption = 0;
+
+    // Group Edit variables
     private Group group;
-    private ArrayList<Friend> allContacts;
+    private ArrayList<Friend> friendsContact;
+    private ArrayList<GroupMember> allContacts;
+    private String groupKey;
+    private DatabaseReference dbGroups;
+    String currentUserPhoneNum;
+    ActionBar tb;
+    private ListView lvAwake;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
         setViewToInstanceVar();
 
 //        groupKey = getIntent().getExtras().getString("GroupKey");
 //        group = getIntent().getExtras().getParcelable("Group");
-        allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
+
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
 
@@ -88,8 +108,12 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             if (prevAlarm.isGroup()) { //isGroup
                 System.out.println("[DEBUG] Group Details Fragment");
                 groupKey = getIntent().getExtras().getString("GroupKey");
+                allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
                 group = getIntent().getExtras().getParcelable("Group");
-                fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName(), allContacts, groupKey);
+                updateFilteredFriendsList();
+                fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName(), friendsContact
+                        , groupKey);
+//                fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName());
             } else { //isPersonal
                 System.out.println("[DEBUG] Personal Details Fragment");
                 fragment = new PersonalAlarmDetailsFragment(prevAlarm.getAlarmName());
@@ -105,7 +129,6 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         transaction.commit();
 
 
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.game_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -113,17 +136,19 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 //        spinnerGameOption.setOnItemSelectedListener(this);
     }
 
-    @Override
     protected void onStart() {
         super.onStart();
         setViewToInstanceVar();
         // Update value of Spinner not work at onCreate
         if (viewTitle.contains("Edit")) {
             //TODO: Update Spinner value
-            System.out.println("[DEBUG] prevAlarm.getGameOption() :"+ prevAlarm.getGameOption());
+            System.out.println("[DEBUG] prevAlarm.getGameOption() :" + prevAlarm.getGameOption());
             spinnerGameOption.setSelection(prevAlarm.getGameOption());
             tvTimeDisplay.setText(prevAlarm.getTime());
-        }
+
+
+
+    }
     }
 
     @Override
@@ -137,7 +162,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.btn_delete_alarm) {
-            if(prevAlarm.isOn()){
+            if (prevAlarm.isOn()) {
                 System.out.println("Cancel Alarm");
                 cancelAlarm();
             }
@@ -150,20 +175,80 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         }
         return true;
     }
+    // Start Filter
+    private void updateFilteredFriendsList(){
+        if (prevAlarm.isGroup()) {
+            dbGroups.child(groupKey).child("users").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    tb = getSupportActionBar();
+                    tb.setDisplayHomeAsUpEnabled(true);
+                    tb.setTitle("Awake Status List");
+                    int n;
+                    friendsContact.clear();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        String phoneNum = postSnapshot.getKey();
+                        boolean isAwake = (boolean) postSnapshot.getValue();
 
-    private void updateActionBarColor(){
+                        n = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).size();
+
+                        String name;
+                        if (currentUserPhoneNum.equals(phoneNum)) {
+                            continue;
+                        } else if (n > 0) {
+                            name = allContacts.stream().filter(o -> phoneNum.equals(o.getPhoneNum())).collect(Collectors.toList()).get(0).getUserName();
+                        } else {
+                            name = phoneNum;
+                        }
+                        friendsContact.add(new Friend(name, isAwake, phoneNum));
+                    }
+                    Collections.sort(friendsContact);
+
+                    int nFriendsNotAwake;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                        nFriendsNotAwake =
+                                friendsContact.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
+                    } else {
+                        nFriendsNotAwake = 0;
+                        for (Friend f : friendsContact) {
+                            if (!f.getIsAwake()) {
+                                nFriendsNotAwake += 1;
+                            }
+                        }
+                    }
+
+                    if (nFriendsNotAwake > 0) {
+                        tb.setTitle("(" + nFriendsNotAwake + ") is/are still sleeping");
+                    } else {
+                        tb.setTitle("All members are awake!");
+                    }
+                    lvAwake = (ListView) findViewById(R.id.lv_awakeStatusList_awake);
+                    CustomAdapter customAdapterAwake =
+                            new CustomAdapter(getApplicationContext(), friendsContact);
+                    lvAwake.setAdapter(customAdapterAwake);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    private void updateActionBarColor() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setElevation(0);
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
     }
 
-    private void setDefaultTimeDisplay(){
+    private void setDefaultTimeDisplay() {
         Calendar c = Calendar.getInstance();
 //        alarmCalendar = c;
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         int minutes = c.get(Calendar.MINUTE);
         String time = digitFormatter.format(hourOfDay) + ":" + digitFormatter.format(minutes);
-        ((TextView)findViewById(R.id.tv_time_display)).setText(time);
+        ((TextView) findViewById(R.id.tv_time_display)).setText(time);
     }
 
     private void updateViewDetails() {
@@ -179,10 +264,10 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     public void deleteAlarm(boolean isGroup) {
         //TODO: perform delete alarm
-        if(isGroup){
+        if (isGroup) {
             System.out.println(groupKey);
             firebaseHelper.deleteAlarmFromGroup(alarmKey, group);
-        }else{
+        } else {
 //            FirebaseHelper firebaseHelper = new FirebaseHelper();
             firebaseHelper.deleteAlarm(alarmKey);
         }
@@ -190,15 +275,15 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 
     public void updateAlarm(boolean isGroup) {
         //update alarm with existing key
-        if(isGroup){
+        if (isGroup) {
             firebaseHelper.updateAlarmOfGroup(newAlarm, group, alarmKey);
-        }else{
+        } else {
             firebaseHelper.updateAlarm(newAlarm, alarmKey);
         }
     }
 
     public void addAlarm(boolean isGroup) {
-        if(isGroup){
+        if (isGroup) {
 //            Log.d("group", group.getUsersInGroup().get(0).getPhoneNum());
 //            System.out.println(group.getUsersInGroup().get(0).getPhoneNum());
             System.out.println("group");
@@ -216,10 +301,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
             newAlarm = new Alarm(time, alarmName, true, prevAlarm.isGroup(), gameOption);
-//            if(prevAlarm.isOn()){
-//                cancelAlarm();
-//            }
-//            startAlarm(alarmCalendar);
+
             updateAlarm(prevAlarm.isGroup());
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);
@@ -253,60 +335,13 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
 //        alarmCalendar = c;
     }
 
-//    @Override
-//    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-//        //  gameOption = [NONE, TICTACTOE, MATH, SHAKER]
-//        gameOption = position;
-//        //TODO: For testing purpose only
-//        Toast.makeText(adapterView.getContext(), Integer.toString(gameOption) + adapterView.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
-//    }
-
-//    @Override
-//    public void onNothingSelected(AdapterView<?> adapterView) {
-//        //do nothing
-//    }
-
-    private void startAlarm(Calendar c) {
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        //Change the alarm object to byte so that pass
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
-        try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(newAlarm);
-            out.flush();
-            byte[] data = bos.toByteArray();
-            intent.putExtra("alarm", data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmKey.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        if (c.before(Calendar.getInstance())) {
-            c.add(Calendar.DATE, 1);
-        }
-
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        }
-    }
-
     private void cancelAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmKey.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmKey.hashCode(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
-        Toast.makeText(this,"Alarm is Cancel.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Alarm is Cancel.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -317,6 +352,61 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    // For Group Awake Status Custom Adapter
+    class CustomAdapter extends ArrayAdapter<Friend> {
+        Context context;
+
+        ArrayList<Friend> friends;
+
+        CustomAdapter(Context c, ArrayList<Friend> friends) {
+            super(c, R.layout.res_layout_row_awake_status_list, R.id.tv_friendName, friends);
+            this.context = c;
+            this.friends = friends;
+        }
+
+        @NonNull
+        @Override
+        public View getView(final int position, @Nullable View convertView,
+                            @NonNull ViewGroup parent) {
+            LayoutInflater layoutInflater =
+                    (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            @SuppressLint("ViewHolder") View row =
+                    layoutInflater.inflate(R.layout.res_layout_row_awake_status_list, parent,
+                    false);
+
+            TextView tvFriendName = row.findViewById(R.id.tv_friendName);
+            tvFriendName.setText(friends.get(position).getUserName());
+
+            TextView tvFriendPhone = row.findViewById(R.id.tv_friendPhoneNumber);
+            System.out.println(friends.get(position).getPhoneNum());
+            tvFriendPhone.setText(friends.get(position).getPhoneNum());
+
+            ImageView ivAwakeStatus = row.findViewById(R.id.iv_awakeStatus);
+            ImageView btnCall = row.findViewById(R.id.btn_call);
+            if (friends.get(position).getIsAwake()) {
+                ivAwakeStatus.setImageResource(R.drawable.ic_awake_green);
+            } else {
+                ivAwakeStatus.setImageResource(R.drawable.ic_sleep_red);
+            }
+//            btnCall.setBackgroundTintList(context.getResources().getColorStateList(R.color
+//            .colorAccent));
+            btnCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "call " + friends.get(position).getUserName(),
+                            Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" + friends.get(position).getPhoneNum()));
+                    startActivity(intent);
+
+
+                }
+            });
+            return row;
         }
     }
 }
