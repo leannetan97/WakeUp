@@ -44,6 +44,7 @@ public class FirebaseHelper {
         dbScores = FirebaseDatabase.getInstance().getReference("scores");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if (user != null) {
             phoneNum = user.getPhoneNumber();
             username = user.getDisplayName();
@@ -91,17 +92,33 @@ public class FirebaseHelper {
     }
 
     public void deleteGroup(Group group) {
-        String groupKey =group.getGroupKey();
+        String groupKey = group.getGroupKey();
 //        dbGroups.child(groupKey).setValue(null);
-
 //        addUserToGroup(phoneNum, groupKey, null);
-        System.out.println("asdakj");
-        System.out.println(group.getUsersInGroup().size());
-        for (User user : group.getUsersInGroup()) {
-            System.out.println(user.getPhoneNum());
-            System.out.println("lkdsfa");
-            dbUsers.child(user.getPhoneNum()).child("groups").child(groupKey).removeValue();
-        }
+        dbGroups.child(groupKey).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    addUserToGroup(postSnapshot.getKey(), groupKey, null);
+                }
+                dbUsers.child(phoneNum).child("groups").child(groupKey).removeValue();
+                // add other users
+                dbGroups.child(groupKey).removeValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+//        for (User user : newGroup.getUsersInGroup()) {
+//            System.out.println(user.getPhoneNum());
+//            System.out.println("lkdsfa");
+////            dbUsers.child(user.getPhoneNum()).child("groups").child(groupKey).removeValue();
+//            addUserToGroup(user.getPhoneNum(), groupKey, null);
+//        }
         dbUsers.child(phoneNum).child("groups").child(groupKey).removeValue();
 
 
