@@ -13,7 +13,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FirebaseHelper {
@@ -163,12 +165,10 @@ public class FirebaseHelper {
     public void deleteAlarmFromGroup(String groupAlarmKey, Group group) {
         String groupKey = group.getGroupKey();
 
-        Map<String, Object> childUpdates = new HashMap<>();
-
         dbGroups.child(groupKey).child("alarms").child(groupAlarmKey).setValue(null);
-
         dbUserGroupAlarms.child(groupAlarmKey).setValue(null);
 
+        Map<String, Object> childUpdates = new HashMap<>();
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, null);
         }
@@ -179,11 +179,11 @@ public class FirebaseHelper {
     public void updateAlarmOfGroup(Alarm alarm, Group group, String groupAlarmKey) {
         String groupKey = group.getGroupKey();
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/groups/" + groupKey + "/alarms/" + groupAlarmKey, alarm);
+        dbUserGroupAlarms.child(groupAlarmKey).setValue(alarm);
 
         //add to every user
-        dbUserGroupAlarms.child(groupAlarmKey).setValue(alarm);
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/groups/" + groupKey + "/alarms/" + groupAlarmKey, alarm);
 
         for (User user : group.getUsersInGroup()) {
             childUpdates.put("/users/" + user.getPhoneNum() + "/groupalarms/" + groupAlarmKey, alarm);
@@ -194,32 +194,68 @@ public class FirebaseHelper {
 
 
     //alarms and groups using groupKey
-    public void deleteAlarmFromGroup(String groupAlarmKey, String groupKey) {
-        dbGroups.child(groupAlarmKey).addListenerForSingleValueEvent(new ValueEventListener() {
+    public Group getGroup(String groupKey) {
+        Group newGroup = new Group();
+        newGroup.setGroupKey(groupKey);
+
+        List<Alarm> alarmsInGroup = new ArrayList<>();
+        List<User> usersInGroup = new ArrayList<>();
+
+        //get group name
+        dbUsers.child("groups").child(groupKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Group group = dataSnapshot.getValue(Group.class);
-                deleteAlarmFromGroup(groupAlarmKey, group);
+                newGroup.setGroupName(dataSnapshot.getKey());
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+        //get users
+        dbGroups.child(groupKey).child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    usersInGroup.add(new User(postSnapshot.getKey()));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //get alarms
+        dbGroups.child(groupKey).child("alarms").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    alarmsInGroup.add(postSnapshot.getValue(Alarm.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        newGroup.setAlarmsInGroup(alarmsInGroup);
+        newGroup.setUsersInGroup(usersInGroup);
+        return newGroup;
+    }
+
+    public void deleteAlarmFromGroup(String groupAlarmKey, String groupKey) {
+        Group group = getGroup(groupKey);
+        deleteAlarmFromGroup(groupAlarmKey, group);
     }
 
     public void updateAlarmOfGroup(Alarm alarm, String groupKey, String groupAlarmKey) {
-        dbGroups.child(groupAlarmKey).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Group group = dataSnapshot.getValue(Group.class);
-                updateAlarmOfGroup(alarm, group, groupAlarmKey);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+        Group group = getGroup(groupKey);
+        updateAlarmOfGroup(alarm, group, groupAlarmKey);
     }
 
 
