@@ -57,5 +57,6 @@ public class User implements Parcelable {
         this.phoneNum = phoneNum;
     }
 
+
 // check email exists -->signup, checkpw
 }
