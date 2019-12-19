@@ -76,8 +76,9 @@ public class NewGroupActivity extends AppCompatActivity {
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
 
-                if(phoneNumber.equals("")){
-                    Toast.makeText(getApplicationContext(), "Please enter a phone number.", Toast.LENGTH_SHORT).show();
+                if (phoneNumber.equals("")) {
+                    Toast.makeText(getApplicationContext(), "Please enter a phone number.",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -142,11 +143,11 @@ public class NewGroupActivity extends AppCompatActivity {
         return true;
     }
 
-    private Group makeGroupInstance(){
+    private Group makeGroupInstance() {
         EditText etGroupName = findViewById(R.id.et_groupName);
         String groupName = etGroupName.getText().toString();
         Group group = new Group(groupName);
-        for(User f: friends){
+        for (User f : friends) {
             group.addUser(f);
         }
         return group;
@@ -159,17 +160,19 @@ public class NewGroupActivity extends AppCompatActivity {
 
                 EditText etGroupName = findViewById(R.id.et_groupName);
                 String groupName = etGroupName.getText().toString();
-                if(groupName.equals("")){
+                if (groupName.equals("")) {
                     Toast.makeText(this, "Group name cannot be empty.", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
-                Toast.makeText(this, "OK!", Toast.LENGTH_SHORT).show();
-
+                if (friends.size() == 0) {
+                    Toast.makeText(this, "Please add at least one member..", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 Group group = makeGroupInstance();
                 FirebaseHelper firebaseHelper = new FirebaseHelper();
                 firebaseHelper.addGroup(group);
-
+                Toast.makeText(this, "Group created!", Toast.LENGTH_SHORT).show();
                 finish();
                 return true;
 
@@ -191,9 +194,9 @@ public class NewGroupActivity extends AppCompatActivity {
 //                String name = data.getStringExtra("Name");
                 ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
 //                System.out.println(friendsSelected.get(0));
-                for(Friend f: friendsSelected){
+                for (Friend f : friendsSelected) {
                     System.out.println(f.getPhoneNum());
-                    if(checkIsInAddedList(f.getPhoneNum())){
+                    if (checkIsInAddedList(f.getPhoneNum())) {
                         continue;
                     }
                     friends.add(f);
@@ -235,7 +238,8 @@ public class NewGroupActivity extends AppCompatActivity {
                     //user exists, do something
 
                     if (checkIsInAddedList(phoneNumber)) {
-                        Toast.makeText(getApplicationContext(), "Already Added.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Already Added.",
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 

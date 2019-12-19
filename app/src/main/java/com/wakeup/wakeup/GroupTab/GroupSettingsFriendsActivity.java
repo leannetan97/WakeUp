@@ -265,6 +265,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             firebaseHelper.removeUserFromGroup(currentUserPhoneNum, groupKey);
+                            Toast.makeText(getApplicationContext(), "Group removed!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Home.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
