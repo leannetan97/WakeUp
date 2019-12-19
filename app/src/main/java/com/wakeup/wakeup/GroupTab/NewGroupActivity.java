@@ -72,12 +72,18 @@ public class NewGroupActivity extends AppCompatActivity {
         Button btnAddFromList = (Button) findViewById(R.id.btn_groupInvite);
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
+                String currentUserPhoneNum = new FirebaseHelper().getPhoneNum();
                 TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
 
                 if (phoneNumber.equals("")) {
                     Toast.makeText(getApplicationContext(), "Please enter a phone number.",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(phoneNumber.equals(currentUserPhoneNum)){
+                    Toast.makeText(getApplicationContext(), "You are already in the group...",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -192,11 +198,12 @@ public class NewGroupActivity extends AppCompatActivity {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
 //                String name = data.getStringExtra("Name");
+                String currrentUserPhone = new FirebaseHelper().getPhoneNum();
                 ArrayList<Friend> friendsSelected = data.getParcelableArrayListExtra("friends");
 //                System.out.println(friendsSelected.get(0));
                 for (Friend f : friendsSelected) {
                     System.out.println(f.getPhoneNum());
-                    if (checkIsInAddedList(f.getPhoneNum())) {
+                    if (checkIsInAddedList(f.getPhoneNum()) || f.getPhoneNum().equals(currrentUserPhone)) {
                         continue;
                     }
                     friends.add(f);
