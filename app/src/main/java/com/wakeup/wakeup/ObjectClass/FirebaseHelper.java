@@ -48,7 +48,7 @@ public class FirebaseHelper {
         if (user != null) {
             phoneNum = user.getPhoneNumber();
             username = user.getDisplayName();
-            if (username.length() == 0) {
+            if (username == null) {
                 username = phoneNum.substring(phoneNum.length() - 4);
             }
 
