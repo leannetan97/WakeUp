@@ -68,7 +68,7 @@ public class NewGroupActivity extends AppCompatActivity {
 //        assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setTitle(R.string.new_group_text);
-
+        updateActionBarColor();
         Button btnAddFromList = (Button) findViewById(R.id.btn_groupInvite);
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -213,6 +213,12 @@ public class NewGroupActivity extends AppCompatActivity {
 //                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void updateActionBarColor() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
     }
 
     public void checkExistInDatabase(Friend friend) {

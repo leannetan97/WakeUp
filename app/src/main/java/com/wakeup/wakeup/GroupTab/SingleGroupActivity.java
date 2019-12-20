@@ -24,6 +24,7 @@ import com.wakeup.wakeup.ui.main.PersonalGroupAlarmFragmentAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,9 +72,7 @@ public class SingleGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_single_group);
         allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
 
-
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        updateActionBarColor();
 
         FloatingActionButton fBtnGroupAlarm = findViewById(R.id.fbtn_group_alarm);
         fBtnGroupAlarm.setOnClickListener(new View.OnClickListener() {
@@ -172,5 +171,11 @@ public class SingleGroupActivity extends AppCompatActivity {
         alarmView.putExtra("GroupKey", groupKey);
         alarmView.putExtra("Group", (Parcelable) group);
         startActivity(alarmView);
+    }
+
+    private void updateActionBarColor() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
     }
 }
