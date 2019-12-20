@@ -53,7 +53,7 @@ public class AwakeStatusListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_awake_status_list);
-
+        updateActionBarColor();
         firebaseHelper = new FirebaseHelper();
 
         dbGroups = FirebaseDatabase.getInstance().getReference("groups");
@@ -243,6 +243,11 @@ public class AwakeStatusListActivity extends AppCompatActivity {
         });
     }
 
+    private void updateActionBarColor() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
+    }
 
 
     public void retrieveAllMembers(String groupKey) {
