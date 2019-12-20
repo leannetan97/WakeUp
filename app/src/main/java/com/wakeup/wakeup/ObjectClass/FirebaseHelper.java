@@ -191,14 +191,13 @@ public class FirebaseHelper {
 
         dbFirebase.updateChildren(childUpdates);
     }
-
-
     //alarms and groups using groupKey
     public void deleteAlarmFromGroup(String groupAlarmKey, String groupKey) {
         dbGroups.child(groupAlarmKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Group group = dataSnapshot.getValue(Group.class);
+                group.setGroupKey(groupKey);
                 deleteAlarmFromGroup(groupAlarmKey, group);
             }
 
@@ -213,6 +212,8 @@ public class FirebaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Group group = dataSnapshot.getValue(Group.class);
+                if(group == null) System.out.println("[DEBUG] Calling null");
+                group.setGroupKey(groupKey);
                 updateAlarmOfGroup(alarm, group, groupAlarmKey);
             }
 
@@ -221,7 +222,6 @@ public class FirebaseHelper {
             }
         });
     }
-
 
     // Games
     public void addScore(Game game) {

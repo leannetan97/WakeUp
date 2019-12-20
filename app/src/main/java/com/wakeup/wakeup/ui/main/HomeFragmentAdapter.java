@@ -94,6 +94,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapte
         toEditAlarmActivity.putExtra("AlarmData", alarmItem);
         if(alarmItem.isGroup()){
             toEditAlarmActivity.putExtra("GroupKey",alarmItem.getGroupKey());
+            System.out.println("[DEBUG] GroupKey : " + alarmItem.getGroupKey());
             toEditAlarmActivity.putExtra("AllContacts", allContacts);
         }
         view.getContext().startActivity(toEditAlarmActivity);

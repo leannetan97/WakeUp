@@ -53,7 +53,7 @@ public class Group implements Serializable, Parcelable {
     }
 
     // Get
-    @Exclude
+//    @Exclude
     public String getGroupKey() {
         return groupKey;
     }
@@ -92,7 +92,7 @@ public class Group implements Serializable, Parcelable {
 //    }
 
     // Set
-    @Exclude
+//    @Exclude
     public void setGroupKey(String groupKey) {
         this.groupKey = groupKey;
     }

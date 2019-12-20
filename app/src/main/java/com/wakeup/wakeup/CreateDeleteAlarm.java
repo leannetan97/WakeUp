@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.GroupTab.GroupAlarmDetailsFragment;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
@@ -78,18 +79,14 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     private ArrayList<GroupMember> allContacts;
     private String groupKey;
     private DatabaseReference dbGroups;
-    String currentUserPhoneNum;
-    ActionBar tb;
-    private ListView lvAwake;
+    private String currentUserPhoneNum;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_delete_alarm);
         setViewToInstanceVar();
-
-//        groupKey = getIntent().getExtras().getString("GroupKey");
-//        group = getIntent().getExtras().getParcelable("Group");
 
         viewTitle = getIntent().getExtras().getString("ViewTitle");
         buttonName = getIntent().getExtras().getString("ButtonName");
@@ -107,9 +104,11 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             //set up view with previous data
             if (prevAlarm.isGroup()) { //isGroup
                 System.out.println("[DEBUG] Group Details Fragment");
+                dbGroups = FirebaseDatabase.getInstance().getReference("groups");
+                friendsContact = new ArrayList<>();
+                currentUserPhoneNum = firebaseHelper.getPhoneNum();
                 groupKey = getIntent().getExtras().getString("GroupKey");
                 allContacts = getIntent().getExtras().getParcelableArrayList("AllContacts");
-                group = getIntent().getExtras().getParcelable("Group");
                 updateFilteredFriendsList();
                 fragment = new GroupAlarmDetailsFragment(prevAlarm.getAlarmName(), friendsContact
                         , groupKey);
@@ -121,6 +120,9 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         } else {
             //A Default time
             setDefaultTimeDisplay();
+            if (viewTitle.contains("Group")) {
+                group = getIntent().getExtras().getParcelable("Group");
+            }
             fragment = new PersonalAlarmDetailsFragment("Alarm");
         }
         FragmentManager manager = getSupportFragmentManager();
@@ -145,10 +147,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
             System.out.println("[DEBUG] prevAlarm.getGameOption() :" + prevAlarm.getGameOption());
             spinnerGameOption.setSelection(prevAlarm.getGameOption());
             tvTimeDisplay.setText(prevAlarm.getTime());
-
-
-
-    }
+        }
     }
 
     @Override
@@ -175,15 +174,13 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         }
         return true;
     }
+
     // Start Filter
-    private void updateFilteredFriendsList(){
+    private void updateFilteredFriendsList() {
         if (prevAlarm.isGroup()) {
             dbGroups.child(groupKey).child("users").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    tb = getSupportActionBar();
-                    tb.setDisplayHomeAsUpEnabled(true);
-                    tb.setTitle("Awake Status List");
                     int n;
                     friendsContact.clear();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -203,29 +200,6 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                         friendsContact.add(new Friend(name, isAwake, phoneNum));
                     }
                     Collections.sort(friendsContact);
-
-                    int nFriendsNotAwake;
-                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                        nFriendsNotAwake =
-                                friendsContact.stream().filter(o -> !o.getIsAwake()).collect(Collectors.toList()).size();
-                    } else {
-                        nFriendsNotAwake = 0;
-                        for (Friend f : friendsContact) {
-                            if (!f.getIsAwake()) {
-                                nFriendsNotAwake += 1;
-                            }
-                        }
-                    }
-
-                    if (nFriendsNotAwake > 0) {
-                        tb.setTitle("(" + nFriendsNotAwake + ") is/are still sleeping");
-                    } else {
-                        tb.setTitle("All members are awake!");
-                    }
-                    lvAwake = (ListView) findViewById(R.id.lv_awakeStatusList_awake);
-                    CustomAdapter customAdapterAwake =
-                            new CustomAdapter(getApplicationContext(), friendsContact);
-                    lvAwake.setAdapter(customAdapterAwake);
                 }
 
                 @Override
@@ -266,7 +240,8 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         //TODO: perform delete alarm
         if (isGroup) {
             System.out.println(groupKey);
-            firebaseHelper.deleteAlarmFromGroup(alarmKey, group);
+//            firebaseHelper.deleteAlarmFromGroup(alarmKey, group);
+            firebaseHelper.deleteAlarmFromGroup(alarmKey, groupKey);
         } else {
 //            FirebaseHelper firebaseHelper = new FirebaseHelper();
             firebaseHelper.deleteAlarm(alarmKey);
@@ -276,7 +251,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
     public void updateAlarm(boolean isGroup) {
         //update alarm with existing key
         if (isGroup) {
-            firebaseHelper.updateAlarmOfGroup(newAlarm, group, alarmKey);
+            firebaseHelper.updateAlarmOfGroup(newAlarm, groupKey, alarmKey);
         } else {
             firebaseHelper.updateAlarm(newAlarm, alarmKey);
         }
@@ -298,10 +273,9 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         setViewToInstanceVar();
         int gameOption = spinnerGameOption.getSelectedItemPosition();
         String time = (String) tvTimeDisplay.getText();
-        String alarmName = (String) ((TextView)findViewById(R.id.tv_alarm_name)).getText();
+        String alarmName = (String) ((TextView) findViewById(R.id.tv_alarm_name)).getText();
         if (viewTitle.contains("Edit")) {
             newAlarm = new Alarm(time, alarmName, true, prevAlarm.isGroup(), gameOption);
-
             updateAlarm(prevAlarm.isGroup());
         } else if (viewTitle.contains("Personal")) {
             newAlarm = new Alarm(time, alarmName, true, false, gameOption);
@@ -376,7 +350,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
                     (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             @SuppressLint("ViewHolder") View row =
                     layoutInflater.inflate(R.layout.res_layout_row_awake_status_list, parent,
-                    false);
+                            false);
 
             TextView tvFriendName = row.findViewById(R.id.tv_friendName);
             tvFriendName.setText(friends.get(position).getUserName());
