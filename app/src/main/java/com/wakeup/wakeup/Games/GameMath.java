@@ -17,6 +17,7 @@ import com.wakeup.wakeup.R;
 import java.util.Random;
 
 public class GameMath extends AppCompatActivity {
+    private long start;
     private Alarm alarm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,8 @@ public class GameMath extends AppCompatActivity {
         setContentView(R.layout.activity_game_math);
         alarm = getIntent().getExtras().getParcelable("AlarmData");
         setNewNumbers();
+
+        start = System.currentTimeMillis();
     }
     int value1;
     int value2;
@@ -68,7 +71,13 @@ public class GameMath extends AppCompatActivity {
 
 
         if(correctPoint==3){
-            new FirebaseHelper().addScore(new Game(1, 10));
+            long end = System.currentTimeMillis();
+            float msec = end - start;
+            float sec= msec/1000F;
+            int minutes= (int) (sec/60F);
+
+            new FirebaseHelper().addHistory(minutes);
+            new FirebaseHelper().addScore(new Game(2, 10));
 
 
             if(alarm.isGroup()){

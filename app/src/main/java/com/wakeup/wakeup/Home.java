@@ -83,19 +83,19 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
 
-//        // temp, for testing
+        // temp, for testing
 //        firebaseHelper = new FirebaseHelper();
 //
 //        Button button = (Button)findViewById(R.id.button_temp);
 //        button.setText(firebaseHelper.getUsername());
 //        button.setOnClickListener(new View.OnClickListener() {
 //            public void onClick(View v) {
-////                firebaseHelper.addHistory(6);
+//                firebaseHelper.addHistory(6);
 ////                firebaseHelper.addGroup(new Group("Group 1"));
-//                firebaseHelper.addScore(new Game(3, 6, firebaseHelper.getUsername()));
+////                firebaseHelper.addScore(new Game(3, 6, firebaseHelper.getUsername()));
 //            }
 //        });
-//        ///////////
+        ///////////
 
 
         fabAddAlarm = (FloatingActionButton) findViewById(R.id.btn_floating_add_alarm);
@@ -263,7 +263,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HomeFragment(), "HOME");
+        adapter.addFragment(new HomeFragment(allContacts), "HOME");
         adapter.addFragment(new AlarmFragment(), "ALARM");
         adapter.addFragment(new GroupFragment(allContacts), "GROUP");
         adapter.addFragment(new HistoryFragment(), "HISTORY");

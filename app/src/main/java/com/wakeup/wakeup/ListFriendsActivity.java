@@ -55,6 +55,7 @@ public class ListFriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_friends);
 //        createDummyData();
 //        checkUserPhonePermission();
+        updateActionBarColor();
         dbUsers = FirebaseDatabase.getInstance().getReference("users");
         allContactsInGroupMember = getIntent().getExtras().getParcelableArrayList("AllContacts");
 
@@ -101,6 +102,13 @@ public class ListFriendsActivity extends AppCompatActivity {
         });
 
     }
+
+    private void updateActionBarColor() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
+    }
+
 
     //    private void createDummyData() {
 //        friends.add(new Friend("100"));

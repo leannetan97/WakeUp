@@ -80,7 +80,8 @@ public class AlarmFragment extends Fragment {
                 }
 
                 // create adapter
-                personalAlarmAdapter = new HomeFragmentAdapter(alarms);
+//                personalAlarmAdapter = new HomeFragmentAdapter(alarms,);
+                personalAlarmAdapter = new PersonalGroupAlarmFragmentAdapter(alarms);
                 rvAlarm.setAdapter(personalAlarmAdapter);
             }
 

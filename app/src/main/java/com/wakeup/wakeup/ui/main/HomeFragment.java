@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.wakeup.wakeup.AlarmReceiver;
 import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
+import com.wakeup.wakeup.ObjectClass.GroupMember;
 import com.wakeup.wakeup.R;
 
 import java.util.ArrayList;
@@ -47,13 +48,14 @@ public class HomeFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView rvAlarm;
     private Context context;
+    private ArrayList<GroupMember> allContacts;
 
-
-    public HomeFragment() {
+    public HomeFragment(ArrayList<GroupMember> allContacts) {
         // Required empty public constructor
         allAlarms = new ArrayList<>();
         personalAlarms = new ArrayList<>();
         groupAlarms = new ArrayList<>();
+        this.allContacts = allContacts;
 
         // firebase
         dbAlarms = new FirebaseHelper().getDbUserAlarms();
@@ -69,9 +71,8 @@ public class HomeFragment extends Fragment {
         rvAlarm = view.findViewById(R.id.rv_home);
         layoutManager = new LinearLayoutManager(getContext());
         rvAlarm.setLayoutManager(layoutManager);
-        homeAdapter = new HomeFragmentAdapter(allAlarms);
-        rvAlarm.setAdapter(homeAdapter);
-
+//        homeAdapter = new HomeFragmentAdapter(allAlarms, allContacts);
+//        rvAlarm.setAdapter(homeAdapter);
         return view;
     }
 
@@ -143,7 +144,7 @@ public class HomeFragment extends Fragment {
         allAlarms.addAll(personalAlarms);
         allAlarms.addAll(groupAlarms);
 
-        homeAdapter = new HomeFragmentAdapter(allAlarms);
+        homeAdapter = new HomeFragmentAdapter(allAlarms, allContacts);
         rvAlarm.setAdapter(homeAdapter);
     }
 

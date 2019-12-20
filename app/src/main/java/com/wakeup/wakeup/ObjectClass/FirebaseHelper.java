@@ -48,7 +48,7 @@ public class FirebaseHelper {
         if (user != null) {
             phoneNum = user.getPhoneNumber();
             username = user.getDisplayName();
-            if (username.length() == 0) {
+            if (username == null) {
                 username = phoneNum.substring(phoneNum.length() - 4);
             }
 
@@ -155,7 +155,6 @@ public class FirebaseHelper {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
         childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, false);
-        Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -208,8 +207,6 @@ public class FirebaseHelper {
 
         dbFirebase.updateChildren(childUpdates);
     }
-
-
     //alarms and groups using groupKey
     public Group getGroup(String groupKey) {
         Group newGroup = new Group();
@@ -275,18 +272,12 @@ public class FirebaseHelper {
         updateAlarmOfGroup(alarm, group, groupAlarmKey);
     }
 
-
     // Games
     public void addScore(Game game) {
         String id = dbScores.push().getKey();
         game.setUser(username);
 
         dbScores.child(id).setValue(game);
-
-//        String id = dbScores.child(game.getPhoneNum()).push().getKey();
-//        game.setUser(username);
-//
-//        dbScores.child(game.getPhoneNum()).child(id).setValue(game);
     }
 
 

@@ -78,7 +78,7 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
 
 //        createDummyData();
 
-
+        updateActionBarColor();
         firebaseHelper = new FirebaseHelper();
 
         currentUserPhoneNum = firebaseHelper.getPhoneNum();
@@ -298,6 +298,12 @@ public class GroupSettingsFriendsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateActionBarColor() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setElevation(0);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.gradient_bg_purple));
     }
 
     class CustomAdapter extends ArrayAdapter<GroupMember> {

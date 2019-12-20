@@ -65,8 +65,8 @@ public class GroupFragment extends Fragment {
         rvGroup = view.findViewById(R.id.rv_group);
         layoutManager = new LinearLayoutManager(getContext());
         rvGroup.setLayoutManager(layoutManager);
-        groupAdapter = new GroupFragmentAdapter(groups, allContacts);
-        rvGroup.setAdapter(groupAdapter);
+//        groupAdapter = new GroupFragmentAdapter(groups, allContacts);
+//        rvGroup.setAdapter(groupAdapter);
 
         return view;
     }

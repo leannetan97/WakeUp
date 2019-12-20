@@ -19,6 +19,7 @@ import com.wakeup.wakeup.ObjectClass.Alarm;
 import com.wakeup.wakeup.R;
 
 public class GameTicTacToe extends AppCompatActivity {
+    private long start;
     private Alarm alarm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,7 @@ public class GameTicTacToe extends AppCompatActivity {
         setContentView(R.layout.activity_game_tic_tac_toe);
         alarm = getIntent().getExtras().getParcelable("AlarmData");
 
+        start = System.currentTimeMillis();
     }
     boolean isGameActive = true;
 
@@ -123,6 +125,12 @@ public class GameTicTacToe extends AppCompatActivity {
                 winLayout.animate().setDuration(800).alpha(1f);
 
                 if(playerWin==99){
+                    long end = System.currentTimeMillis();
+                    float msec = end - start;
+                    float sec= msec/1000F;
+                    int minutes= (int) (sec/60F);
+
+                    new FirebaseHelper().addHistory(minutes);
                     new FirebaseHelper().addScore(new Game(3, 10));
 
                     if(alarm.isGroup()){
