@@ -54,6 +54,7 @@ public class NewGroupActivity extends AppCompatActivity {
     private DatabaseReference dbGroups;
     private boolean exist;
     ArrayList<GroupMember> allContacts;
+    TextView tvPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class NewGroupActivity extends AppCompatActivity {
         btnAddFromList.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String currentUserPhoneNum = new FirebaseHelper().getPhoneNum();
-                TextView tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
+                tvPhoneNumber = findViewById(R.id.et_enterPhoneNumber);
                 String phoneNumber = tvPhoneNumber.getText().toString();
 
                 if (phoneNumber.equals("")) {
@@ -95,7 +96,7 @@ public class NewGroupActivity extends AppCompatActivity {
                 InputMethodManager imm =
                         (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                tvPhoneNumber.setText("");
+//                tvPhoneNumber.setText("");
             }
         });
 
@@ -260,6 +261,7 @@ public class NewGroupActivity extends AppCompatActivity {
                     NewGroupFriendsListAdapter adapter =
                             new NewGroupFriendsListAdapter(getApplicationContext(), friends);
                     recyclerView.setAdapter(adapter);
+                    tvPhoneNumber.setText("");
                 } else {
                     Toast.makeText(getApplicationContext(), "Phone Number is not registered yet!"
                             , Toast.LENGTH_SHORT).show();
