@@ -30,7 +30,7 @@ import com.wakeup.wakeup.ObjectClass.FirebaseHelper;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class AlarmPopUp extends AppCompatActivity{
+public class AlarmPopUp extends AppCompatActivity {
     private Context mContext;
     private static MediaPlayer mediaPlayer = new MediaPlayer();
     private static Vibrator vibrator;
@@ -169,7 +169,10 @@ public class AlarmPopUp extends AppCompatActivity{
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
-            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+            mediaPlayer.setAudioAttributes(new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build());
         } else {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
         }
@@ -247,7 +250,8 @@ public class AlarmPopUp extends AppCompatActivity{
 //        public boolean onFling(MotionEvent e1, MotionEvent e2,
 //                               float velocityX, float velocityY) {
 //            try {
-//                System.out.println("[DEBUG] e1.getY() " + e1.getY() + "; e2.getY() " + e2.getY() + " ; velocityY " + velocityY);
+//                System.out.println("[DEBUG] e1.getY() " + e1.getY() + "; e2.getY() " + e2.getY
+//                () + " ; velocityY " + velocityY);
 //                // down to up swipe
 //                if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE
 //                        && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {

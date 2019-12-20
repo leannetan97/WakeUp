@@ -102,6 +102,18 @@ public class Group implements Serializable, Parcelable {
         return 0;
     }
 
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setAlarmsInGroup(List<Alarm> alarmsInGroup) {
+        this.alarmsInGroup = alarmsInGroup;
+    }
+
+    public void setUsersInGroup(List<User> usersInGroup) {
+        this.usersInGroup = usersInGroup;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(groupKey);

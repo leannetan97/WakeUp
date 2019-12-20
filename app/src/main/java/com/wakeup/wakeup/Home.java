@@ -353,9 +353,9 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
                             continue;
                         }
 
-//                        System.out.println(phoneNo.replaceAll("\\s+", "").replaceAll("-+", ""));
-//                        System.out.println(name);
-//                        System.out.println(phoneNo);
+                        System.out.println(phoneNo.replaceAll("\\s+", "").replaceAll("-+", ""));
+                        System.out.println(name);
+                        System.out.println(phoneNo);
                         names.add(name);
                         allContacts.add(new GroupMember(name, false, phoneNo.replaceAll("\\s+",
                                 "").replaceAll("-+", "")));
@@ -383,6 +383,7 @@ public class Home extends AppCompatActivity implements DialogWithTitle.DialogLis
             }
             return false;
         } else {
+            getContactList();
             return true;
         }
     }
