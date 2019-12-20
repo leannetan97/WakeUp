@@ -97,6 +97,7 @@ public class CreateDeleteAlarm extends AppCompatActivity implements TimePickerDi
         } else {
             //A Default time
             setDefaultTimeDisplay();
+            group = getIntent().getExtras().getParcelable("Group");
             fragment = new PersonalAlarmDetailsFragment("Alarm");
         }
         FragmentManager manager = getSupportFragmentManager();
