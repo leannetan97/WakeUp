@@ -172,16 +172,18 @@ public class HistoryFragment extends Fragment {
             LocalDate date = Instant.ofEpochMilli(dateLong).atZone(ZoneId.systemDefault()).toLocalDate();
             Long diff = ChronoUnit.DAYS.between(date, curDate);
             int dayDiff = 6 - diff.intValue();
-            Log.d("histo", String.valueOf(dayDiff));
+//            Log.d("histo", String.valueOf(dayDiff));
 
-            if (dayDiff < delayHisto.size()) {
+            if (dayDiff <= delayHisto.size() && dayDiff >= 0) {
                 int prev = delayHisto.get(dayDiff);
+//                Log.d("added", String.valueOf(dayDiff));
                 delayHisto.set(dayDiff, (prev + temp.getDelay()));
             }
         }
 
         delays.clear();
         for (int i=0; i<delayHisto.size(); i++) {
+//            Log.d("delay", String.valueOf(i) + String.valueOf(delayHisto.get(i)));
             delays.add(new BarEntry(i+1, delayHisto.get(i)));
         }
     }
