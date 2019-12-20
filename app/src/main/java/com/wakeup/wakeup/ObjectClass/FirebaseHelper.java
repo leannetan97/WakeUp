@@ -155,7 +155,6 @@ public class FirebaseHelper {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/users/" + phoneNum + "/groups/" + groupKey, value);
         childUpdates.put("/groups/" + groupKey + "/users/" + phoneNum, false);
-        Log.d("add", "/users/" + phoneNum + "/groups/" + groupKey);
 
         dbFirebase.updateChildren(childUpdates);
     }
@@ -279,11 +278,6 @@ public class FirebaseHelper {
         game.setUser(username);
 
         dbScores.child(id).setValue(game);
-
-//        String id = dbScores.child(game.getPhoneNum()).push().getKey();
-//        game.setUser(username);
-//
-//        dbScores.child(game.getPhoneNum()).child(id).setValue(game);
     }
 
 

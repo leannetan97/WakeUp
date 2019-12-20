@@ -22,6 +22,8 @@ public class GameShake extends AppCompatActivity {
 
     public SensorManager sm;
 
+    private long start;
+
     public float acelVal; // CURRENT ACCELERATION VALUE AND GRAVITY
     public float acelLast; // LAST ACCELERATION VALUE AND GRAVITY
     public float shake; // ACCELERATION VALUE differ from GRAVITY
@@ -32,6 +34,8 @@ public class GameShake extends AppCompatActivity {
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_shake);
+
+        start = System.currentTimeMillis();
 
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sm.registerListener(sensorListener, sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
@@ -58,7 +62,13 @@ public class GameShake extends AppCompatActivity {
             shake = shake * 0.9f + delta;
 
             if (shake > 12) {
-                new FirebaseHelper().addScore(new Game(2, 10));
+//                new FirebaseHelper().addScore(new Game(2, 10));
+                long end = System.currentTimeMillis();
+                float msec = end - start;
+                float sec= msec/1000F;
+                int minutes= (int) (sec/60F);
+
+                new FirebaseHelper().addHistory(minutes);
 
                 if(alarm.isGroup()){
                     new FirebaseHelper().setUserAwake(alarm.getGroupKey());
