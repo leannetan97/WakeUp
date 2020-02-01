@@ -1,4 +1,5 @@
 # WakeUp
+This is the assignment for WIX3004 Mobile Application Development.
 
 ## About
 This is an Android Mobile Application which aim to wake user up when according to the alarm set. The users are able to set game that they wish to play in order to close the alarm.
